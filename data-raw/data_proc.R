@@ -74,10 +74,10 @@ data <- data %>%
   left_join(metadata, by = "key") %>% 
   filter(!is.na(valor)) %>% 
   mutate(valor_original = valor) %>% 
-  mutate(valor = ifelse(valor  < 1, round(valor, digits = 3),
-                        ifelse(valor > 1 & valor < 100, round(valor, digits = 2),
-                               ifelse(valor > 100  & valor < 1000, round(valor, digits = 1),
-                                      ifelse(valor > 1000, round(valor, digits = 0), NA))))) %>% 
+  mutate(valor = ifelse(valor  <= 1, round(valor, digits = 3),
+                        ifelse(valor >= 1 & valor < 100, round(valor, digits = 2),
+                               ifelse(valor >= 100  & valor < 1000, round(valor, digits = 1),
+                                      ifelse(valor >= 1000, round(valor, digits = 0), NA))))) %>% 
   relocate(key, nomindicador, fecha, valor)
 
 glimpse(data)
