@@ -70,6 +70,7 @@ glimpse(data)
 
 ## Procesar  ---------------------------------------------------------------
 
+# Recodificar valores
 data <- data %>% 
   left_join(metadata, by = "key") %>% 
   filter(!is.na(valor)) %>% 
@@ -80,9 +81,15 @@ data <- data %>%
                                       ifelse(valor >= 1000, round(valor, digits = 0), NA))))) %>% 
   relocate(key, nomindicador, fecha, valor)
 
+# Agregar códigos
+codigos <- readxl::read_excel("data/codigos_iso.xlsx")
+
+data <- data %>% 
+  left_join(codigos, by = "pais")
+
 glimpse(data)
-        
-        
+
+
 ## Guardar  ----------------------------------------------------------------
 
 rio::export(data, 'data.rda')

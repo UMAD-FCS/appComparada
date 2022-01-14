@@ -17,6 +17,7 @@ library(viridis)
 library(ggrepel)
 library(tidyverse)
 library(shinycssloaders)
+library(bslib)
 
 rm(list=ls())
 
@@ -30,10 +31,21 @@ file.copy("www/Titillium Web.ttf", "~/.fonts")
 system('fc-cache -f ~/.fonts')
 
 # Spinner options 
-options(spinner.color = "#21618C",
+options(spinner.color = "#476481",
         spinner.color.background="#ffffff", 
         spinner.size = 2)
 
+# Shiny app customized theme
+tema_umad <- bs_theme(version = 5,
+                      bg = "#FFFFFF",
+                      fg = "#085792",
+                      primary = "#3E6C9A",
+                      secondary = "#3E6C9A",
+                      base_font = font_google("Roboto"),
+                      heading_font = font_google("Roboto"),
+                      code_font = font_google("Space Mono"))
+
+# bs_theme_preview(tema_umad)
 
 ##  1. PREPARAR DATA  =======================================================
 
@@ -59,7 +71,7 @@ data_soc <- data %>%
 ui <- navbarPage(
   
   title = "Datos Comparados",
-  theme = shinytheme("flatly"),
+  theme = tema_umad,
   collapsible = TRUE,
   fluid = TRUE,
   tags$style(type="text/css",
@@ -72,11 +84,13 @@ ui <- navbarPage(
 
     title = "Economía", 
     icon = icon("dollar-sign"),
-
+    
+    fluidRow(
+      
         sidebarPanel(
           
           width = 3,
-          style = "position:fixed;width:22%;",
+          # style = "position:fixed;width:22%;",
           
            selectInput(inputId = "indicador_eco",
                        label = "Indicador",
@@ -145,8 +159,9 @@ ui <- navbarPage(
           br()
           
         )
-        
-      ),
+    )
+    
+    ),
   
   tabPanel(
     
@@ -188,6 +203,7 @@ ui <- navbarPage(
         )
       ),
     )
+
 
 
 server <- function(session, input, output) {
@@ -261,15 +277,26 @@ referencias <- "<br><b>Referencias:</b> K = miles; M = millones; B = billones. <
   # Checkbox por pais
   output$sel_eco_pais <- renderUI({
     
+    dropdownButton(
+      
+      label = "Seleccione país o región", 
+      status = "default",
+      width = 350, 
+      circle = F, 
+      # icon = icon("flag", lib = "font-awesome"),
+      # tooltipOptions(placement = "right", title = "Máximo 10"),
+      
       checkboxGroupInput(
         inputId = "chbox_pais_eco",
-        label = "Seleccione países",
+        label = "Seleccione país o región",
         inline = TRUE,
         choices = dat_eco() %>%
           filter(nomindicador == input$indicador_eco) %>% 
-          distinct(pais) %>%
+          distinct(cod_pais) %>%
           pull(),
-        selected = c("Uruguay", "Argentina", "Brasil", "Chile"))
+        selected = c("URY", "ARG", "BRA", "CHI"))
+      
+    )
     
     })
   
@@ -281,10 +308,10 @@ referencias <- "<br><b>Referencias:</b> K = miles; M = millones; B = billones. <
         plot_eco <- ggplot(data = dat_eco() %>%
                              filter(fecha >= input$fecha_dat_eco[1] &
                                       fecha <= input$fecha_dat_eco[2]) %>%
-                             filter(pais %in% input$chbox_pais_eco),
+                             filter(cod_pais %in% input$chbox_pais_eco),
                                aes(x = fecha, y = valor)) +
-          geom_line(aes(color = pais), size = 1, alpha = 0.5) +
-          geom_point(aes(color = pais), size = 3) +
+          geom_line(aes(color = cod_pais), size = 1, alpha = 0.5) +
+          geom_point(aes(color = cod_pais), size = 3) +
           theme(axis.text.x = element_text(angle = 0),
                 legend.position = "bottom") +
           labs(x = "",
@@ -318,7 +345,7 @@ referencias <- "<br><b>Referencias:</b> K = miles; M = millones; B = billones. <
     dat_eco() %>%
       filter(fecha >= input$fecha_dat_eco[1] & 
                fecha <= input$fecha_dat_eco[2]) %>%
-      filter(pais %in% input$chbox_pais_eco) %>% 
+      filter(cod_pais %in% input$chbox_pais_eco) %>% 
       mutate(fecha = format(fecha, format = "%Y")) %>% 
       select(fecha, pais, valor) %>%
       arrange(desc(fecha), fct_reorder(pais, -valor))
