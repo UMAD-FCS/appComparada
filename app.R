@@ -277,25 +277,26 @@ referencias <- "<br><b>Referencias:</b> K = miles; M = millones; B = billones. <
   # Checkbox por pais
   output$sel_eco_pais <- renderUI({
     
-    dropdownButton(
-      
-      label = "Seleccione país o región", 
+    dropdown(
+
+      label = "Seleccione país o región",
       status = "default",
-      width = 350, 
-      circle = F, 
+      width = 400,
+      circle = F,
       # icon = icon("flag", lib = "font-awesome"),
       # tooltipOptions(placement = "right", title = "Máximo 10"),
-      
+
       checkboxGroupInput(
         inputId = "chbox_pais_eco",
         label = "Seleccione país o región",
         inline = TRUE,
         choices = dat_eco() %>%
-          filter(nomindicador == input$indicador_eco) %>% 
+          filter(nomindicador == input$indicador_eco) %>%
           distinct(cod_pais) %>%
           pull(),
-        selected = c("URY", "ARG", "BRA", "CHI"))
-      
+        selected = c("URY", "ARG", "BRA", "CHI")
+        )
+
     )
     
     })
@@ -310,8 +311,8 @@ referencias <- "<br><b>Referencias:</b> K = miles; M = millones; B = billones. <
                                       fecha <= input$fecha_dat_eco[2]) %>%
                              filter(cod_pais %in% input$chbox_pais_eco),
                                aes(x = fecha, y = valor)) +
-          geom_line(aes(color = cod_pais), size = 1, alpha = 0.5) +
-          geom_point(aes(color = cod_pais), size = 3) +
+          geom_line(aes(color = pais), size = 1, alpha = 0.5) +
+          geom_point(aes(color = pais), size = 3) +
           theme(axis.text.x = element_text(angle = 0),
                 legend.position = "bottom") +
           labs(x = "",
