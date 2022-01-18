@@ -106,7 +106,11 @@ ui <- navbarPage(
 
           br(),
 
-           tags$a(href="https://umad.cienciassociales.edu.uy/",
+          uiOutput("sel_eco_region"),
+          
+          br(),
+          
+          tags$a(href="https://umad.cienciassociales.edu.uy/",
                    "Unidad de Métodos y Acceso a Datos",
                    style = "font-size:12px; color:Navy;
                    text-decoration:underline;"),
@@ -303,6 +307,28 @@ referencias <- "<br><b>Referencias:</b> K = miles; M = millones; B = billones. <
         selected = c("Uruguay", "Argentina", "Brasil", "Chile")
       )
       
+    } else if (input$indicador_eco == "Agricultura, valor agregado (% PIB) según WDI"){
+      
+      dropdown(
+        
+        label = "Seleccione país",
+        status = "default",
+        width = 400,
+        circle = F,
+        
+        checkboxGroupInput(
+          inputId = "chbox_pais_eco",
+          label = "Seleccione país",
+          inline = TRUE,
+          choices = dat_eco() %>%
+            filter(region == 0) %>% 
+            filter(nomindicador == input$indicador_eco) %>%
+            distinct(cod_pais) %>%
+            pull(),
+          selected = c("URY", "ARG", "BRA", "CHI")
+        )
+      )
+      
     } else {
       
       dropdown(
@@ -329,6 +355,39 @@ referencias <- "<br><b>Referencias:</b> K = miles; M = millones; B = billones. <
     }
     
     })
+  
+  # Checkbox por pais
+  output$sel_eco_region <- renderUI({
+    
+  if(input$indicador_eco == "Agricultura, valor agregado (% PIB) según WDI"){
+      
+    dropdown(
+      
+      label = "Seleccione región",
+      status = "default",
+      width = 400,
+      circle = F,
+      
+      checkboxGroupInput(
+        inputId = "chbox_pais_eco",
+        label = "Seleccione región",
+        inline = TRUE,
+        choices = dat_eco() %>%
+          filter(region == 1) %>% 
+          filter(nomindicador == input$indicador_eco) %>%
+          distinct(cod_pais) %>%
+          pull(),
+        selected = NULL
+      )
+    )
+      
+    } else {
+      
+      return(NULL)
+      
+    }
+    
+  })
   
     # Gráficos CP_comp
     output$p_dat_eco <- renderPlot({

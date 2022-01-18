@@ -79,7 +79,31 @@ data <- data %>%
                         ifelse(valor >= 1 & valor < 100, round(valor, digits = 2),
                                ifelse(valor >= 100  & valor < 1000, round(valor, digits = 1),
                                       ifelse(valor >= 1000, round(valor, digits = 0), NA))))) %>% 
-  relocate(key, nomindicador, fecha, valor)
+  relocate(key, nomindicador, fecha, valor) 
+
+regiones <- c("África Sub Sahariana",
+              "Altos ingresos", 
+              "América Latina y el Caribe",
+              "Asia del Este y Pacífico",
+              "Asia del Sur",
+              "Bajos ingresos",
+              "Etapa avanzada del dividendo demográfico",
+              "Etapa inicial del dividendo demográfico",
+              "Etapa previa al dividendo demográfico",
+              "Etapa posterior al dividendo demográfico",
+              "Ingresos medios", 
+              "Medio Oriente y África del Norte",
+              "Unión Europea",
+              "Norteamérica")
+
+data <- data %>% 
+  mutate(region = case_when(
+    pais %in% regiones ~ 1,
+    grepl("Etapa", pais) ~ 1, 
+    TRUE ~ 0
+  ))
+
+# table(data$pais, data$region)
 
 # Agregar códigos
 codigos <- readxl::read_excel("data/codigos_iso.xlsx")
