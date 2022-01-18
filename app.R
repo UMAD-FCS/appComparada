@@ -277,15 +277,8 @@ referencias <- "<br><b>Referencias:</b> K = miles; M = millones; B = billones. <
   # Checkbox por pais
   output$sel_eco_pais <- renderUI({
     
-    dropdown(
-
-      label = "Seleccione país o región",
-      status = "default",
-      width = 400,
-      circle = F,
-      # icon = icon("flag", lib = "font-awesome"),
-      # tooltipOptions(placement = "right", title = "Máximo 10"),
-
+    if(input$indicador_eco == "Acceso a la electricidad, sector rural (% de la población rural) según WDI") {
+    
       checkboxGroupInput(
         inputId = "chbox_pais_eco",
         label = "Seleccione país o región",
@@ -296,8 +289,44 @@ referencias <- "<br><b>Referencias:</b> K = miles; M = millones; B = billones. <
           pull(),
         selected = c("URY", "ARG", "BRA", "CHI")
         )
+      
+    } else if (input$indicador_eco == "Acceso a la electricidad, sector urbano (% de la población urbana) según WDI"){
 
-    )
+      checkboxGroupInput(
+        inputId = "chbox_pais_eco",
+        label = "Seleccione país o región",
+        inline = TRUE,
+        choices = dat_eco() %>%
+          filter(nomindicador == input$indicador_eco) %>%
+          distinct(pais) %>%
+          pull(),
+        selected = c("Uruguay", "Argentina", "Brasil", "Chile")
+      )
+      
+    } else {
+      
+      dropdown(
+        
+        label = "Seleccione país o región",
+        status = "default",
+        width = 400,
+        circle = F,
+        # icon = icon("flag", lib = "font-awesome"),
+        # tooltipOptions(placement = "right", title = "Máximo 10"),
+        
+        checkboxGroupInput(
+          inputId = "chbox_pais_eco",
+          label = "Seleccione país o región",
+          inline = TRUE,
+          choices = dat_eco() %>%
+            filter(nomindicador == input$indicador_eco) %>%
+            distinct(cod_pais) %>%
+            pull(),
+          selected = c("URY", "ARG", "BRA", "CHI")
+        )
+        
+      )
+    }
     
     })
   
