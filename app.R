@@ -160,6 +160,9 @@ ui <- navbarPage(
           br(),
           downloadButton("dl_tabla_dat_eco", "Descarga la tabla"),
           br(),
+          br(),
+          leafletOutput("mymap"),
+          br(),
           br()
           
         )
@@ -203,7 +206,7 @@ ui <- navbarPage(
         ),
     
         mainPanel(
-          
+
         )
       ),
     )
@@ -413,6 +416,62 @@ referencias <- "<br><b>Referencias:</b> K = miles; M = millones; B = billones. <
         ggsave("www/indicador eco.png", width = 30, height = 20, units = "cm")
         
     })
+
+
+output$mymap <- renderLeaflet({
+      
+    library(tidyverse)
+    library(maps)
+    
+    # Read this shape file with the rgdal library. 
+    library(rgdal)
+    world_spdf <- readOGR( 
+      dsn = "data" , 
+      layer = "TM_WORLD_BORDERS_SIMPL-0.3",
+      verbose=FALSE
+    )
+    
+    # Clean the data object
+    world_spdf@data$POP2005[ which(world_spdf@data$POP2005 == 0)] = NA
+    world_spdf@data$POP2005 <- as.numeric(as.character(world_spdf@data$POP2005)) / 1000000 %>% round(2)
+    
+    # Library
+    library(leaflet)
+    
+    # Create a color palette with handmade bins.
+    library(RColorBrewer)
+    mybins <- c(0,10,20,50,100,500,Inf)
+    mypalette <- colorBin( palette="YlOrBr", domain=world_spdf@data$POP2005, na.color="transparent", bins=mybins)
+    
+    # Prepare the text for tooltips:
+    mytext <- paste(
+      "Country: ", world_spdf@data$NAME,"<br/>", 
+      "Area: ", world_spdf@data$AREA, "<br/>", 
+      "Population: ", round(world_spdf@data$POP2005, 2), 
+      sep="") %>%
+      lapply(htmltools::HTML)
+    
+    # Final Map
+    leaflet(world_spdf) %>% 
+      addTiles()  %>% 
+      setView( lat=20, lng=0 , zoom=1) %>%
+      addPolygons( 
+        fillColor = ~mypalette(POP2005), 
+        stroke=TRUE, 
+        fillOpacity = 0.9, 
+        color="white", 
+        weight=0.3,
+        label = mytext,
+        labelOptions = labelOptions( 
+          style = list("font-weight" = "normal", padding = "3px 8px"), 
+          textsize = "13px", 
+          direction = "auto"
+        )
+      ) %>%
+      addLegend( pal=mypalette, values=~POP2005, opacity=0.9,
+                 title = "Population (M)", position = "bottomleft" )
+    
+})
 
   # Botón descarga grafico
   output$baja_plot_eco <- downloadHandler(
