@@ -101,8 +101,13 @@ data <- data %>%
     pais %in% regiones ~ 1,
     grepl("Etapa", pais) ~ 1, 
     TRUE ~ 0
+  )) %>% 
+  mutate(pais_region = case_when(
+    region == 1 ~ "Regiones",
+    region == 0 ~ "Países"
   ))
 
+# table(data$region, data$pais_region)
 # table(data$pais, data$region)
 
 # Agregar códigos

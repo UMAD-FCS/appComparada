@@ -18,6 +18,11 @@ library(ggrepel)
 library(tidyverse)
 library(shinycssloaders)
 library(bslib)
+library(rgdal)
+library(maps)
+library(leaflet)
+library(RColorBrewer)
+
 
 rm(list=ls())
 
@@ -50,11 +55,6 @@ tema_umad <- bs_theme(version = 5,
 ##  1. PREPARAR DATA  =======================================================
 
 load("data/data.rda")
-
-datita <- data %>% 
-  filter(nomindicador == "Acceso a la electricidad, sector rural (% de la población rural) según WDI")
-table(datita$pais)
-
 
 # Data Economía
 data_eco <- data %>% 
@@ -177,6 +177,8 @@ ui <- navbarPage(
     title = "Social", 
     icon = icon("people-arrows"),
     
+    fluidRow(
+    
         sidebarPanel(
           
           width = 3,
@@ -189,28 +191,66 @@ ui <- navbarPage(
             selected = 2019
           ),
           
-          # uiOutput("selector_CDE_crec"),
-          # 
-          # br(),
-          # 
-          # tags$a(href="https://umad.cienciassociales.edu.uy/", 
-          #        "Unidad de Métodos y Acceso a Datos",
-          #        style = "font-size:12px; color:Navy;
-          #                    text-decoration:underline;"),
-          # br(),
-          # br(),
-          # img(src = "logo_umad.png", height="70%",
-          #     width = "70%", align = "left"),
-          # style = "display:inline-block;",
+          uiOutput("fecha_dat_soc"),
+          
+          checkboxGroupInput(
+            inputId = "chbox_pais_reg_soc",
+            label = "Mostrar:",
+            inline = FALSE,
+            choices = c("Países", "Regiones"),
+            selected = "Países"
+          ),
+          
+          br(),
+
+          tags$a(href="https://umad.cienciassociales.edu.uy/",
+                 "Unidad de Métodos y Acceso a Datos",
+                 style = "font-size:12px; color:Navy;
+                             text-decoration:underline;"),
+          br(),
+          br(),
+          img(src = "logo_umad.png", height="70%",
+              width = "70%", align = "left"),
+          style = "display:inline-block;",
           
         ),
     
         mainPanel(
+          
+          tags$h3(style="display:inline-block",
+                  uiOutput("title_dat_soc")),
+
+          div(style="display:inline-block",
+              dropdown(
+                style = "minimal",
+                status = "primary",
+                width = "500px",
+                right = TRUE,
+                icon = icon("calculator", lib = "font-awesome"),
+                uiOutput("info_dat_soc"))
+          ),
+
+          div(style="display:inline-block",
+              dropdown(
+                style = "minimal",
+                status = "primary",
+                width = "500px",
+                right = TRUE,
+                icon = icon("exclamation", lib = "font-awesome"),
+                uiOutput("rel_dat_soc"))
+          ),
+
+          tags$h5(uiOutput("subtitle_dat_soc")),
+
+          br(),
+
+          withSpinner(plotOutput("p_dat_soc", height = "700px"),
+                      type = 2)
 
         )
       ),
     )
-
+)
 
 
 server <- function(session, input, output) {
@@ -226,8 +266,9 @@ referencias <- "<br><b>Referencias:</b> K = miles; M = millones; B = billones. <
 
   # Data Económica
 
-  dat_eco <- reactive({
 
+dat_eco <- reactive({
+  
     req(input$indicador_eco)
 
     data_eco %>%
@@ -420,11 +461,8 @@ referencias <- "<br><b>Referencias:</b> K = miles; M = millones; B = billones. <
 
 output$mymap <- renderLeaflet({
       
-    library(tidyverse)
-    library(maps)
     
     # Read this shape file with the rgdal library. 
-    library(rgdal)
     world_spdf <- readOGR( 
       dsn = "data" , 
       layer = "TM_WORLD_BORDERS_SIMPL-0.3",
@@ -436,10 +474,8 @@ output$mymap <- renderLeaflet({
     world_spdf@data$POP2005 <- as.numeric(as.character(world_spdf@data$POP2005)) / 1000000 %>% round(2)
     
     # Library
-    library(leaflet)
     
     # Create a color palette with handmade bins.
-    library(RColorBrewer)
     mybins <- c(0,10,20,50,100,500,Inf)
     mypalette <- colorBin( palette="YlOrBr", domain=world_spdf@data$POP2005, na.color="transparent", bins=mybins)
     
@@ -554,6 +590,96 @@ output$mymap <- renderLeaflet({
 
     }
   )
+  
+  ## SOCIAL  ==============================================================
+  
+  # Data Social
+  
+  dat_soc <- reactive({
+    
+    req(input$indicador_soc)
+    
+    data_soc %>%
+      filter(nomindicador == input$indicador_soc)
+    
+  })
+  
+  
+  # Titulo
+  output$title_dat_soc <- renderUI({
+    helpText(HTML(unique(dat_soc()$nomindicador)))
+  })
+  
+  # Subtitulo
+  output$subtitle_dat_soc <- renderUI({
+    helpText(HTML(unique(dat_soc()$definicion)))
+  })
+  
+  # Metodología
+  output$info_dat_soc <- renderUI({
+    helpText(HTML(paste("<b>Metodología:</b>",
+                        unique(dat_soc()$concepto_estadistico_y_metodologia),
+                        referencias)))
+  })
+  
+  # Relevancia:
+  output$rel_dat_soc <- renderUI({
+    helpText(HTML(paste("<b>Relvancia:</b>", unique(dat_soc()$relevancia))))
+  })
+  
+  
+  output$fecha_dat_soc <- renderUI({
+    
+    selectInput(
+      inputId = "fecha_soc",
+      label = "Seleccione año:",
+      choices = dat_soc() %>% 
+        drop_na(valor) %>%
+        select(fecha) %>%
+        arrange(desc(fecha)) %>% 
+        unique() %>% 
+        pull(),
+      selected = "2019"
+    )
+    
+  })
+  
+  
+  output$p_dat_soc <- renderPlot({
+    
+    base_plot_soc <- dat_soc() %>% 
+      filter(pais_region %in% input$chbox_pais_reg_soc) %>% 
+      filter(fecha == input$fecha_soc)  
+    
+      validate(need(nrow(base_plot_soc) > 0, 
+                    'No hay datos disponible para esta búsqueda'))
+      
+      plot_soc <- ggplot(base_plot_soc,
+                         aes(x = fct_reorder(pais, valor), y = valor)) +
+        geom_segment(aes(x = fct_reorder(pais, valor),
+                         xend = fct_reorder(pais, valor),
+                         y = 0,
+                         yend = valor), size = 1, color = "#2c3e50") +
+        geom_point(color = "#2c3e50", size = 4) +
+        theme_light() +
+        coord_flip() +
+        theme(
+          axis.text.y = element_text(size = 12),
+          panel.grid.major.y = element_blank(),
+          panel.border = element_blank(),
+          axis.ticks.y = element_blank()
+        ) +
+        labs(x = "",
+             y = "",
+             title = input$indicador_soc,
+             caption = wrapit("Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de")) +
+        scale_y_continuous(labels = addUnits)
+      
+      print(plot_soc)
+      ggsave("www/indicador soc.png", width = 15, height = 30, units = "cm")
+      
+    })
+  
   
 }  
 
