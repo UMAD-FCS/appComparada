@@ -162,18 +162,21 @@ ui <- navbarPage(
           conditionalPanel(
             condition = "input.visualizador_eco != 'Anual mapa'",
             withSpinner(plotOutput("p_dat_eco", height = "600px"),
-                      type = 2)),
+                        type = 2)),
           
           conditionalPanel(
             condition = "input.visualizador_eco == 'Anual mapa'",
             withSpinner(leafletOutput("map_eco"),
-                      type = 2)),
+                        type = 2)),
           
-          downloadButton(outputId = "baja_plot_eco",
-                         label = "Descarga el gráfico"),
+          conditionalPanel(
+            condition = "input.visualizador_eco != 'Anual mapa'",
+            downloadButton(outputId = "baja_plot_eco",
+                           label = "Descarga el gráfico")),
           br(),
           br(),
-          DTOutput("tab_dat_eco"),
+          withSpinner(DTOutput("tab_dat_eco"),
+                      type = 2),
           br(),
           downloadButton("dl_tabla_dat_eco", "Descarga la tabla"),
           br(),
