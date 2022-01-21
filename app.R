@@ -92,7 +92,15 @@ ui <- navbarPage(
           width = 3,
           # style = "position:fixed;width:22%;",
           
-           selectInput(inputId = "indicador_eco",
+          selectInput(inputId = "visualizador_eco",
+                      label = "Visualización",
+                      choices = c("Serie de tiempo",
+                                  "Anual gráfico",
+                                  "Anual mapa"),
+                      selected = 2019
+          ),
+          
+          selectInput(inputId = "indicador_eco",
                        label = "Indicador",
                        choices = sort(unique(data_eco$nomindicador)),
                        selected = 2019
@@ -151,7 +159,8 @@ ui <- navbarPage(
           
           br(),
           
-          withSpinner(plotOutput("p_dat_eco", height = "500px"),type = 2),
+          withSpinner(plotOutput("p_dat_eco", height = "600px"),
+                      type = 2),
           downloadButton(outputId = "baja_plot_eco",
                          label = "Descarga el gráfico"),
           br(),
@@ -296,6 +305,8 @@ dat_eco <- reactive({
   
   output$fecha_dat_eco <- renderUI({
     
+    if(input$visualizador_eco == "Serie de tiempo"){
+      
     tagList(
       
       tags$style(type = 'text/css', 
@@ -313,14 +324,32 @@ dat_eco <- reactive({
           )
       )
   
+    } else {
+      
+    selectInput(
+      inputId = "fecha_eco",
+      label = "Seleccione año:",
+      choices = dat_eco() %>% 
+        drop_na(valor) %>%
+        select(fecha) %>%
+        arrange(desc(fecha)) %>% 
+        unique() %>% 
+        pull(),
+      selected = "2019"
+    )
+    
+    }
+    
   })
   
   
   # Checkbox por pais
   output$sel_eco_pais <- renderUI({
       
+    
+    if(input$visualizador_eco == "Serie de tiempo"){
+      
       dropdown(
-        
         label = "Seleccione país",
         status = "default",
         width = 400,
@@ -335,15 +364,29 @@ dat_eco <- reactive({
             filter(nomindicador == input$indicador_eco) %>%
             distinct(cod_pais) %>%
             pull(),
-          selected = c("URY", "ARG", "BRA", "CHI")
+          selected = c("URY", "ARG", "BRA", "PRY")
         )
       )
+    
+    } else {
+      
+      checkboxGroupInput(
+        inputId = "chbox_pais_reg_eco",
+        label = "Mostrar:",
+        inline = FALSE,
+        choices = c("Países", "Regiones"),
+        selected = "Países"
+        )
+    
+    }
     
     })
   
   # Checkbox por pais
   output$sel_eco_region <- renderUI({
     
+    if(input$visualizador_eco == "Serie de tiempo"){
+      
     dropdown(
       
       label = "Seleccione región",
@@ -363,12 +406,20 @@ dat_eco <- reactive({
         selected = NULL
       )
     )
-
+      
+    } else {
+      
+      return(NULL)
+      
+    }
   })
   
     # Gráficos CP_comp
     output$p_dat_eco <- renderPlot({
 
+      if(input$visualizador_eco == "Serie de tiempo"){
+        
+        
       req(input$fecha_dat_eco, input$indicador_eco)
 
         plot_eco <- ggplot(data = dat_eco() %>%
@@ -390,6 +441,41 @@ dat_eco <- reactive({
         print(plot_eco)
         ggsave("www/indicador eco.png", width = 30, height = 20, units = "cm")
         
+      } else {
+
+        base_plot_eco <- dat_eco() %>% 
+          filter(pais_region %in% input$chbox_pais_reg_eco) %>% 
+          filter(fecha == input$fecha_eco)  
+        
+        validate(need(nrow(base_plot_eco) > 0, 
+                      'No hay datos disponible para esta búsqueda'))
+        
+        plot_eco <- ggplot(base_plot_eco,
+                           aes(x = fct_reorder(pais, valor), y = valor)) +
+          geom_segment(aes(x = fct_reorder(pais, valor),
+                           xend = fct_reorder(pais, valor),
+                           y = 0,
+                           yend = valor), size = 1, color = "#2c3e50") +
+          geom_point(color = "#2c3e50", size = 4) +
+          theme_light() +
+          coord_flip() +
+          theme(
+            axis.text.y = element_text(size = 12),
+            panel.grid.major.y = element_blank(),
+            panel.border = element_blank(),
+            axis.ticks.y = element_blank()
+          ) +
+          labs(x = "",
+               y = "",
+               title = input$indicador_eco,
+               caption = wrapit("Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de WDI")) +
+          scale_y_continuous(labels = addUnits)
+        
+        print(plot_eco)
+        ggsave("www/indicador eco.png", width = 15, height = 30, units = "cm")
+        
+      }
+      
     })
 
 
