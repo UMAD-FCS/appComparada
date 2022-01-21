@@ -159,8 +159,16 @@ ui <- navbarPage(
           
           br(),
           
-          withSpinner(plotOutput("p_dat_eco", height = "600px"),
-                      type = 2),
+          conditionalPanel(
+            condition = "input.visualizador_eco != 'Anual mapa'",
+            withSpinner(plotOutput("p_dat_eco", height = "600px"),
+                      type = 2)),
+          
+          conditionalPanel(
+            condition = "input.visualizador_eco == 'Anual mapa'",
+            withSpinner(leafletOutput("map_eco"),
+                      type = 2)),
+          
           downloadButton(outputId = "baja_plot_eco",
                          label = "Descarga el gráfico"),
           br(),
@@ -169,11 +177,7 @@ ui <- navbarPage(
           br(),
           downloadButton("dl_tabla_dat_eco", "Descarga la tabla"),
           br(),
-          br(),
-          leafletOutput("mymap"),
-          br(),
           br()
-          
         )
     )
     
@@ -419,7 +423,6 @@ dat_eco <- reactive({
 
       if(input$visualizador_eco == "Serie de tiempo"){
         
-        
       req(input$fecha_dat_eco, input$indicador_eco)
 
         plot_eco <- ggplot(data = dat_eco() %>%
@@ -441,7 +444,7 @@ dat_eco <- reactive({
         print(plot_eco)
         ggsave("www/indicador eco.png", width = 30, height = 20, units = "cm")
         
-      } else {
+      } else if(input$visualizador_eco == "Anual gráfico"){
 
         base_plot_eco <- dat_eco() %>% 
           filter(pais_region %in% input$chbox_pais_reg_eco) %>% 
@@ -474,14 +477,12 @@ dat_eco <- reactive({
         print(plot_eco)
         ggsave("www/indicador eco.png", width = 15, height = 30, units = "cm")
         
-      }
+      } 
       
     })
-
-
-output$mymap <- renderLeaflet({
-      
     
+  output$map_eco <- renderLeaflet({
+      
     # Read this shape file with the rgdal library. 
     world_spdf <- readOGR( 
       dsn = "data" , 
@@ -526,7 +527,7 @@ output$mymap <- renderLeaflet({
       ) %>%
       addLegend( pal=mypalette, values=~POP2005, opacity=0.9,
                  title = "Population (M)", position = "bottomleft" )
-    
+  
 })
 
   # Botón descarga grafico
