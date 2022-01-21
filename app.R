@@ -256,13 +256,6 @@ ui <- navbarPage(
 server <- function(session, input, output) {
   
   ##  3.  ECONOMÍA (dat_eco)   ============================================
-  
-  
-referencias <- "<br><b>Referencias:</b> K = miles; M = millones; B = billones. <br>
-                * Los valores usan el separador decimal inglés: los números luego
-                de puntos son decimales, y las comas separan los miles. "
-
-  ## dat_eco
 
   # Data Económica
 
@@ -289,9 +282,10 @@ dat_eco <- reactive({
   
   # Metodología
   output$info_dat_eco <- renderUI({
-    helpText(HTML(paste("<b>Metodología:</b>",
-                        unique(dat_eco()$concepto_estadistico_y_metodologia),
-                        referencias)))
+    helpText(HTML(paste("<b>Método de Agregación:</b>",
+                        unique(dat_eco()$metodo_de_agregacion),
+                        "<b>Metodología:</b>",
+                        unique(dat_eco()$concepto_estadistico_y_metodologia))))
   })
 
   # Relevancia:
@@ -324,34 +318,6 @@ dat_eco <- reactive({
   
   # Checkbox por pais
   output$sel_eco_pais <- renderUI({
-    
-    if(input$indicador_eco == "Acceso a la electricidad, sector rural (% de la población rural) según WDI") {
-    
-      checkboxGroupInput(
-        inputId = "chbox_pais_eco",
-        label = "Seleccione país o región",
-        inline = TRUE,
-        choices = dat_eco() %>%
-          filter(nomindicador == input$indicador_eco) %>%
-          distinct(cod_pais) %>%
-          pull(),
-        selected = c("URY", "ARG", "BRA", "CHI")
-        )
-      
-    } else if (input$indicador_eco == "Acceso a la electricidad, sector urbano (% de la población urbana) según WDI"){
-
-      checkboxGroupInput(
-        inputId = "chbox_pais_eco",
-        label = "Seleccione país o región",
-        inline = TRUE,
-        choices = dat_eco() %>%
-          filter(nomindicador == input$indicador_eco) %>%
-          distinct(pais) %>%
-          pull(),
-        selected = c("Uruguay", "Argentina", "Brasil", "Chile")
-      )
-      
-    } else if (input$indicador_eco == "Agricultura, valor agregado (% PIB) según WDI"){
       
       dropdown(
         
@@ -372,39 +338,12 @@ dat_eco <- reactive({
           selected = c("URY", "ARG", "BRA", "CHI")
         )
       )
-      
-    } else {
-      
-      dropdown(
-        
-        label = "Seleccione país o región",
-        status = "default",
-        width = 400,
-        circle = F,
-        # icon = icon("flag", lib = "font-awesome"),
-        # tooltipOptions(placement = "right", title = "Máximo 10"),
-        
-        checkboxGroupInput(
-          inputId = "chbox_pais_eco",
-          label = "Seleccione país o región",
-          inline = TRUE,
-          choices = dat_eco() %>%
-            filter(nomindicador == input$indicador_eco) %>%
-            distinct(cod_pais) %>%
-            pull(),
-          selected = c("URY", "ARG", "BRA", "CHI")
-        )
-        
-      )
-    }
     
     })
   
   # Checkbox por pais
   output$sel_eco_region <- renderUI({
     
-  if(input$indicador_eco == "Agricultura, valor agregado (% PIB) según WDI"){
-      
     dropdown(
       
       label = "Seleccione región",
@@ -413,24 +352,18 @@ dat_eco <- reactive({
       circle = F,
       
       checkboxGroupInput(
-        inputId = "chbox_pais_eco",
+        inputId = "chbox_reg_eco",
         label = "Seleccione región",
         inline = TRUE,
         choices = dat_eco() %>%
           filter(region == 1) %>% 
           filter(nomindicador == input$indicador_eco) %>%
-          distinct(cod_pais) %>%
+          distinct(pais) %>%
           pull(),
         selected = NULL
       )
     )
-      
-    } else {
-      
-      return(NULL)
-      
-    }
-    
+
   })
   
     # Gráficos CP_comp
@@ -441,7 +374,8 @@ dat_eco <- reactive({
         plot_eco <- ggplot(data = dat_eco() %>%
                              filter(fecha >= input$fecha_dat_eco[1] &
                                       fecha <= input$fecha_dat_eco[2]) %>%
-                             filter(cod_pais %in% input$chbox_pais_eco),
+                             filter(cod_pais %in% input$chbox_pais_eco |
+                                      pais %in% input$chbox_reg_eco),
                                aes(x = fecha, y = valor)) +
           geom_line(aes(color = pais), size = 1, alpha = 0.5) +
           geom_point(aes(color = pais), size = 3) +
@@ -450,7 +384,7 @@ dat_eco <- reactive({
           labs(x = "",
                y = "",
                title = input$indicador_eco,
-               caption = wrapit("Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de")) +
+               caption = wrapit("Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de WDI")) +
           scale_y_continuous(labels = addUnits)
 
         print(plot_eco)
@@ -617,10 +551,11 @@ output$mymap <- renderLeaflet({
   
   # Metodología
   output$info_dat_soc <- renderUI({
-    helpText(HTML(paste("<b>Metodología:</b>",
-                        unique(dat_soc()$concepto_estadistico_y_metodologia),
-                        referencias)))
-  })
+    helpText(HTML(paste("<b>Método de Agregación:</b>",
+                        unique(dat_soc()$metodo_de_agregacion),
+                        "<b>Metodología:</b>",
+                        unique(dat_soc()$concepto_estadistico_y_metodologia))))
+    })
   
   # Relevancia:
   output$rel_dat_soc <- renderUI({
@@ -672,7 +607,7 @@ output$mymap <- renderLeaflet({
         labs(x = "",
              y = "",
              title = input$indicador_soc,
-             caption = wrapit("Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de")) +
+             caption = wrapit("Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de WDI")) +
         scale_y_continuous(labels = addUnits)
       
       print(plot_soc)
