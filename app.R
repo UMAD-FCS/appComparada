@@ -110,10 +110,12 @@ ui <- navbarPage(
           
           br(),
 
-          uiOutput("sel_eco_pais"),
+          conditionalPanel(
+            condition = "input.visualizador_eco != 'Anual mapa'",
+            uiOutput("sel_eco_pais")),
 
           br(),
-
+          
           uiOutput("sel_eco_region"),
           
           br(),
@@ -544,17 +546,18 @@ dat_eco <- reactive({
     },
     contentType = "www/indicador eco"
   )
-
-
-
+  
+  
+  ## Data series temporal
+  
   # Data para tabla y exportar
   dat_eco_t <- reactive({
     
     dat_eco() %>%
-      filter(fecha >= input$fecha_dat_eco[1] & 
+      filter(fecha >= input$fecha_dat_eco[1] &
                fecha <= input$fecha_dat_eco[2]) %>%
-      filter(cod_pais %in% input$chbox_pais_eco) %>% 
-      mutate(fecha = format(fecha, format = "%Y")) %>% 
+      filter(cod_pais %in% input$chbox_pais_eco |
+               pais %in% input$chbox_reg_eco) %>%  
       select(fecha, pais, valor) %>%
       arrange(desc(fecha), fct_reorder(pais, -valor))
   })
@@ -563,7 +566,8 @@ dat_eco <- reactive({
   dat_eco_m <- reactive({
     
     dat_eco() %>%
-      select(nomindicador, definicion, concepto_estadistico_y_metodologia, relevancia) %>%
+      select(nomindicador, definicion, metodo_de_agregacion, 
+             concepto_estadistico_y_metodologia, relevancia, limitaciones_y_excepciones) %>%
       mutate(`Unidad de Métodos y Acceso a Datos (FCS -UdelaR)` = " ") %>%
       distinct() %>%
       gather(key = "", value = " ")
@@ -573,13 +577,10 @@ dat_eco <- reactive({
   # Data completa
   dat_eco_c <- reactive({
     
-    dat_eco %>%
-      mutate(fecha = format(fecha, format = "%Y")) %>%
-      filter(nomindicador == input$indicador_eco) %>%
-      select(fecha, pais, valor_original) %>%
-      arrange(desc(fecha), fct_reorder(pais, -valor_original)) %>% 
-      pivot_wider(names_from = pais,
-                  values_from = valor_original)
+    dat_eco() %>%
+      select(fecha, pais, valor) %>%
+      arrange(desc(fecha), fct_reorder(pais, -valor)) 
+    
     })
   
   # Lista para descarga
@@ -587,9 +588,12 @@ dat_eco <- reactive({
     
       list_dat_eco <- list("Data" = dat_eco_t(),
                            "Metadata" = dat_eco_m(),
-                           "Data Completa" = dat_eco_c())
+                           "Data Completa" = dat_eco_c()
+                           )
       })
   
+  
+  ## Data por año
   
   # Tablas en shiny
   output$tab_dat_eco <- renderDT({
