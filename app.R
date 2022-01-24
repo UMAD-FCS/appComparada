@@ -558,7 +558,7 @@ dat_eco <- reactive({
                fecha <= input$fecha_dat_eco[2]) %>%
       filter(cod_pais %in% input$chbox_pais_eco |
                pais %in% input$chbox_reg_eco) %>%  
-      select(fecha, pais, valor) %>%
+      select(pais, fecha, valor) %>%
       arrange(desc(fecha), fct_reorder(pais, -valor))
   })
   
@@ -578,7 +578,7 @@ dat_eco <- reactive({
   dat_eco_c <- reactive({
     
     dat_eco() %>%
-      select(fecha, pais, valor) %>%
+      select(pais, fecha, valor) %>%
       arrange(desc(fecha), fct_reorder(pais, -valor)) 
     
     })
@@ -600,9 +600,14 @@ dat_eco <- reactive({
 
       DT::datatable(dat_eco_t(),
                 rownames = FALSE,
+                colnames = c( "País/Región", "Fecha", "Valor"),
+                options = list(
+                  columnDefs = list(list(className = 'dt-center', targets = 1:2))
+                ),
                 caption = htmltools::tags$caption(input$indicador_eco,
                                                   style = "color:black; font-size:110%;")) %>% 
-      formatCurrency(3, '', mark = ",")
+      formatCurrency(3, '', mark = ",") 
+    
 
   })
 
@@ -618,6 +623,7 @@ dat_eco <- reactive({
 
     }
   )
+  
   
   ## SOCIAL  ==============================================================
   
