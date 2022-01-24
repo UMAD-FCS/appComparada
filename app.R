@@ -551,7 +551,7 @@ dat_eco <- reactive({
   ## Data series temporal
   
   # Data para tabla y exportar
-  dat_eco_t <- reactive({
+  dat_eco_st <- reactive({
     
     dat_eco() %>%
       filter(fecha >= input$fecha_dat_eco[1] &
@@ -584,9 +584,9 @@ dat_eco <- reactive({
     })
   
   # Lista para descarga
-  list_dat_eco <- reactive({
+  list_dat_eco_st <- reactive({
     
-      list_dat_eco <- list("Data" = dat_eco_t(),
+      list_dat_eco <- list("Data" = dat_eco_st(),
                            "Metadata" = dat_eco_m(),
                            "Data Completa" = dat_eco_c()
                            )
@@ -594,11 +594,30 @@ dat_eco <- reactive({
   
   
   ## Data por año
+  # Data para tabla y exportar
+  dat_eco_a <- reactive({
+    
+    dat_eco() %>%
+      filter(fecha == input$fecha_eco) %>%
+      filter(pais_region %in% input$chbox_pais_reg_eco) %>% 
+      select(pais, fecha, valor) %>%
+      arrange(desc(fecha), fct_reorder(pais, -valor))
+  })
+  
+  # Lista para descarga
+  list_dat_eco_a <- reactive({
+    
+    list_dat_eco <- list("Data" = dat_eco_a(),
+                         "Metadata" = dat_eco_m()
+    )
+  })
   
   # Tablas en shiny
   output$tab_dat_eco <- renderDT({
 
-      DT::datatable(dat_eco_t(),
+    if(input$visualizador_eco == "Serie de tiempo"){
+      
+      DT::datatable(dat_eco_st(),
                 rownames = FALSE,
                 colnames = c( "País/Región", "Fecha", "Valor"),
                 options = list(
@@ -608,7 +627,19 @@ dat_eco <- reactive({
                                                   style = "color:black; font-size:110%;")) %>% 
       formatCurrency(3, '', mark = ",") 
     
-
+    } else if(input$visualizador_eco %in% c("Anual gráfico", "Anual mapa")){
+      
+      DT::datatable(dat_eco_a(),
+                    rownames = FALSE,
+                    colnames = c( "País/Región", "Fecha", "Valor"),
+                    options = list(
+                      columnDefs = list(list(className = 'dt-center', targets = 1:2))
+                    ),
+                    caption = htmltools::tags$caption(input$indicador_eco,
+                                                      style = "color:black; font-size:110%;")) %>% 
+        formatCurrency(3, '', mark = ",") 
+      
+    }
   })
 
   # Descarga tabla
@@ -619,8 +650,15 @@ dat_eco <- reactive({
     },
     content = function(file) {
       
-      openxlsx::write.xlsx(list_dat_eco(), file)
-
+      if(input$visualizador_eco == "Serie de tiempo"){
+        
+        openxlsx::write.xlsx(list_dat_eco_st(), file)
+        
+      } else if(input$visualizador_eco %in% c("Anual gráfico", "Anual mapa")){
+        
+        openxlsx::write.xlsx(list_dat_eco_a(), file)
+      
+        }
     }
   )
   
