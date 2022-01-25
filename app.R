@@ -273,19 +273,18 @@ ui <- navbarPage(
 
 server <- function(session, input, output) {
   
-  ##  3.  ECONOMÍA (dat_eco)   ============================================
-
-  # Data Económica
-
-
-dat_eco <- reactive({
   
+  ##  3.  ECONOMÍA (dat_eco)   ============================================
+  
+  # Data Económica
+  
+  dat_eco <- reactive({
+    
     req(input$indicador_eco)
-
+    
     data_eco %>%
       filter(nomindicador == input$indicador_eco)
-
-  })
+    })
 
 
   # Titulo
@@ -423,6 +422,14 @@ dat_eco <- reactive({
     }
   })
   
+  dat_eco_anual <- reactive({
+    
+    dat_eco() %>%
+      filter(fecha == input$fecha_eco)
+      
+  })
+  
+  
     # Gráficos CP_comp
     output$p_dat_eco <- renderPlot({
 
@@ -451,9 +458,8 @@ dat_eco <- reactive({
         
       } else if(input$visualizador_eco == "Anual gráfico"){
 
-        base_plot_eco <- dat_eco() %>% 
-          filter(pais_region %in% input$chbox_pais_reg_eco) %>% 
-          filter(fecha == input$fecha_eco)  
+        base_plot_eco <- dat_eco_anual() %>% 
+          filter(pais_region %in% input$chbox_pais_reg_eco)
         
         validate(need(nrow(base_plot_eco) > 0, 
                       'No hay datos disponible para esta búsqueda'))
@@ -495,30 +501,42 @@ dat_eco <- reactive({
       verbose=FALSE
     )
     
-    # Clean the data object
-    world_spdf@data$POP2005[ which(world_spdf@data$POP2005 == 0)] = NA
-    world_spdf@data$POP2005 <- as.numeric(as.character(world_spdf@data$POP2005)) / 1000000 %>% round(2)
+    # Pegar datos 
+    world_spdf@data <- world_spdf@data %>% 
+      left_join(select(dat_eco_anual(), pais_eng, valor_original),
+                by = c("NAME" = "pais_eng"))
     
     # Library
     
     # Create a color palette with handmade bins.
-    mybins <- c(0,10,20,50,100,500,Inf)
-    mypalette <- colorBin( palette="YlOrBr", domain=world_spdf@data$POP2005, na.color="transparent", bins=mybins)
+    min_val <- min(dat_eco_anual()$valor)
+    max_val <- max(dat_eco_anual()$valor)
+    dif <- max_val - min_val
+    dif_4 <- dif / 4
+    val_1 <- min_val + dif_4
+    val_2 <- min_val + (dif_4 * 2)
+    val_3 <- min_val + (dif_4 * 3)
+    
+    mybins <- c(min_val, val_1, val_2, val_3, max_val)
+
+    mypalette <- colorBin(palette = "YlOrBr", 
+                          domain = world_spdf@data$valor_original, 
+                          na.color = "transparent", 
+                          bins = mybins)
     
     # Prepare the text for tooltips:
     mytext <- paste(
-      "Country: ", world_spdf@data$NAME,"<br/>", 
-      "Area: ", world_spdf@data$AREA, "<br/>", 
-      "Population: ", round(world_spdf@data$POP2005, 2), 
+      "País: ", world_spdf@data$NAME,"<br/>", 
+      "Valor: ", round(world_spdf@data$valor_original, 2), 
       sep="") %>%
       lapply(htmltools::HTML)
     
     # Final Map
     leaflet(world_spdf) %>% 
       addTiles()  %>% 
-      setView( lat=20, lng=0 , zoom=1) %>%
+      setView(lat = 30, lng = 0 , zoom = 1) %>%
       addPolygons( 
-        fillColor = ~mypalette(POP2005), 
+        fillColor = ~mypalette(valor_original), 
         stroke=TRUE, 
         fillOpacity = 0.9, 
         color="white", 
@@ -531,7 +549,7 @@ dat_eco <- reactive({
         )
       ) %>%
       addLegend( pal=mypalette, values=~POP2005, opacity=0.9,
-                 title = "Population (M)", position = "bottomleft" )
+                 title = wrapit(input$indicador_eco), position = "bottomleft" )
   
 })
 
@@ -597,8 +615,7 @@ dat_eco <- reactive({
   # Data para tabla y exportar
   dat_eco_a <- reactive({
     
-    dat_eco() %>%
-      filter(fecha == input$fecha_eco) %>%
+    dat_eco_anual() %>%
       filter(pais_region %in% input$chbox_pais_reg_eco) %>% 
       select(pais, fecha, valor) %>%
       arrange(desc(fecha), fct_reorder(pais, -valor))

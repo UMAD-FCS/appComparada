@@ -79,6 +79,10 @@ data <- data %>%
                         ifelse(valor >= 1 & valor < 100, round(valor, digits = 2),
                                ifelse(valor >= 100  & valor < 1000, round(valor, digits = 1),
                                       ifelse(valor >= 1000, round(valor, digits = 0), NA))))) %>% 
+  mutate(valor_round = ifelse(valor  <= 1, round(valor, digits = 2),
+                              ifelse(valor >= 1 & valor < 100, round(valor, digits = 0),
+                                     ifelse(valor >= 100  & valor < 1000, round(valor, digits = 0),
+                                            ifelse(valor >= 1000, round(valor, digits = 0), NA)))))
   relocate(key, nomindicador, fecha, valor) 
 
 regiones <- c("África Sub Sahariana",
@@ -118,6 +122,38 @@ data <- data %>%
 
 glimpse(data)
 
+# Countries in english
+# Recodificar países para matchear con world_spf
+data <- data %>% 
+  mutate(pais_eng = case_when(
+    pais == "Brasil" ~ "Brazil",
+    pais == "Corea del Sur" ~ "Korea, Republic of",
+    pais == "Dinamarca" ~ "Denmark",
+    pais == "Eslovaquia" ~ "Slovakia",
+    pais == "Eslovenia" ~ "Slovenia",
+    pais == "España" ~ "Spain",
+    pais == "Estados Unidos" ~ "United States",
+    pais == "Filipinas" ~ "Philippines",
+    pais == "Finlandia" ~ "Finland",
+    pais == "Grecia" ~ "Greece",
+    pais == "Hungría" ~ "Hungary",
+    pais == "Irlanda" ~ "Ireland",
+    pais == "Italia" ~ "Italy",
+    pais == "Letonia" ~ "Latvia",
+    pais == "Lituania" ~ "Lithuania",
+    pais == "Malasia" ~ "Malaysia",
+    pais == "México" ~ "Mexico",
+    pais == "Nueva Zelanda" ~ "New Zealand",
+    pais == "Panamá" ~ "Panama",
+    pais == "Perú" ~ "Peru",
+    pais == "República Checa" ~ "Czech Republic",
+    pais == "República Dominicana" ~ "Dominican Republic",
+    pais == "Singapur" ~ "Singapore",
+    pais == "Tailandia" ~ "Thailand",
+    pais == "Vietnam" ~ "Viet Nam",
+    TRUE ~ pais
+  ))
+
 
 ## Guardar  ----------------------------------------------------------------
 
@@ -126,9 +162,4 @@ load('data.rda')
 data <- tibble::as_tibble(x)
 save(data, file = here::here("data", "data.rda"))
 file.remove('data.rda')
-
-
-
-
-
 
