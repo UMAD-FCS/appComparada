@@ -1,6 +1,7 @@
 
 library(leaflet)
 library(tidyverse)
+library(rgdal)
 
 rm(list = ls())
 
@@ -31,8 +32,8 @@ world_spdf@data <- world_spdf@data %>%
 range(world_spdf@data$valor_original)
 
 # Create a color palette with handmade bins.
-min_val <- min(data$valor_round)
-max_val <- max(data$valor_round)
+min_val <- plyr::round_any(min(world_spdf@data$valor_original, na.rm = T), 10)
+max_val <- plyr::round_any(max(world_spdf@data$valor_original, na.rm = T), 10)
 dif <- max_val - min_val
 dif_4 <- dif / 4
 val_1 <- min_val + dif_4
