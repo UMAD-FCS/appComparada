@@ -31,9 +31,10 @@ world_spdf@data <- world_spdf@data %>%
 # Library
 range(world_spdf@data$valor_original)
 
+
 # Create a color palette with handmade bins.
-min_val <- plyr::round_any(min(world_spdf@data$valor_original, na.rm = T), 10)
-max_val <- plyr::round_any(max(world_spdf@data$valor_original, na.rm = T), 10)
+min_val <- plyr::round_any(min(world_spdf@data$valor_original, na.rm = T), 10, floor)
+max_val <- plyr::round_any(max(world_spdf@data$valor_original, na.rm = T), 10, ceiling)
 dif <- max_val - min_val
 dif_4 <- dif / 4
 val_1 <- min_val + dif_4

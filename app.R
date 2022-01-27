@@ -509,15 +509,60 @@ server <- function(session, input, output) {
     # Library
     
     # Create a color palette with handmade bins.
-    min_val <- plyr::round_any(min(world_spdf@data$valor_original, na.rm = T), 10)
-    max_val <- plyr::round_any(max(world_spdf@data$valor_original, na.rm = T), 10)
-    dif <- max_val - min_val
-    dif_4 <- dif / 4
-    val_1 <- min_val + dif_4
-    val_2 <- min_val + (dif_4 * 2)
-    val_3 <- min_val + (dif_4 * 3)
     
-    mybins <- c(min_val, val_1, val_2, val_3, max_val)
+    
+    if(mean(world_spdf@data$valor_original, na.rm = TRUE) <= -1000){
+      
+      round_number <- 1000
+      
+    } else if(mean(world_spdf@data$valor_original, na.rm = TRUE) <= -100 ){
+
+      round_number <- 100
+      
+    } else if(mean(world_spdf@data$valor_original, na.rm = TRUE) <= -10){
+    
+      round_number <- 10
+      
+    } else if(mean(world_spdf@data$valor_original, na.rm = TRUE) <= -1){
+      
+      round_number <- 1
+    
+    } else if(mean(world_spdf@data$valor_original, na.rm = TRUE) >= 1000){
+      
+      round_number <- 1000
+
+    } else if(mean(world_spdf@data$valor_original, na.rm = TRUE) >= 100){
+      
+      round_number <- 100
+      
+    } else if(mean(world_spdf@data$valor_original, na.rm = TRUE) >= 10){
+      
+      round_number <- 10
+      
+    } else if(mean(world_spdf@data$valor_original, na.rm = TRUE) >= 1){
+      
+      round_number <- 1
+      
+    } else if(mean(world_spdf@data$valor_original, na.rm = TRUE) >= -1){
+      
+      round_number <- .1
+      
+      }
+    
+    min_val <- plyr::round_any(min(world_spdf@data$valor_original, na.rm = T),
+                               round_number, 
+                               floor)
+    max_val <- plyr::round_any(max(world_spdf@data$valor_original, na.rm = T),
+                               round_number,
+                               ceiling)
+    dif <- max_val - min_val
+    dif_5 <- dif / 5
+    val_1 <- min_val + dif_5
+    val_2 <- min_val + (dif_5 * 2)
+    val_3 <- min_val + (dif_5 * 3)
+    val_4 <- min_val + (dif_5 * 4)
+    
+    mybins <- c(min_val, val_1, val_2, val_3, val_4, max_val)
 
     mypalette <- colorBin(palette = "YlOrBr", 
                           domain = world_spdf@data$valor_original, 
@@ -548,7 +593,7 @@ server <- function(session, input, output) {
           direction = "auto"
         )
       ) %>%
-      addLegend( pal=mypalette, values=~POP2005, opacity=0.9,
+      addLegend( pal=mypalette, values=~valor_original, opacity=0.9,
                  title = wrapit(input$indicador_eco), position = "bottomleft" )
   
 })
