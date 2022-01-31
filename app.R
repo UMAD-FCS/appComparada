@@ -583,6 +583,7 @@ ui <- navbarPage(
 
 
 server <- function(session, input, output) {
+  
   ##  3.  ECONOMÍA (dat_eco)   ============================================
   
   # Data Económica
@@ -761,10 +762,8 @@ server <- function(session, input, output) {
           x = "",
           y = "",
           title = input$indicador_eco,
-          caption = wrapit(
-            "Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de WDI"
-          )
-        ) +
+          caption = wrapit(paste("Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de", 
+                                 unique(dat_eco()$fuente)))) +
         scale_y_continuous(labels = addUnits)
       
       print(plot_eco)
@@ -809,16 +808,14 @@ server <- function(session, input, output) {
           x = "",
           y = "",
           title = input$indicador_eco,
-          caption = wrapit(
-            "Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de WDI"
-          )
-        ) +
+          caption = wrapit(paste("Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de", 
+                                 unique(dat_eco_anual()$fuente)))) +
         scale_y_continuous(labels = addUnits)
       
       print(plot_eco)
       ggsave(
         "www/indicador eco.png",
-        width = 15,
+        width = 25,
         height = 30,
         units = "cm"
       )
@@ -1152,10 +1149,8 @@ server <- function(session, input, output) {
         x = "",
         y = "",
         title = input$indicador_soc,
-        caption = wrapit(
-          "Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de WDI"
-        )
-      ) +
+        caption = wrapit(paste("Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de", 
+                               unique(dat_soc()$fuente)))) +
       scale_y_continuous(labels = addUnits)
     
     print(plot_soc)

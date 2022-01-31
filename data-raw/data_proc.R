@@ -154,6 +154,8 @@ data <- data %>%
     TRUE ~ pais
   ))
 
+# data <- data %>% 
+#   mutate(fuente = "Fuente")
 
 ## Guardar  ----------------------------------------------------------------
 
