@@ -61,7 +61,16 @@ tema_umad <- bs_theme(
 
 load("data/data.rda")
 
+data <- data %>% 
+  relocate(sector_productivo, area_geografica, .after = everything())
 
+# Indicadores con variables de corte
+
+vars_corte <- data %>% 
+  filter(!is.na(sector_productivo) | !is.na(area_geografica)) %>% 
+  distinct(nomindicador) %>% 
+  pull(nomindicador)
+  
 
 ##  2. USER INTERFACE  ======================================================
 
@@ -112,6 +121,8 @@ ui <- navbarPage(
               choices = sort(unique(data$nomindicador)),
               selected = 2019
             ),
+            
+            uiOutput("corte_CP_comp"),
             
             uiOutput("fecha_dat_eco"),
             
@@ -823,11 +834,14 @@ server <- function(session, input, output) {
   # Data Económica
   
   dat_eco <- reactive({
+    
     req(input$indicador_eco)
     
     data %>%
-      filter(nomindicador == input$indicador_eco)
-  })
+      filter(nomindicador == input$indicador_eco) %>% 
+      janitor::remove_empty("cols")
+  
+    })
   
   
   # Titulo
@@ -901,6 +915,28 @@ server <- function(session, input, output) {
   })
   
   
+  output$corte_CP_comp <- renderUI({
+    
+    if (input$indicador_eco %in% vars_corte) {
+      
+      selectInput(inputId = "corte_CP_comp",
+                  label = "Seleccione categorías",
+                  choices =  dat_eco() %>%
+                    distinct(get(names(dat_eco()[,ncol(dat_eco())]))) %>%
+                    pull(),
+                  selected = dat_eco() %>%
+                    filter(jerarquia == 1) %>% 
+                    distinct(get(names(dat_eco()[,ncol(dat_eco())]))) %>%
+                    pull()
+                  )
+    } else {
+      
+      return(NULL)
+    }
+    
+    })
+  
+  
   # Checkbox por pais
   output$sel_eco_pais <- renderUI({
     if (input$visualizador_eco == "Serie de tiempo") {
@@ -964,28 +1000,52 @@ server <- function(session, input, output) {
     }
   })
   
+
   dat_eco_anual <- reactive({
-    dat_eco() %>%
-      filter(fecha == input$fecha_eco)
     
+    if (input$indicador_eco %in% vars_corte) {
+      
+      dat_eco() %>%
+        filter(get(names(dat_eco()[,ncol(dat_eco())])) %in% input$corte_CP_comp) %>%
+        filter(fecha == input$fecha_eco)
+    
+    } else {
+      
+      dat_eco() %>%
+        filter(fecha == input$fecha_eco)
+      
+      
+    }
   })
+  
+  dat_eco_simple <- reactive({
+    
+    if (input$indicador_eco %in% vars_corte) {
+      
+    dat_eco() %>%
+      filter(get(names(dat_eco()[,ncol(dat_eco())])) %in% input$corte_CP_comp) %>% 
+      filter(fecha >= input$fecha_dat_eco[1] & fecha <= input$fecha_dat_eco[2]) %>%
+      filter(cod_pais %in% input$chbox_pais_eco | pais %in% input$chbox_reg_eco)
+      
+      } else {
+        
+        dat_eco() %>%
+          filter(fecha >= input$fecha_dat_eco[1] & fecha <= input$fecha_dat_eco[2]) %>%
+          filter(cod_pais %in% input$chbox_pais_eco | pais %in% input$chbox_reg_eco)        
+        }
+    
+    })
   
   
   # Gráficos CP_comp
   output$p_dat_eco <- renderPlot({
-    if (input$visualizador_eco == "Serie de tiempo") {
+    
+    if (input$visualizador_eco == "Serie de tiempo" ) {
+      
       req(input$fecha_dat_eco, input$indicador_eco)
       
       plot_eco <- ggplot(
-        data = dat_eco() %>%
-          filter(
-            fecha >= input$fecha_dat_eco[1] &
-              fecha <= input$fecha_dat_eco[2]
-          ) %>%
-          filter(
-            cod_pais %in% input$chbox_pais_eco |
-              pais %in% input$chbox_reg_eco
-          ),
+        data = dat_eco_simple(), 
         aes(x = fecha, y = valor)
       ) +
         geom_line(aes(color = pais), size = 1, alpha = 0.5) +
@@ -995,10 +1055,18 @@ server <- function(session, input, output) {
         labs(
           x = "",
           y = "",
-          title = input$indicador_eco,
           caption = wrapit(paste("Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de", 
-                                 unique(dat_eco()$fuente)))) +
-        scale_y_continuous(labels = addUnits)
+                                 unique(dat_eco_simple()$fuente)))) +
+        scale_y_continuous(labels = addUnits) +
+        if(input$indicador_eco %in% vars_corte){
+          
+          ggtitle(paste0(input$indicador_eco, " (", input$corte_CP_comp, ")"))
+          
+        } else { 
+          
+          ggtitle(paste(input$indicador_eco))
+          
+        }
       
       print(plot_eco)
       ggsave(
@@ -1007,8 +1075,9 @@ server <- function(session, input, output) {
         height = 20,
         units = "cm"
       )
-      
+
     } else if (input$visualizador_eco == "Anual gráfico") {
+      
       base_plot_eco <- dat_eco_anual() %>%
         filter(pais_region %in% input$chbox_pais_reg_eco)
       
@@ -1041,10 +1110,18 @@ server <- function(session, input, output) {
         labs(
           x = "",
           y = "",
-          title = input$indicador_eco,
           caption = wrapit(paste("Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de", 
                                  unique(dat_eco_anual()$fuente)))) +
-        scale_y_continuous(labels = addUnits)
+        scale_y_continuous(labels = addUnits) +
+        if(input$indicador_eco %in% vars_corte){
+          
+          ggtitle(paste0(input$indicador_eco, " (", input$corte_CP_comp, ")"))
+          
+        } else { 
+          
+          ggtitle(paste(input$indicador_eco))
+          
+        }
       
       print(plot_eco)
       ggsave(
@@ -1182,13 +1259,25 @@ server <- function(session, input, output) {
   
   # Data para tabla y exportar
   dat_eco_st <- reactive({
-    dat_eco() %>%
-      filter(fecha >= input$fecha_dat_eco[1] &
-               fecha <= input$fecha_dat_eco[2]) %>%
-      filter(cod_pais %in% input$chbox_pais_eco |
-               pais %in% input$chbox_reg_eco) %>%
-      select(pais, fecha, valor) %>%
-      arrange(desc(fecha), fct_reorder(pais,-valor))
+    
+    if (input$indicador_eco %in% vars_corte) {
+      
+      dat_eco() %>%
+        filter(fecha >= input$fecha_dat_eco[1] & fecha <= input$fecha_dat_eco[2]) %>%
+        filter(cod_pais %in% input$chbox_pais_eco | pais %in% input$chbox_reg_eco) %>%
+        select(pais, fecha, names(dat_eco()[,ncol(dat_eco())]), valor) %>%
+        arrange(desc(fecha), fct_reorder(pais,-valor)) 
+      
+    } else {
+      
+      dat_eco() %>%
+        filter(fecha >= input$fecha_dat_eco[1] &
+                 fecha <= input$fecha_dat_eco[2]) %>%
+        filter(cod_pais %in% input$chbox_pais_eco |
+                 pais %in% input$chbox_reg_eco) %>%
+        select(pais, fecha, valor) %>%
+        arrange(desc(fecha), fct_reorder(pais,-valor))
+    }
   })
   
   # Metadata
@@ -1210,9 +1299,19 @@ server <- function(session, input, output) {
   
   # Data completa
   dat_eco_c <- reactive({
+    
+    if (input$indicador_eco %in% vars_corte) {
+      
     dat_eco() %>%
-      select(pais, fecha, valor) %>%
-      arrange(desc(fecha), fct_reorder(pais,-valor))
+        select(pais, fecha, names(dat_eco()[,ncol(dat_eco())]), valor) %>%
+        arrange(desc(fecha), fct_reorder(pais,-valor))
+      
+    } else {
+
+      dat_eco() %>%
+        select(pais, fecha, valor) %>%
+        arrange(desc(fecha), fct_reorder(pais,-valor))
+    }
     
   })
   
@@ -1229,10 +1328,22 @@ server <- function(session, input, output) {
   ## Data por año
   # Data para tabla y exportar
   dat_eco_a <- reactive({
+    
+    if (input$indicador_eco %in% vars_corte) {
+      
     dat_eco_anual() %>%
       filter(pais_region %in% input$chbox_pais_reg_eco) %>%
-      select(pais, fecha, valor) %>%
+      select(pais, fecha, names(dat_eco()[,ncol(dat_eco())]), valor) %>%
       arrange(desc(fecha), fct_reorder(pais,-valor))
+      
+    } else {
+
+      dat_eco_anual() %>%
+        filter(pais_region %in% input$chbox_pais_reg_eco) %>%
+        select(pais, fecha, valor) %>%
+        arrange(desc(fecha), fct_reorder(pais,-valor))
+      
+    }
   })
   
   # Lista para descarga
@@ -1243,20 +1354,34 @@ server <- function(session, input, output) {
   
   # Tablas en shiny
   output$tab_dat_eco <- renderDT({
-    if (input$visualizador_eco == "Serie de tiempo") {
+    
+    if (input$indicador_eco %in% vars_corte) {
       DT::datatable(
         dat_eco_st(),
         rownames = FALSE,
-        colnames = c("País/Región", "Fecha", "Valor"),
+        colnames = c("País/Región", "Fecha", "Corte", "Valor"),
         options = list(columnDefs = list(
           list(className = 'dt-center', targets = 1:2)
         )),
         caption = htmltools::tags$caption(input$indicador_eco,
                                           style = "color:black; font-size:110%;")
       ) %>%
-        formatCurrency(3, '', mark = ",")
+        formatCurrency(3:10, '', mark = ",")
       
-    } else if (input$visualizador_eco %in% c("Anual gráfico", "Anual mapa")) {
+    } else if (input$visualizador_eco == "Serie de tiempo") {
+        DT::datatable(
+          dat_eco_st(),
+          rownames = FALSE,
+          colnames = c("País/Región", "Fecha", "Valor"),
+          options = list(columnDefs = list(
+            list(className = 'dt-center', targets = 1:2)
+          )),
+          caption = htmltools::tags$caption(input$indicador_eco,
+                                            style = "color:black; font-size:110%;")
+        ) %>%
+          formatCurrency(3, '', mark = ",")
+      
+        } else if (input$visualizador_eco %in% c("Anual gráfico", "Anual mapa")) {
       DT::datatable(
         dat_eco_a(),
         rownames = FALSE,
