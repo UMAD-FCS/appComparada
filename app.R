@@ -61,14 +61,6 @@ tema_umad <- bs_theme(
 
 load("data/data.rda")
 
-# Data Economía
-data_eco <- data %>%
-  filter(tipo == "eco")
-
-
-# Data social
-data_soc <- data %>%
-  filter(tipo == "soc")
 
 
 ##  2. USER INTERFACE  ======================================================
@@ -86,9 +78,9 @@ ui <- navbarPage(
   
   tabPanel(
     
-    # * 2.1. Pestaña 1 ------------------------------------------------------
+    # * 2.1. Competitividad y precios  -------------------------------------
     
-    title = "Pestaña 1",
+    title = "Competitividad y precios",
     icon = icon("dollar-sign"),
     
     tabsetPanel(
@@ -97,9 +89,7 @@ ui <- navbarPage(
       
       
       tabPanel(
-        "Sub - Pestaña 1",
-        icon = icon("fas fa-chart-bar"),
-        
+        "Competitividad",
         br(),
         
         fluidRow(
@@ -119,7 +109,7 @@ ui <- navbarPage(
             selectInput(
               inputId = "indicador_eco",
               label = "Indicador",
-              choices = sort(unique(data_eco$nomindicador)),
+              choices = sort(unique(data$nomindicador)),
               selected = 2019
             ),
             
@@ -214,45 +204,13 @@ ui <- navbarPage(
       ),
       
       tabPanel(
-        "Sub - Pestaña 2",
-        icon = icon("fas fa-chart-bar"),
-        
+        "Precios",
         br(),
         
         fluidRow(
           sidebarPanel(
             width = 3,
-            # style = "position:fixed;width:22%;",
-            
-            # selectInput(
-            #   inputId = "visualizador_eco",
-            #   label = "Visualización",
-            #   choices = c("Serie de tiempo",
-            #               "Anual gráfico",
-            #               "Anual mapa"),
-            #   selected = 2019
-            # ),
-            # 
-            # selectInput(
-            #   inputId = "indicador_eco",
-            #   label = "Indicador",
-            #   choices = sort(unique(data_eco$nomindicador)),
-            #   selected = 2019
-            # ),
-            # 
-            # uiOutput("fecha_dat_eco"),
-            # 
-            # br(),
-            # 
-            # conditionalPanel(condition = "input.visualizador_eco != 'Anual mapa'",
-            #                  uiOutput("sel_eco_pais")),
-            # 
-            # br(),
-            # 
-            # uiOutput("sel_eco_region"),
-            # 
-            # br(),
-            
+
             tags$a(
               href = "https://umad.cienciassociales.edu.uy/",
               "Unidad de Métodos y Acceso a Datos",
@@ -272,60 +230,7 @@ ui <- navbarPage(
           ),
           
           mainPanel(
-            # tags$h3(style = "display:inline-block",
-            #         uiOutput("title_dat_eco")),
-            # 
-            # div(
-            #   style = "display:inline-block",
-            #   dropdown(
-            #     style = "minimal",
-            #     status = "primary",
-            #     width = "500px",
-            #     right = TRUE,
-            #     icon = icon("calculator", lib = "font-awesome"),
-            #     uiOutput("info_dat_eco")
-            #   )
-            # ),
-            # 
-            # div(
-            #   style = "display:inline-block",
-            #   dropdown(
-            #     style = "minimal",
-            #     status = "primary",
-            #     width = "500px",
-            #     right = TRUE,
-            #     icon = icon("exclamation", lib = "font-awesome"),
-            #     uiOutput("rel_dat_eco")
-            #   )
-            # ),
-            # 
-            # tags$h5(uiOutput("subtitle_dat_eco")),
-            # 
-            # br(),
-            # 
-            # conditionalPanel(condition = "input.visualizador_eco != 'Anual mapa'",
-            #                  withSpinner(
-            #                    plotOutput("p_dat_eco", height = "600px"),
-            #                    type = 2
-            #                  )),
-            # 
-            # conditionalPanel(condition = "input.visualizador_eco == 'Anual mapa'",
-            #                  withSpinner(leafletOutput("map_eco"),
-            #                              type = 2)),
-            # 
-            # conditionalPanel(
-            #   condition = "input.visualizador_eco != 'Anual mapa'",
-            #   downloadButton(outputId = "baja_plot_eco",
-            #                  label = "Descarga el gráfico")
-            # ),
-            # br(),
-            # br(),
-            # withSpinner(DTOutput("tab_dat_eco"),
-            #             type = 2),
-            # br(),
-            # downloadButton("dl_tabla_dat_eco", "Descarga la tabla"),
-            # br(),
-            # br()
+
           )
         )
       )
@@ -334,10 +239,10 @@ ui <- navbarPage(
   
   tabPanel(
     
-    # * 2.2. Pestaña 2 ------------------------------------------------------
+    # * 2.2. Desarrollo económico  -----------------------------------------
     
-    title = "Pestaña 2",
-    icon = icon("people-arrows"),
+    title = "Desarrollo económico",
+    icon = icon("signal"),
     
     tabsetPanel(
       type = "pills",
@@ -345,45 +250,14 @@ ui <- navbarPage(
       
       
       tabPanel(
-        "Sub - Pestaña 3",
-        icon = icon("fas fa-chart-bar"),
-        
+        "Crecimento",
+
         br(),
         
         fluidRow(
           sidebarPanel(
             width = 3,
-            # style = "position:fixed;width:22%;",
-            
-          #   selectInput(
-          #     inputId = "visualizador_eco",
-          #     label = "Visualización",
-          #     choices = c("Serie de tiempo",
-          #                 "Anual gráfico",
-          #                 "Anual mapa"),
-          #     selected = 2019
-          #   ),
-          #   
-          #   selectInput(
-          #     inputId = "indicador_eco",
-          #     label = "Indicador",
-          #     choices = sort(unique(data_eco$nomindicador)),
-          #     selected = 2019
-          #   ),
-          #   
-          #   uiOutput("fecha_dat_eco"),
-          #   
-          #   br(),
-          #   
-          #   conditionalPanel(condition = "input.visualizador_eco != 'Anual mapa'",
-          #                    uiOutput("sel_eco_pais")),
-          #   
-          #   br(),
-          #   
-          #   uiOutput("sel_eco_region"),
-          #   
-          #   br(),
-          #   
+
             tags$a(
               href = "https://umad.cienciassociales.edu.uy/",
               "Unidad de Métodos y Acceso a Datos",
@@ -401,105 +275,21 @@ ui <- navbarPage(
             style = "display:inline-block;",
 
           ),
-          # 
-          # mainPanel(
-          #   tags$h3(style = "display:inline-block",
-          #           uiOutput("title_dat_eco")),
-          #   
-          #   div(
-          #     style = "display:inline-block",
-          #     dropdown(
-          #       style = "minimal",
-          #       status = "primary",
-          #       width = "500px",
-          #       right = TRUE,
-          #       icon = icon("calculator", lib = "font-awesome"),
-          #       uiOutput("info_dat_eco")
-          #     )
-          #   ),
-          #   
-          #   div(
-          #     style = "display:inline-block",
-          #     dropdown(
-          #       style = "minimal",
-          #       status = "primary",
-          #       width = "500px",
-          #       right = TRUE,
-          #       icon = icon("exclamation", lib = "font-awesome"),
-          #       uiOutput("rel_dat_eco")
-          #     )
-          #   ),
-          #   
-          #   tags$h5(uiOutput("subtitle_dat_eco")),
-          #   
-          #   br(),
-          #   
-          #   conditionalPanel(condition = "input.visualizador_eco != 'Anual mapa'",
-          #                    withSpinner(
-          #                      plotOutput("p_dat_eco", height = "600px"),
-          #                      type = 2
-          #                    )),
-          #   
-          #   conditionalPanel(condition = "input.visualizador_eco == 'Anual mapa'",
-          #                    withSpinner(leafletOutput("map_eco"),
-          #                                type = 2)),
-          #   
-          #   conditionalPanel(
-          #     condition = "input.visualizador_eco != 'Anual mapa'",
-          #     downloadButton(outputId = "baja_plot_eco",
-          #                    label = "Descarga el gráfico")
-          #   ),
-          #   br(),
-          #   br(),
-          #   withSpinner(DTOutput("tab_dat_eco"),
-          #               type = 2),
-          #   br(),
-          #   downloadButton("dl_tabla_dat_eco", "Descarga la tabla"),
-          #   br(),
-          #   br()
-          # )
+
+          mainPanel(
+          )
         )
       ),
       
+      
       tabPanel(
-        "Sub - Pestaña 4",
-        icon = icon("fas fa-chart-bar"),
-        
+        "Productividad",
+
         br(),
         
         fluidRow(
           sidebarPanel(
             width = 3,
-            # style = "position:fixed;width:22%;",
-            
-            # selectInput(
-            #   inputId = "visualizador_eco",
-            #   label = "Visualización",
-            #   choices = c("Serie de tiempo",
-            #               "Anual gráfico",
-            #               "Anual mapa"),
-            #   selected = 2019
-            # ),
-            # 
-            # selectInput(
-            #   inputId = "indicador_eco",
-            #   label = "Indicador",
-            #   choices = sort(unique(data_eco$nomindicador)),
-            #   selected = 2019
-            # ),
-            # 
-            # uiOutput("fecha_dat_eco"),
-            # 
-            # br(),
-            # 
-            # conditionalPanel(condition = "input.visualizador_eco != 'Anual mapa'",
-            #                  uiOutput("sel_eco_pais")),
-            # 
-            # br(),
-            # 
-            # uiOutput("sel_eco_region"),
-            # 
-            # br(),
             
             tags$a(
               href = "https://umad.cienciassociales.edu.uy/",
@@ -520,62 +310,506 @@ ui <- navbarPage(
           ),
           
           mainPanel(
-            # tags$h3(style = "display:inline-block",
-            #         uiOutput("title_dat_eco")),
-            # 
-            # div(
-            #   style = "display:inline-block",
-            #   dropdown(
-            #     style = "minimal",
-            #     status = "primary",
-            #     width = "500px",
-            #     right = TRUE,
-            #     icon = icon("calculator", lib = "font-awesome"),
-            #     uiOutput("info_dat_eco")
-            #   )
-            # ),
-            # 
-            # div(
-            #   style = "display:inline-block",
-            #   dropdown(
-            #     style = "minimal",
-            #     status = "primary",
-            #     width = "500px",
-            #     right = TRUE,
-            #     icon = icon("exclamation", lib = "font-awesome"),
-            #     uiOutput("rel_dat_eco")
-            #   )
-            # ),
-            # 
-            # tags$h5(uiOutput("subtitle_dat_eco")),
-            # 
-            # br(),
-            # 
-            # conditionalPanel(condition = "input.visualizador_eco != 'Anual mapa'",
-            #                  withSpinner(
-            #                    plotOutput("p_dat_eco", height = "600px"),
-            #                    type = 2
-            #                  )),
-            # 
-            # conditionalPanel(condition = "input.visualizador_eco == 'Anual mapa'",
-            #                  withSpinner(leafletOutput("map_eco"),
-            #                              type = 2)),
-            # 
-            # conditionalPanel(
-            #   condition = "input.visualizador_eco != 'Anual mapa'",
-            #   downloadButton(outputId = "baja_plot_eco",
-            #                  label = "Descarga el gráfico")
-            # ),
-            # br(),
-            # br(),
-            # withSpinner(DTOutput("tab_dat_eco"),
-            #             type = 2),
-            # br(),
-            # downloadButton("dl_tabla_dat_eco", "Descarga la tabla"),
-            # br(),
-            # br()
           )
         )
+      ),
+      
+      
+      
+      tabPanel(
+        "Estructura productiva",
+
+        br(),
+        
+        fluidRow(
+          sidebarPanel(
+            width = 3,
+            
+            tags$a(
+              href = "https://umad.cienciassociales.edu.uy/",
+              "Unidad de Métodos y Acceso a Datos",
+              style = "font-size:12px; color:Navy;
+                   text-decoration:underline;"
+            ),
+            br(),
+            br(),
+            img(
+              src = "logo_umad.png",
+              height = "70%",
+              width = "70%",
+              align = "left"
+            ),
+            style = "display:inline-block;",
+            
+          ),
+          
+          mainPanel(
+          )
+        )
+      ),
+      
+      
+      
+      tabPanel(
+        "Inversión",
+
+        br(),
+        
+        fluidRow(
+          sidebarPanel(
+            width = 3,
+            
+            tags$a(
+              href = "https://umad.cienciassociales.edu.uy/",
+              "Unidad de Métodos y Acceso a Datos",
+              style = "font-size:12px; color:Navy;
+                   text-decoration:underline;"
+            ),
+            br(),
+            br(),
+            img(
+              src = "logo_umad.png",
+              height = "70%",
+              width = "70%",
+              align = "left"
+            ),
+            style = "display:inline-block;",
+            
+          ),
+          
+          mainPanel(
+          )
+        )
+      ),
+      
+      tabPanel(
+        "Capital humano",
+
+        br(),
+        
+        fluidRow(
+          sidebarPanel(
+            width = 3,
+            
+            tags$a(
+              href = "https://umad.cienciassociales.edu.uy/",
+              "Unidad de Métodos y Acceso a Datos",
+              style = "font-size:12px; color:Navy;
+                   text-decoration:underline;"
+            ),
+            br(),
+            br(),
+            img(
+              src = "logo_umad.png",
+              height = "70%",
+              width = "70%",
+              align = "left"
+            ),
+            style = "display:inline-block;",
+            
+          ),
+          
+          mainPanel(
+          )
+        )
+      ),
+      
+      tabPanel(
+        "CTI",
+
+        br(),
+        
+        fluidRow(
+          sidebarPanel(
+            width = 3,
+            
+            tags$a(
+              href = "https://umad.cienciassociales.edu.uy/",
+              "Unidad de Métodos y Acceso a Datos",
+              style = "font-size:12px; color:Navy;
+                   text-decoration:underline;"
+            ),
+            br(),
+            br(),
+            img(
+              src = "logo_umad.png",
+              height = "70%",
+              width = "70%",
+              align = "left"
+            ),
+            style = "display:inline-block;",
+            
+          ),
+          
+          mainPanel(
+          )
+        )
+      ),
+      
+      tabPanel(
+        "Infraestructura",
+
+        br(),
+        
+        fluidRow(
+          sidebarPanel(
+            width = 3,
+            
+            
+            tags$a(
+              href = "https://umad.cienciassociales.edu.uy/",
+              "Unidad de Métodos y Acceso a Datos",
+              style = "font-size:12px; color:Navy;
+                   text-decoration:underline;"
+            ),
+            br(),
+            br(),
+            img(
+              src = "logo_umad.png",
+              height = "70%",
+              width = "70%",
+              align = "left"
+            ),
+            style = "display:inline-block;",
+            
+          ),
+          
+          mainPanel(
+
+            )
+        )
+      )
+    ),
+  ),
+  
+  tabPanel(
+    
+    # * 2.3. Sistema financiero   -----------------------------------------
+    
+    title = "Sistema financiero",
+    icon = icon("coins", lib = "font-awesome"),
+    
+    tabsetPanel(
+      type = "pills",
+      id   = "CP",
+      
+      
+      tabPanel(
+        "Ahorro",
+
+        br(),
+        
+        fluidRow(
+          sidebarPanel(
+            width = 3,
+            
+            tags$a(
+              href = "https://umad.cienciassociales.edu.uy/",
+              "Unidad de Métodos y Acceso a Datos",
+              style = "font-size:12px; color:Navy;
+                   text-decoration:underline;"
+            ),
+            br(),
+            br(),
+            img(
+              src = "logo_umad.png",
+              height = "70%",
+              width = "70%",
+              align = "left"
+            ),
+            style = "display:inline-block;",
+            
+          ),
+          
+          mainPanel(
+          )
+        )
+      ),
+      
+      
+      tabPanel(
+        "Deuda externa",
+
+        br(),
+        
+        fluidRow(
+          sidebarPanel(
+            width = 3,
+            
+            tags$a(
+              href = "https://umad.cienciassociales.edu.uy/",
+              "Unidad de Métodos y Acceso a Datos",
+              style = "font-size:12px; color:Navy;
+                   text-decoration:underline;"
+            ),
+            br(),
+            br(),
+            img(
+              src = "logo_umad.png",
+              height = "70%",
+              width = "70%",
+              align = "left"
+            ),
+            style = "display:inline-block;",
+            
+          ),
+          
+          mainPanel(
+          )
+        )
+      ),
+      
+      
+      
+      tabPanel(
+        "Inversión",
+
+        br(),
+        
+        fluidRow(
+          sidebarPanel(
+            width = 3,
+            
+            tags$a(
+              href = "https://umad.cienciassociales.edu.uy/",
+              "Unidad de Métodos y Acceso a Datos",
+              style = "font-size:12px; color:Navy;
+                   text-decoration:underline;"
+            ),
+            br(),
+            br(),
+            img(
+              src = "logo_umad.png",
+              height = "70%",
+              width = "70%",
+              align = "left"
+            ),
+            style = "display:inline-block;",
+            
+          ),
+          
+          mainPanel(
+          )
+        )
+      ),
+      
+      tabPanel(
+        "Indicadores monetarios",
+
+        br(),
+        
+        fluidRow(
+          sidebarPanel(
+            width = 3,
+            
+            
+            tags$a(
+              href = "https://umad.cienciassociales.edu.uy/",
+              "Unidad de Métodos y Acceso a Datos",
+              style = "font-size:12px; color:Navy;
+                   text-decoration:underline;"
+            ),
+            br(),
+            br(),
+            img(
+              src = "logo_umad.png",
+              height = "70%",
+              width = "70%",
+              align = "left"
+            ),
+            style = "display:inline-block;",
+            
+          ),
+          
+          mainPanel(
+            
+          )
+        )
+      )
+    ),
+  ),
+  
+  tabPanel(
+    
+    # * 2.4. Energía  ----------------------------------------------------
+    
+    title = "Energía",
+    icon = icon("lightbulb", lib = "font-awesome"),
+    
+    tabsetPanel(
+      type = "pills",
+      id   = "CP",
+      
+      
+      tabPanel(
+        "Consumo",
+
+        br(),
+        
+        fluidRow(
+          sidebarPanel(
+            width = 3,
+            
+            tags$a(
+              href = "https://umad.cienciassociales.edu.uy/",
+              "Unidad de Métodos y Acceso a Datos",
+              style = "font-size:12px; color:Navy;
+                   text-decoration:underline;"
+            ),
+            br(),
+            br(),
+            img(
+              src = "logo_umad.png",
+              height = "70%",
+              width = "70%",
+              align = "left"
+            ),
+            style = "display:inline-block;",
+            
+          ),
+          
+          mainPanel(
+          )
+        )
+      ),
+      
+      
+      tabPanel(
+        "Emisiones",
+
+        br(),
+        
+        fluidRow(
+          sidebarPanel(
+            width = 3,
+            
+            tags$a(
+              href = "https://umad.cienciassociales.edu.uy/",
+              "Unidad de Métodos y Acceso a Datos",
+              style = "font-size:12px; color:Navy;
+                   text-decoration:underline;"
+            ),
+            br(),
+            br(),
+            img(
+              src = "logo_umad.png",
+              height = "70%",
+              width = "70%",
+              align = "left"
+            ),
+            style = "display:inline-block;",
+            
+          ),
+          
+          mainPanel(
+          )
+        )
+      ),
+      
+      tabPanel(
+        "Producción",
+
+        br(),
+        
+        fluidRow(
+          sidebarPanel(
+            width = 3,
+            
+            
+            tags$a(
+              href = "https://umad.cienciassociales.edu.uy/",
+              "Unidad de Métodos y Acceso a Datos",
+              style = "font-size:12px; color:Navy;
+                   text-decoration:underline;"
+            ),
+            br(),
+            br(),
+            img(
+              src = "logo_umad.png",
+              height = "70%",
+              width = "70%",
+              align = "left"
+            ),
+            style = "display:inline-block;",
+            
+          ),
+          
+          mainPanel(
+            
+          )
+        )
+      )
+    ),
+  ),
+  
+  tabPanel(
+    
+    # * 2.5. Sostenibilidad ambiental  -------------------------------------
+    
+    title = "Sostenibilidad ambiental",
+    icon = icon("seedling", lib = "font-awesome"),
+
+    br(),
+    
+    fluidRow(
+      
+      sidebarPanel(
+        width = 3,
+        
+        tags$a(
+          href = "https://umad.cienciassociales.edu.uy/",
+          "Unidad de Métodos y Acceso a Datos",
+          style = "font-size:12px; color:Navy;text-decoration:underline;"
+          ),
+        
+        br(),
+        br(),
+        img(src = "logo_umad.png",
+            height = "70%",
+            width = "70%",
+            align = "left"
+            ),
+        style = "display:inline-block;",
+        ),
+      
+      mainPanel(
+        
+      )
+    ),
+  ),
+  
+  tabPanel(
+    
+    # * 2.6. Demografía  -------------------------------------
+    
+    title = "Demografía",
+    icon = icon("users", lib = "font-awesome"),
+    
+    br(),
+    
+    fluidRow(
+      
+      sidebarPanel(
+        width = 3,
+        
+        tags$a(
+          href = "https://umad.cienciassociales.edu.uy/",
+          "Unidad de Métodos y Acceso a Datos",
+          style = "font-size:12px; color:Navy;text-decoration:underline;"
+        ),
+        
+        br(),
+        br(),
+        img(src = "logo_umad.png",
+            height = "70%",
+            width = "70%",
+            align = "left"
+        ),
+        style = "display:inline-block;",
+      ),
+      
+      mainPanel(
+        
       )
     ),
   )
@@ -591,7 +825,7 @@ server <- function(session, input, output) {
   dat_eco <- reactive({
     req(input$indicador_eco)
     
-    data_eco %>%
+    data %>%
       filter(nomindicador == input$indicador_eco)
   })
   

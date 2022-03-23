@@ -13,9 +13,11 @@ rm(list = ls())
 
 # Metadata Economía
 metadata_eco <- read_excel(
-  "data-raw/Base comparada_ Economía_270621.xlsx",
+  "data-raw/Comparado_ec_060921.xlsx",
   col_types = c("numeric", "text", "text", "text",
-                "text", "text", "text", "text")) %>% 
+                "text", "text", "text", "text",
+                "text", "text", "text", "text",
+                "text", "date", "text")) %>% 
   janitor::clean_names() %>% 
   mutate(tipo = "eco") %>%
   mutate(key = paste(tipo, codind, sep = "_"))
@@ -34,7 +36,7 @@ metadata_soc <- readxl::read_excel(
 
 glimpse(metadata_soc)
 
-metadata <- rbind(metadata_eco, metadata_soc) %>% 
+metadata <- plyr::rbind.fill(metadata_eco, metadata_soc) %>% 
   select(-nomindicador, -codind, -tipo)
 
 glimpse(metadata)
@@ -42,8 +44,9 @@ glimpse(metadata)
 
 # Data Economía
 data_eco <- readxl::read_excel(
-  "data-raw/Base comparada_ Economía_270621.xlsx",
-  col_types = c("numeric", "text", "text", "numeric", "numeric", "text"),
+  "data-raw/Comparado_ec_060921.xlsx",
+  col_types = c("numeric", "text", "text", "numeric", "numeric", "text",
+                "text", "text", "text", "text", "text", "text"),
   sheet = 2) %>% 
   mutate(tipo = "eco") %>% 
   janitor::clean_names() %>%
@@ -63,7 +66,7 @@ data_soc <- readxl::read_excel(
 glimpse(data_soc)
 
 # Unir data
-data <- rbind(data_eco, data_soc)
+data <- plyr::rbind.fill(data_eco, data_soc)
 
 glimpse(data)
 
@@ -82,7 +85,7 @@ data <- data %>%
   mutate(valor_round = ifelse(valor  <= 1, round(valor, digits = 2),
                               ifelse(valor >= 1 & valor < 100, round(valor, digits = 0),
                                      ifelse(valor >= 100  & valor < 1000, round(valor, digits = 0),
-                                            ifelse(valor >= 1000, round(valor, digits = 0), NA)))))
+                                            ifelse(valor >= 1000, round(valor, digits = 0), NA))))) %>% 
   relocate(key, nomindicador, fecha, valor) 
 
 regiones <- c("África Sub Sahariana",
