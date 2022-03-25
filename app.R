@@ -1,7 +1,7 @@
 
 
 ## **************************************************************************
-## Shiny APP Comparada (economía & social) -
+## Shiny APP Comparada (CP_compnomía & social) -
 ## Unidad de Métodos y Acceso a Datos
 ## **************************************************************************
 
@@ -49,7 +49,7 @@ tema_umad <- bs_theme(
   bg = "#FFFFFF",
   fg = "#085792",
   primary = "#3E6C9A",
-  secondary = "#3E6C9A",
+  sCP_compndary = "#3E6C9A",
   base_font = font_google("Roboto"),
   heading_font = font_google("Roboto"),
   code_font = font_google("Space Mono")
@@ -107,7 +107,7 @@ ui <- navbarPage(
             # style = "position:fixed;width:22%;",
             
             selectInput(
-              inputId = "visualizador_eco",
+              inputId = "visualizador_CP_comp",
               label = "Visualización",
               choices = c("Serie de tiempo",
                           "Anual gráfico",
@@ -116,7 +116,7 @@ ui <- navbarPage(
             ),
             
             selectInput(
-              inputId = "indicador_eco",
+              inputId = "indicador_CP_comp",
               label = "Indicador",
               choices = sort(unique(data$nomindicador)),
               selected = 2019
@@ -124,16 +124,16 @@ ui <- navbarPage(
             
             uiOutput("corte_CP_comp"),
             
-            uiOutput("fecha_dat_eco"),
+            uiOutput("fecha_dat_CP_comp"),
             
             br(),
             
-            conditionalPanel(condition = "input.visualizador_eco != 'Anual mapa'",
-                             uiOutput("sel_eco_pais")),
+            conditionalPanel(condition = "input.visualizador_CP_comp != 'Anual mapa'",
+                             uiOutput("sel_CP_comp_pais")),
             
             br(),
             
-            uiOutput("sel_eco_region"),
+            uiOutput("sel_CP_comp_region"),
             
             br(),
             
@@ -157,7 +157,7 @@ ui <- navbarPage(
           
           mainPanel(
             tags$h3(style = "display:inline-block",
-                    uiOutput("title_dat_eco")),
+                    uiOutput("title_dat_CP_comp")),
             
             div(
               style = "display:inline-block",
@@ -167,7 +167,7 @@ ui <- navbarPage(
                 width = "500px",
                 right = TRUE,
                 icon = icon("calculator", lib = "font-awesome"),
-                uiOutput("info_dat_eco")
+                uiOutput("info_dat_CP_comp")
               )
             ),
             
@@ -179,35 +179,35 @@ ui <- navbarPage(
                 width = "500px",
                 right = TRUE,
                 icon = icon("exclamation", lib = "font-awesome"),
-                uiOutput("rel_dat_eco")
+                uiOutput("rel_dat_CP_comp")
               )
             ),
             
-            tags$h5(uiOutput("subtitle_dat_eco")),
+            tags$h5(uiOutput("subtitle_dat_CP_comp")),
             
             br(),
             
-            conditionalPanel(condition = "input.visualizador_eco != 'Anual mapa'",
+            conditionalPanel(condition = "input.visualizador_CP_comp != 'Anual mapa'",
                              withSpinner(
-                               plotOutput("p_dat_eco", height = "600px"),
+                               plotOutput("p_dat_CP_comp", height = "600px"),
                                type = 2
                              )),
             
-            conditionalPanel(condition = "input.visualizador_eco == 'Anual mapa'",
-                             withSpinner(leafletOutput("map_eco"),
+            conditionalPanel(condition = "input.visualizador_CP_comp == 'Anual mapa'",
+                             withSpinner(leafletOutput("map_CP_comp"),
                                          type = 2)),
             
             conditionalPanel(
-              condition = "input.visualizador_eco != 'Anual mapa'",
-              downloadButton(outputId = "baja_plot_eco",
+              condition = "input.visualizador_CP_comp != 'Anual mapa'",
+              downloadButton(outputId = "baja_plot_CP_comp",
                              label = "Descarga el gráfico")
             ),
             br(),
             br(),
-            withSpinner(DTOutput("tab_dat_eco"),
+            withSpinner(DTOutput("tab_dat_CP_comp"),
                         type = 2),
             br(),
-            downloadButton("dl_tabla_dat_eco", "Descarga la tabla"),
+            downloadButton("dl_tabla_dat_CP_comp", "Descarga la tabla"),
             br(),
             br()
           )
@@ -250,9 +250,9 @@ ui <- navbarPage(
   
   tabPanel(
     
-    # * 2.2. Desarrollo económico  -----------------------------------------
+    # * 2.2. Desarrollo CP_compnómico  -----------------------------------------
     
-    title = "Desarrollo económico",
+    title = "Desarrollo CP_compnómico",
     icon = icon("signal"),
     
     tabsetPanel(
@@ -770,7 +770,7 @@ ui <- navbarPage(
         tags$a(
           href = "https://umad.cienciassociales.edu.uy/",
           "Unidad de Métodos y Acceso a Datos",
-          style = "font-size:12px; color:Navy;text-decoration:underline;"
+          style = "font-size:12px; color:Navy;text-dCP_compration:underline;"
           ),
         
         br(),
@@ -806,7 +806,7 @@ ui <- navbarPage(
         tags$a(
           href = "https://umad.cienciassociales.edu.uy/",
           "Unidad de Métodos y Acceso a Datos",
-          style = "font-size:12px; color:Navy;text-decoration:underline;"
+          style = "font-size:12px; color:Navy;text-dCP_compration:underline;"
         ),
         
         br(),
@@ -829,53 +829,53 @@ ui <- navbarPage(
 
 server <- function(session, input, output) {
   
-  ##  3.  ECONOMÍA (dat_eco)   ============================================
+  ##  3.  CP_comp (dat_CP_comp)   ============================================
   
-  # Data Económica
+  # Data CP_compn
   
-  dat_eco <- reactive({
+  dat_CP_comp <- reactive({
     
-    req(input$indicador_eco)
+    req(input$indicador_CP_comp)
     
     data %>%
-      filter(nomindicador == input$indicador_eco) %>% 
+      filter(nomindicador == input$indicador_CP_comp) %>% 
       janitor::remove_empty("cols")
   
     })
   
   
   # Titulo
-  output$title_dat_eco <- renderUI({
-    helpText(HTML(unique(dat_eco()$nomindicador)))
+  output$title_dat_CP_comp <- renderUI({
+    helpText(HTML(unique(dat_CP_comp()$nomindicador)))
   })
   
   # Subtitulo
-  output$subtitle_dat_eco <- renderUI({
-    helpText(HTML(unique(dat_eco()$definicion)))
+  output$subtitle_dat_CP_comp <- renderUI({
+    helpText(HTML(unique(dat_CP_comp()$definicion)))
   })
   
   # Metodología
-  output$info_dat_eco <- renderUI({
+  output$info_dat_CP_comp <- renderUI({
     helpText(HTML(
       paste(
         "<b>Método de Agregación:</b>",
-        unique(dat_eco()$metodo_de_agregacion),
+        unique(dat_CP_comp()$metodo_de_agregacion),
         "<b>Metodología:</b>",
-        unique(dat_eco()$concepto_estadistico_y_metodologia)
+        unique(dat_CP_comp()$concepto_estadistico_y_metodologia)
       )
     ))
   })
   
   # Relevancia:
-  output$rel_dat_eco <- renderUI({
+  output$rel_dat_CP_comp <- renderUI({
     helpText(HTML(paste(
-      "<b>Relvancia:</b>", unique(dat_eco()$relevancia)
+      "<b>Relvancia:</b>", unique(dat_CP_comp()$relevancia)
     )))
   })
   
   
-  output$fecha_dat_eco <- renderUI({
-    if (input$visualizador_eco == "Serie de tiempo") {
+  output$fecha_dat_CP_comp <- renderUI({
+    if (input$visualizador_CP_comp == "Serie de tiempo") {
       tagList(
         tags$style(
           type = 'text/css',
@@ -885,11 +885,11 @@ server <- function(session, input, output) {
           id = 'big_slider',
           
           sliderTextInput(
-            inputId = "fecha_dat_eco",
+            inputId = "fecha_dat_CP_comp",
             label = "Seleccione años",
-            choices = sort(unique(dat_eco()$fecha)),
-            selected = c(min(dat_eco()$fecha),
-                         max(dat_eco()$fecha)),
+            choices = sort(unique(dat_CP_comp()$fecha)),
+            selected = c(min(dat_CP_comp()$fecha),
+                         max(dat_CP_comp()$fecha)),
             hide_min_max = T,
             grid = TRUE,
             width = "100%"
@@ -899,9 +899,9 @@ server <- function(session, input, output) {
       
     } else {
       selectInput(
-        inputId = "fecha_eco",
+        inputId = "fecha_CP_comp",
         label = "Seleccione año:",
-        choices = dat_eco() %>%
+        choices = dat_CP_comp() %>%
           drop_na(valor) %>%
           select(fecha) %>%
           arrange(desc(fecha)) %>%
@@ -917,16 +917,16 @@ server <- function(session, input, output) {
   
   output$corte_CP_comp <- renderUI({
     
-    if (input$indicador_eco %in% vars_corte) {
+    if (input$indicador_CP_comp %in% vars_corte) {
       
       selectInput(inputId = "corte_CP_comp",
                   label = "Seleccione categorías",
-                  choices =  dat_eco() %>%
-                    distinct(get(names(dat_eco()[,ncol(dat_eco())]))) %>%
+                  choices =  dat_CP_comp() %>%
+                    distinct(get(names(dat_CP_comp()[,ncol(dat_CP_comp())]))) %>%
                     pull(),
-                  selected = dat_eco() %>%
+                  selected = dat_CP_comp() %>%
                     filter(jerarquia == 1) %>% 
-                    distinct(get(names(dat_eco()[,ncol(dat_eco())]))) %>%
+                    distinct(get(names(dat_CP_comp()[,ncol(dat_CP_comp())]))) %>%
                     pull()
                   )
     } else {
@@ -938,8 +938,8 @@ server <- function(session, input, output) {
   
   
   # Checkbox por pais
-  output$sel_eco_pais <- renderUI({
-    if (input$visualizador_eco == "Serie de tiempo") {
+  output$sel_CP_comp_pais <- renderUI({
+    if (input$visualizador_CP_comp == "Serie de tiempo") {
       dropdown(
         label = "Seleccione país",
         status = "default",
@@ -947,12 +947,12 @@ server <- function(session, input, output) {
         circle = F,
         
         checkboxGroupInput(
-          inputId = "chbox_pais_eco",
+          inputId = "chbox_pais_CP_comp",
           label = "Seleccione país",
           inline = TRUE,
-          choices = dat_eco() %>%
+          choices = dat_CP_comp() %>%
             filter(region == 0) %>%
-            filter(nomindicador == input$indicador_eco) %>%
+            filter(nomindicador == input$indicador_CP_comp) %>%
             distinct(cod_pais) %>%
             pull(),
           selected = c("URY", "ARG", "BRA", "PRY")
@@ -961,7 +961,7 @@ server <- function(session, input, output) {
       
     } else {
       checkboxGroupInput(
-        inputId = "chbox_pais_reg_eco",
+        inputId = "chbox_pais_reg_CP_comp",
         label = "Mostrar:",
         inline = FALSE,
         choices = c("Países", "Regiones"),
@@ -973,8 +973,8 @@ server <- function(session, input, output) {
   })
   
   # Checkbox por pais
-  output$sel_eco_region <- renderUI({
-    if (input$visualizador_eco == "Serie de tiempo") {
+  output$sel_CP_comp_region <- renderUI({
+    if (input$visualizador_CP_comp == "Serie de tiempo") {
       dropdown(
         label = "Seleccione región",
         status = "default",
@@ -982,12 +982,12 @@ server <- function(session, input, output) {
         circle = F,
         
         checkboxGroupInput(
-          inputId = "chbox_reg_eco",
+          inputId = "chbox_reg_CP_comp",
           label = "Seleccione región",
           inline = TRUE,
-          choices = dat_eco() %>%
+          choices = dat_CP_comp() %>%
             filter(region == 1) %>%
-            filter(nomindicador == input$indicador_eco) %>%
+            filter(nomindicador == input$indicador_CP_comp) %>%
             distinct(pais) %>%
             pull(),
           selected = NULL
@@ -1001,51 +1001,51 @@ server <- function(session, input, output) {
   })
   
 
-  dat_eco_anual <- reactive({
+  dat_CP_comp_anual <- reactive({
     
-    if (input$indicador_eco %in% vars_corte) {
+    if (input$indicador_CP_comp %in% vars_corte) {
       
-      dat_eco() %>%
-        filter(get(names(dat_eco()[,ncol(dat_eco())])) %in% input$corte_CP_comp) %>%
-        filter(fecha == input$fecha_eco)
+      dat_CP_comp() %>%
+        filter(get(names(dat_CP_comp()[,ncol(dat_CP_comp())])) %in% input$corte_CP_comp) %>%
+        filter(fecha == input$fecha_CP_comp)
     
     } else {
       
-      dat_eco() %>%
-        filter(fecha == input$fecha_eco)
+      dat_CP_comp() %>%
+        filter(fecha == input$fecha_CP_comp)
       
       
     }
   })
   
-  dat_eco_simple <- reactive({
+  dat_CP_comp_simple <- reactive({
     
-    if (input$indicador_eco %in% vars_corte) {
+    if (input$indicador_CP_comp %in% vars_corte) {
       
-    dat_eco() %>%
-      filter(get(names(dat_eco()[,ncol(dat_eco())])) %in% input$corte_CP_comp) %>% 
-      filter(fecha >= input$fecha_dat_eco[1] & fecha <= input$fecha_dat_eco[2]) %>%
-      filter(cod_pais %in% input$chbox_pais_eco | pais %in% input$chbox_reg_eco)
+    dat_CP_comp() %>%
+      filter(get(names(dat_CP_comp()[,ncol(dat_CP_comp())])) %in% input$corte_CP_comp) %>% 
+      filter(fecha >= input$fecha_dat_CP_comp[1] & fecha <= input$fecha_dat_CP_comp[2]) %>%
+      filter(cod_pais %in% input$chbox_pais_CP_comp | pais %in% input$chbox_reg_CP_comp)
       
       } else {
         
-        dat_eco() %>%
-          filter(fecha >= input$fecha_dat_eco[1] & fecha <= input$fecha_dat_eco[2]) %>%
-          filter(cod_pais %in% input$chbox_pais_eco | pais %in% input$chbox_reg_eco)        
+        dat_CP_comp() %>%
+          filter(fecha >= input$fecha_dat_CP_comp[1] & fecha <= input$fecha_dat_CP_comp[2]) %>%
+          filter(cod_pais %in% input$chbox_pais_CP_comp | pais %in% input$chbox_reg_CP_comp)        
         }
     
     })
   
   
   # Gráficos CP_comp
-  output$p_dat_eco <- renderPlot({
+  output$p_dat_CP_comp <- renderPlot({
     
-    if (input$visualizador_eco == "Serie de tiempo" ) {
+    if (input$visualizador_CP_comp == "Serie de tiempo" ) {
       
-      req(input$fecha_dat_eco, input$indicador_eco)
+      req(input$fecha_dat_CP_comp, input$indicador_CP_comp)
       
-      plot_eco <- ggplot(
-        data = dat_eco_simple(), 
+      plot_CP_comp <- ggplot(
+        data = dat_CP_comp_simple(), 
         aes(x = fecha, y = valor)
       ) +
         geom_line(aes(color = pais), size = 1, alpha = 0.5) +
@@ -1056,37 +1056,37 @@ server <- function(session, input, output) {
           x = "",
           y = "",
           caption = wrapit(paste("Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de", 
-                                 unique(dat_eco_simple()$fuente)))) +
+                                 unique(dat_CP_comp_simple()$fuente)))) +
         scale_y_continuous(labels = addUnits) +
-        if(input$indicador_eco %in% vars_corte){
+        if(input$indicador_CP_comp %in% vars_corte){
           
-          ggtitle(paste0(input$indicador_eco, " (", input$corte_CP_comp, ")"))
+          ggtitle(paste0(input$indicador_CP_comp, " (", input$corte_CP_comp, ")"))
           
         } else { 
           
-          ggtitle(paste(input$indicador_eco))
+          ggtitle(paste(input$indicador_CP_comp))
           
         }
       
-      print(plot_eco)
+      print(plot_CP_comp)
       ggsave(
-        "www/indicador eco.png",
+        "www/indicador CP_comp.png",
         width = 30,
         height = 20,
         units = "cm"
       )
 
-    } else if (input$visualizador_eco == "Anual gráfico") {
+    } else if (input$visualizador_CP_comp == "Anual gráfico") {
       
-      base_plot_eco <- dat_eco_anual() %>%
-        filter(pais_region %in% input$chbox_pais_reg_eco)
+      base_plot_CP_comp <- dat_CP_comp_anual() %>%
+        filter(pais_region %in% input$chbox_pais_reg_CP_comp)
       
       validate(need(
-        nrow(base_plot_eco) > 0,
+        nrow(base_plot_CP_comp) > 0,
         'No hay datos disponible para esta búsqueda'
       ))
       
-      plot_eco <- ggplot(base_plot_eco,
+      plot_CP_comp <- ggplot(base_plot_CP_comp,
                          aes(x = fct_reorder(pais, valor), y = valor)) +
         geom_segment(
           aes(
@@ -1111,21 +1111,21 @@ server <- function(session, input, output) {
           x = "",
           y = "",
           caption = wrapit(paste("Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de", 
-                                 unique(dat_eco_anual()$fuente)))) +
+                                 unique(dat_CP_comp_anual()$fuente)))) +
         scale_y_continuous(labels = addUnits) +
-        if(input$indicador_eco %in% vars_corte){
+        if(input$indicador_CP_comp %in% vars_corte){
           
-          ggtitle(paste0(input$indicador_eco, " (", input$corte_CP_comp, ")"))
+          ggtitle(paste0(input$indicador_CP_comp, " (", input$corte_CP_comp, ")"))
           
         } else { 
           
-          ggtitle(paste(input$indicador_eco))
+          ggtitle(paste(input$indicador_CP_comp))
           
         }
       
-      print(plot_eco)
+      print(plot_CP_comp)
       ggsave(
-        "www/indicador eco.png",
+        "www/indicador CP_comp.png",
         width = 25,
         height = 30,
         units = "cm"
@@ -1135,7 +1135,7 @@ server <- function(session, input, output) {
     
   })
   
-  output$map_eco <- renderLeaflet({
+  output$map_CP_comp <- renderLeaflet({
     # Read this shape file with the rgdal library.
     world_spdf <- readOGR(dsn = "data" ,
                           layer = "TM_WORLD_BORDERS_SIMPL-0.3",
@@ -1143,7 +1143,7 @@ server <- function(session, input, output) {
     
     # Pegar datos
     world_spdf@data <- world_spdf@data %>%
-      left_join(select(dat_eco_anual(), pais_eng, valor_original),
+      left_join(select(dat_CP_comp_anual(), pais_eng, valor_original),
                 by = c("NAME" = "pais_eng"))
     
     # Library
@@ -1238,51 +1238,51 @@ server <- function(session, input, output) {
         pal = mypalette,
         values =  ~ valor_original,
         opacity = 0.9,
-        title = wrapit(input$indicador_eco),
+        title = wrapit(input$indicador_CP_comp),
         position = "bottomleft"
       )
     
   })
   
   # Botón descarga grafico
-  output$baja_plot_eco <- downloadHandler(filename <- function() {
-    paste("indicador eco", "png", sep = ".")
+  output$baja_plot_CP_comp <- downloadHandler(filename <- function() {
+    paste("indicador CP_comp", "png", sep = ".")
   },
   
   content <- function(file) {
-    file.copy("www/indicador eco.png", file)
+    file.copy("www/indicador CP_comp.png", file)
   },
-  contentType = "www/indicador eco")
+  contentType = "www/indicador CP_comp")
   
   
   ## Data series temporal
   
   # Data para tabla y exportar
-  dat_eco_st <- reactive({
+  dat_CP_comp_st <- reactive({
     
-    if (input$indicador_eco %in% vars_corte) {
+    if (input$indicador_CP_comp %in% vars_corte) {
       
-      dat_eco() %>%
-        filter(fecha >= input$fecha_dat_eco[1] & fecha <= input$fecha_dat_eco[2]) %>%
-        filter(cod_pais %in% input$chbox_pais_eco | pais %in% input$chbox_reg_eco) %>%
-        select(pais, fecha, names(dat_eco()[,ncol(dat_eco())]), valor) %>%
+      dat_CP_comp() %>%
+        filter(fecha >= input$fecha_dat_CP_comp[1] & fecha <= input$fecha_dat_CP_comp[2]) %>%
+        filter(cod_pais %in% input$chbox_pais_CP_comp | pais %in% input$chbox_reg_CP_comp) %>%
+        select(pais, fecha, names(dat_CP_comp()[,ncol(dat_CP_comp())]), valor) %>%
         arrange(desc(fecha), fct_reorder(pais,-valor)) 
       
     } else {
       
-      dat_eco() %>%
-        filter(fecha >= input$fecha_dat_eco[1] &
-                 fecha <= input$fecha_dat_eco[2]) %>%
-        filter(cod_pais %in% input$chbox_pais_eco |
-                 pais %in% input$chbox_reg_eco) %>%
+      dat_CP_comp() %>%
+        filter(fecha >= input$fecha_dat_CP_comp[1] &
+                 fecha <= input$fecha_dat_CP_comp[2]) %>%
+        filter(cod_pais %in% input$chbox_pais_CP_comp |
+                 pais %in% input$chbox_reg_CP_comp) %>%
         select(pais, fecha, valor) %>%
         arrange(desc(fecha), fct_reorder(pais,-valor))
     }
   })
   
   # Metadata
-  dat_eco_m <- reactive({
-    dat_eco() %>%
+  dat_CP_comp_m <- reactive({
+    dat_CP_comp() %>%
       select(
         nomindicador,
         definicion,
@@ -1298,17 +1298,17 @@ server <- function(session, input, output) {
   })
   
   # Data completa
-  dat_eco_c <- reactive({
+  dat_CP_comp_c <- reactive({
     
-    if (input$indicador_eco %in% vars_corte) {
+    if (input$indicador_CP_comp %in% vars_corte) {
       
-    dat_eco() %>%
-        select(pais, fecha, names(dat_eco()[,ncol(dat_eco())]), valor) %>%
+    dat_CP_comp() %>%
+        select(pais, fecha, names(dat_CP_comp()[,ncol(dat_CP_comp())]), valor) %>%
         arrange(desc(fecha), fct_reorder(pais,-valor))
       
     } else {
 
-      dat_eco() %>%
+      dat_CP_comp() %>%
         select(pais, fecha, valor) %>%
         arrange(desc(fecha), fct_reorder(pais,-valor))
     }
@@ -1316,30 +1316,30 @@ server <- function(session, input, output) {
   })
   
   # Lista para descarga
-  list_dat_eco_st <- reactive({
-    list_dat_eco <- list(
-      "Data" = dat_eco_st(),
-      "Metadata" = dat_eco_m(),
-      "Data Completa" = dat_eco_c()
+  list_dat_CP_comp_st <- reactive({
+    list_dat_CP_comp <- list(
+      "Data" = dat_CP_comp_st(),
+      "Metadata" = dat_CP_comp_m(),
+      "Data Completa" = dat_CP_comp_c()
     )
   })
   
   
   ## Data por año
   # Data para tabla y exportar
-  dat_eco_a <- reactive({
+  dat_CP_comp_a <- reactive({
     
-    if (input$indicador_eco %in% vars_corte) {
+    if (input$indicador_CP_comp %in% vars_corte) {
       
-    dat_eco_anual() %>%
-      filter(pais_region %in% input$chbox_pais_reg_eco) %>%
-      select(pais, fecha, names(dat_eco()[,ncol(dat_eco())]), valor) %>%
+    dat_CP_comp_anual() %>%
+      filter(pais_region %in% input$chbox_pais_reg_CP_comp) %>%
+      select(pais, fecha, names(dat_CP_comp()[,ncol(dat_CP_comp())]), valor) %>%
       arrange(desc(fecha), fct_reorder(pais,-valor))
       
     } else {
 
-      dat_eco_anual() %>%
-        filter(pais_region %in% input$chbox_pais_reg_eco) %>%
+      dat_CP_comp_anual() %>%
+        filter(pais_region %in% input$chbox_pais_reg_CP_comp) %>%
         select(pais, fecha, valor) %>%
         arrange(desc(fecha), fct_reorder(pais,-valor))
       
@@ -1347,49 +1347,49 @@ server <- function(session, input, output) {
   })
   
   # Lista para descarga
-  list_dat_eco_a <- reactive({
-    list_dat_eco <- list("Data" = dat_eco_a(),
-                         "Metadata" = dat_eco_m())
+  list_dat_CP_comp_a <- reactive({
+    list_dat_CP_comp <- list("Data" = dat_CP_comp_a(),
+                         "Metadata" = dat_CP_comp_m())
   })
   
   # Tablas en shiny
-  output$tab_dat_eco <- renderDT({
+  output$tab_dat_CP_comp <- renderDT({
     
-    if (input$indicador_eco %in% vars_corte) {
+    if (input$indicador_CP_comp %in% vars_corte) {
       DT::datatable(
-        dat_eco_st(),
+        dat_CP_comp_st(),
         rownames = FALSE,
         colnames = c("País/Región", "Fecha", "Corte", "Valor"),
         options = list(columnDefs = list(
           list(className = 'dt-center', targets = 1:2)
         )),
-        caption = htmltools::tags$caption(input$indicador_eco,
+        caption = htmltools::tags$caption(input$indicador_CP_comp,
                                           style = "color:black; font-size:110%;")
       ) %>%
         formatCurrency(3:10, '', mark = ",")
       
-    } else if (input$visualizador_eco == "Serie de tiempo") {
+    } else if (input$visualizador_CP_comp == "Serie de tiempo") {
         DT::datatable(
-          dat_eco_st(),
+          dat_CP_comp_st(),
           rownames = FALSE,
           colnames = c("País/Región", "Fecha", "Valor"),
           options = list(columnDefs = list(
             list(className = 'dt-center', targets = 1:2)
           )),
-          caption = htmltools::tags$caption(input$indicador_eco,
+          caption = htmltools::tags$caption(input$indicador_CP_comp,
                                             style = "color:black; font-size:110%;")
         ) %>%
           formatCurrency(3, '', mark = ",")
       
-        } else if (input$visualizador_eco %in% c("Anual gráfico", "Anual mapa")) {
+        } else if (input$visualizador_CP_comp %in% c("Anual gráfico", "Anual mapa")) {
       DT::datatable(
-        dat_eco_a(),
+        dat_CP_comp_a(),
         rownames = FALSE,
         colnames = c("País/Región", "Fecha", "Valor"),
         options = list(columnDefs = list(
           list(className = 'dt-center', targets = 1:2)
         )),
-        caption = htmltools::tags$caption(input$indicador_eco,
+        caption = htmltools::tags$caption(input$indicador_CP_comp,
                                           style = "color:black; font-size:110%;")
       ) %>%
         formatCurrency(3, '', mark = ",")
@@ -1398,16 +1398,16 @@ server <- function(session, input, output) {
   })
   
   # Descarga tabla
-  output$dl_tabla_dat_eco <- downloadHandler(
+  output$dl_tabla_dat_CP_comp <- downloadHandler(
     filename = function() {
-      paste("resultados-", input$indicador_eco, ".xlsx", sep = "")
+      paste("resultados-", input$indicador_CP_comp, ".xlsx", sep = "")
     },
     content = function(file) {
-      if (input$visualizador_eco == "Serie de tiempo") {
-        openxlsx::write.xlsx(list_dat_eco_st(), file)
+      if (input$visualizador_CP_comp == "Serie de tiempo") {
+        openxlsx::write.xlsx(list_dat_CP_comp_st(), file)
         
-      } else if (input$visualizador_eco %in% c("Anual gráfico", "Anual mapa")) {
-        openxlsx::write.xlsx(list_dat_eco_a(), file)
+      } else if (input$visualizador_CP_comp %in% c("Anual gráfico", "Anual mapa")) {
+        openxlsx::write.xlsx(list_dat_CP_comp_a(), file)
         
       }
     }
