@@ -64,8 +64,12 @@ load("data/data.rda")
 data <- data %>% 
   relocate(sector_productivo, area_geografica, .after = everything())
 
-# Indicadores con variables de corte
+library(RColorBrewer)
+paleta_expandida <- c(brewer.pal(8, "Dark2"), "#B76A16", "#75A61A", "#D9318E",
+                      "#986A74", "#C14D6A", "#C1632B", "#698446", "#7B6BB0",
+                      "#A9A80F", "#DEAA03")
 
+# Indicadores con variables de corte
 vars_corte <- data %>% 
   filter(!is.na(sector_productivo) | !is.na(area_geografica)) %>% 
   distinct(nomindicador) %>% 
@@ -112,14 +116,17 @@ ui <- navbarPage(
               choices = c("Serie de tiempo",
                           "Anual gráfico",
                           "Anual mapa"),
-              selected = 2019
+              selected = "Serie de tiempo"
             ),
             
             selectInput(
               inputId = "indicador_CP_comp",
               label = "Indicador",
-              choices = sort(unique(data$nomindicador)),
-              selected = 2019
+              choices = data %>%
+                filter(p2 == "Competitividad") %>%
+                distinct(nomindicador) %>% 
+                arrange(nomindicador) %>% 
+                pull(nomindicador)
             ),
             
             uiOutput("corte_CP_comp"),
@@ -250,9 +257,9 @@ ui <- navbarPage(
   
   tabPanel(
     
-    # * 2.2. Desarrollo CP_compnómico  -----------------------------------------
+    # * 2.2. Desarrollo Económico  -----------------------------------------
     
-    title = "Desarrollo CP_compnómico",
+    title = "Desarrollo Económico",
     icon = icon("signal"),
     
     tabsetPanel(
@@ -972,7 +979,7 @@ server <- function(session, input, output) {
     
   })
   
-  # Checkbox por pais
+  # Checkbox por región
   output$sel_CP_comp_region <- renderUI({
     if (input$visualizador_CP_comp == "Serie de tiempo") {
       dropdown(
@@ -1058,6 +1065,7 @@ server <- function(session, input, output) {
           caption = wrapit(paste("Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de", 
                                  unique(dat_CP_comp_simple()$fuente)))) +
         scale_y_continuous(labels = addUnits) +
+        scale_colour_manual(name = "", values = paleta_expandida) +
         if(input$indicador_CP_comp %in% vars_corte){
           
           ggtitle(paste0(input$indicador_CP_comp, " (", input$corte_CP_comp, ")"))
