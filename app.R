@@ -2083,7 +2083,7 @@ server <- function(session, input, output) {
         caption = htmltools::tags$caption(input$indicador_CP_comp,
                                           style = "color:black; font-size:110%;")
       ) %>%
-        formatCurrency(3:10, '', mark = ",")
+        formatCurrency(4, '', mark = ",")
       
     } else if (input$visualizador_CP_comp == "Serie de tiempo") {
         DT::datatable(
@@ -2669,7 +2669,7 @@ server <- function(session, input, output) {
         caption = htmltools::tags$caption(input$indicador_CP_precios,
                                           style = "color:black; font-size:110%;")
       ) %>%
-        formatCurrency(3:10, '', mark = ",")
+        formatCurrency(4, '', mark = ",")
       
     } else if (input$visualizador_CP_precios == "Serie de tiempo") {
       DT::datatable(
@@ -3254,7 +3254,7 @@ server <- function(session, input, output) {
         caption = htmltools::tags$caption(input$indicador_DE_crec,
                                           style = "color:black; font-size:110%;")
       ) %>%
-        formatCurrency(3:10, '', mark = ",")
+        formatCurrency(4, '', mark = ",")
       
     } else if (input$visualizador_DE_crec == "Serie de tiempo") {
       DT::datatable(
@@ -3839,7 +3839,7 @@ server <- function(session, input, output) {
         caption = htmltools::tags$caption(input$indicador_DE_prod,
                                           style = "color:black; font-size:110%;")
       ) %>%
-        formatCurrency(3:10, '', mark = ",")
+        formatCurrency(4, '', mark = ",")
       
     } else if (input$visualizador_DE_prod == "Serie de tiempo") {
       DT::datatable(
@@ -4425,7 +4425,7 @@ server <- function(session, input, output) {
         caption = htmltools::tags$caption(input$indicador_DE_estr,
                                           style = "color:black; font-size:110%;")
       ) %>%
-        formatCurrency(3:10, '', mark = ",")
+        formatCurrency(4, '', mark = ",")
       
     } else if (input$visualizador_DE_estr == "Serie de tiempo") {
       DT::datatable(
@@ -5010,7 +5010,7 @@ server <- function(session, input, output) {
         caption = htmltools::tags$caption(input$indicador_DE_inv,
                                           style = "color:black; font-size:110%;")
       ) %>%
-        formatCurrency(3:10, '', mark = ",")
+        formatCurrency(4, '', mark = ",")
       
     } else if (input$visualizador_DE_inv == "Serie de tiempo") {
       DT::datatable(
@@ -5595,7 +5595,7 @@ server <- function(session, input, output) {
         caption = htmltools::tags$caption(input$indicador_DE_ch,
                                           style = "color:black; font-size:110%;")
       ) %>%
-        formatCurrency(3:10, '', mark = ",")
+        formatCurrency(4, '', mark = ",")
       
     } else if (input$visualizador_DE_ch == "Serie de tiempo") {
       DT::datatable(
@@ -6182,7 +6182,7 @@ server <- function(session, input, output) {
         caption = htmltools::tags$caption(input$indicador_DE_cti,
                                           style = "color:black; font-size:110%;")
       ) %>%
-        formatCurrency(3:10, '', mark = ",")
+        formatCurrency(4, '', mark = ",")
       
     } else if (input$visualizador_DE_cti == "Serie de tiempo") {
       DT::datatable(
@@ -6767,7 +6767,7 @@ server <- function(session, input, output) {
         caption = htmltools::tags$caption(input$indicador_DE_infra,
                                           style = "color:black; font-size:110%;")
       ) %>%
-        formatCurrency(3:10, '', mark = ",")
+        formatCurrency(4, '', mark = ",")
       
     } else if (input$visualizador_DE_infra == "Serie de tiempo") {
       DT::datatable(
