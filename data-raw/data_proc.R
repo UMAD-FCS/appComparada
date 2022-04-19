@@ -26,16 +26,31 @@ glimpse(metadata_eco)
 
 # Metadata Social
 metadata_soc <- readxl::read_excel(
-  "data-raw/Base comparada_Social_270621.xlsx",
+  "data-raw/Comparado_soc_070422.xlsx",
   col_types = c("numeric", "text", "text", "text",
-                "text", "text", "text", "text")) %>% 
+                "text", "text", "text", "text",
+                "text", "text", "text", "date",
+                "text")) %>% 
   janitor::clean_names() %>% 
   mutate(tipo = "soc") %>%
   mutate(key = paste(tipo, codind, sep = "_"))
   
-
 glimpse(metadata_soc)
 
+# Pestañas de metadata social 
+tabs_soc <- readxl::read_excel(
+  "data-raw/Dimensiones_Economia-Social_842022.xlsx",
+  sheet = 3,
+  col_types = c("numeric", "text", "text", "text", "text")) %>% 
+  janitor::clean_names() %>%
+  rename(p1 = d1,
+         p2 = d2) %>% 
+  select(codind, p1, p2)
+
+metadata_soc <- metadata_soc %>% 
+  left_join(tabs_soc)
+
+# Unir metadatas
 metadata <- plyr::rbind.fill(metadata_eco, metadata_soc) %>% 
   select(-nomindicador, -codind, -tipo)
 
@@ -56,8 +71,10 @@ glimpse(data_eco)
 
 # Data Social
 data_soc <- readxl::read_excel(
-  "data-raw/Base comparada_Social_270621.xlsx",
-  col_types = c("numeric", "text", "text", "numeric", "numeric", "text"),
+  "data-raw/Comparado_soc_070422.xlsx",
+  col_types = c("numeric", "text", "text", "numeric", "numeric", "text",
+                "text", "text", "text", "text", "text", "text",
+                "text", "text", "text", "text", "text", "text"),
   sheet = 2) %>% 
   mutate(tipo = "soc") %>% 
   janitor::clean_names() %>%

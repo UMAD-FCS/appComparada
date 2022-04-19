@@ -126,8 +126,8 @@ par_uy <- function(datos, titulo, mayoria, ...){
                         limits = datos$party_long)
 }
 
-wrapit <- function(x) {
-  wtext <- paste(strwrap(x, width = 120), collapse=" \n ")
+wrapit <- function(x, n = 120) {
+  wtext <- paste(strwrap(x, width = n), collapse=" \n ")
   return(wtext)
 }
 

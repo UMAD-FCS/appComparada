@@ -1,0 +1,14 @@
+name: appComparada
+title: appComparada
+username:
+account: martinopertti
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6042970
+bundleId: 5776170
+url: https://martinopertti.shinyapps.io/appComparada/
+when: 1649372802.14797
+lastSyncTime: 1649372802.14797
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: data-raw
