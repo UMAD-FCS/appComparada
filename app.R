@@ -1,6 +1,4 @@
 
-
-
 ## **************************************************************************
 ## Shiny APP Comparada (Economía & social) -
 ## Unidad de Métodos y Acceso a Datos
@@ -2696,6 +2694,7 @@ ui <- navbarPage(
     ),
       
       tabPanel(
+        
         # * 2.7. Pobreza e ingresos  -------------------------------------
         
         title = "Pobreza e ingresos",
@@ -2707,6 +2706,40 @@ ui <- navbarPage(
           sidebarPanel(
             width = 3,
             
+            selectInput(
+              inputId = "visualizador_POB",
+              label = "Visualización",
+              choices = c("Serie de tiempo",
+                          "Anual gráfico",
+                          "Anual mapa"),
+              selected = "Serie de tiempo"
+            ),
+            
+            selectInput(
+              inputId = "indicador_POB",
+              label = "Indicador",
+              choices = data %>%
+                filter(str_detect(p1, "Pobreza e ingresos")) %>%
+                distinct(nomindicador) %>%
+                arrange(nomindicador) %>%
+                pull(nomindicador)
+            ),
+            
+            uiOutput("corte_POB"),
+            
+            uiOutput("fecha_dat_POB"),
+            
+            br(),
+            
+            conditionalPanel(condition = "input.visualizador_POB != 'Anual mapa'",
+                             uiOutput("sel_POB_pais")),
+            
+            br(),
+            
+            uiOutput("sel_POB_region"),
+            
+            br(),
+
             tags$a(
               href = "https://umad.cienciassociales.edu.uy/",
               "Unidad de Métodos y Acceso a Datos",
@@ -2724,41 +2757,556 @@ ui <- navbarPage(
             style = "display:inline-block;",
           ),
           
-          mainPanel()
+          mainPanel(
+            tags$h3(style = "display:inline-block",
+                    uiOutput("title_dat_POB")),
+            
+            div(
+              style = "display:inline-block",
+              dropdown(
+                style = "minimal",
+                status = "primary",
+                width = "500px",
+                right = TRUE,
+                icon = icon("calculator", lib = "font-awesome"),
+                uiOutput("info_dat_POB")
+              )
+            ),
+            
+            div(
+              style = "display:inline-block",
+              dropdown(
+                style = "minimal",
+                status = "primary",
+                width = "500px",
+                right = TRUE,
+                icon = icon("exclamation", lib = "font-awesome"),
+                uiOutput("rel_dat_POB")
+              )
+            ),
+            
+            tags$h5(uiOutput("subtitle_dat_POB")),
+            
+            br(),
+            
+            conditionalPanel(condition = "input.visualizador_POB != 'Anual mapa'",
+                             withSpinner(
+                               plotOutput("p_dat_POB", height = "600px"),
+                               type = 2
+                             )),
+            
+            conditionalPanel(condition = "input.visualizador_POB == 'Anual mapa'",
+                             withSpinner(leafletOutput("map_POB"),
+                                         type = 2)),
+            
+            conditionalPanel(
+              condition = "input.visualizador_POB != 'Anual mapa'",
+              downloadButton(outputId = "baja_plot_POB",
+                             label = "Descarga el gráfico")
+            ),
+            br(),
+            br(),
+            withSpinner(DTOutput("tab_dat_POB"),
+                        type = 2),
+            br(),
+            downloadButton("dl_tabla_dat_POB", "Descarga la tabla"),
+            br(),
+            br()
+            
+          )
         ),
       ),
       
       tabPanel(
+
         # * 2.8. Sector Público  -------------------------------------
         
         title = "Sector Público",
         icon = icon("users", lib = "font-awesome"),
         
-        br(),
-        
-        fluidRow(
-          sidebarPanel(
-            width = 3,
-            
-            tags$a(
-              href = "https://umad.cienciassociales.edu.uy/",
-              "Unidad de Métodos y Acceso a Datos",
-              style = "font-size:12px; color:Navy;text-decoration:underline;"
-            ),
-            
-            br(),
-            br(),
-            img(
-              src = "logo_umad.png",
-              height = "70%",
-              width = "70%",
-              align = "left"
-            ),
-            style = "display:inline-block;",
-          ),
+        tabsetPanel(
+          type = "pills",
+          id   = "CP",
           
-          mainPanel()
-        ),
+          
+          tabPanel("Ingresos y gastos",
+                   
+                   br(),
+                   
+                   fluidRow(
+                     sidebarPanel(
+                       width = 3,
+                       
+                       selectInput(
+                         inputId = "visualizador_SP_ig",
+                         label = "Visualización",
+                         choices = c("Serie de tiempo",
+                                     "Anual gráfico",
+                                     "Anual mapa"),
+                         selected = "Serie de tiempo"
+                       ),
+
+                       selectInput(
+                         inputId = "indicador_SP_ig",
+                         label = "Indicador",
+                         choices = data %>%
+                           filter(str_detect(p2, "Ingresos y gastos")) %>%
+                           distinct(nomindicador) %>%
+                           arrange(nomindicador) %>%
+                           pull(nomindicador)
+                       ),
+
+                       uiOutput("corte_SP_ig"),
+
+                       uiOutput("fecha_dat_SP_ig"),
+
+                       br(),
+
+                       conditionalPanel(condition = "input.visualizador_SP_ig != 'Anual mapa'",
+                                        uiOutput("sel_SP_ig_pais")),
+
+                       br(),
+
+                       uiOutput("sel_SP_ig_region"),
+
+                       br(),
+                       
+                       tags$a(
+                         href = "https://umad.cienciassociales.edu.uy/",
+                         "Unidad de Métodos y Acceso a Datos",
+                         style = "font-size:12px; color:Navy;
+                   text-decoration:underline;"
+                       ),
+                   br(),
+                   br(),
+                   img(
+                     src = "logo_umad.png",
+                     height = "70%",
+                     width = "70%",
+                     align = "left"
+                   ),
+                   style = "display:inline-block;",
+                   
+                     ),
+                   
+                   mainPanel(
+                     tags$h3(style = "display:inline-block",
+                             uiOutput("title_dat_SP_ig")),
+
+                     div(
+                       style = "display:inline-block",
+                       dropdown(
+                         style = "minimal",
+                         status = "primary",
+                         width = "500px",
+                         right = TRUE,
+                         icon = icon("calculator", lib = "font-awesome"),
+                         uiOutput("info_dat_SP_ig")
+                       )
+                     ),
+
+                     div(
+                       style = "display:inline-block",
+                       dropdown(
+                         style = "minimal",
+                         status = "primary",
+                         width = "500px",
+                         right = TRUE,
+                         icon = icon("exclamation", lib = "font-awesome"),
+                         uiOutput("rel_dat_SP_ig")
+                       )
+                     ),
+
+                     tags$h5(uiOutput("subtitle_dat_SP_ig")),
+
+                     br(),
+
+                     conditionalPanel(condition = "input.visualizador_SP_ig != 'Anual mapa'",
+                                      withSpinner(
+                                        plotOutput("p_dat_SP_ig", height = "600px"),
+                                        type = 2
+                                      )),
+
+                     conditionalPanel(condition = "input.visualizador_SP_ig == 'Anual mapa'",
+                                      withSpinner(leafletOutput("map_SP_ig"),
+                                                  type = 2)),
+
+                     conditionalPanel(
+                       condition = "input.visualizador_SP_ig != 'Anual mapa'",
+                       downloadButton(outputId = "baja_plot_SP_ig",
+                                      label = "Descarga el gráfico")
+                     ),
+                     br(),
+                     br(),
+                     withSpinner(DTOutput("tab_dat_SP_ig"),
+                                 type = 2),
+                     br(),
+                     downloadButton("dl_tabla_dat_SP_ig", "Descarga la tabla"),
+                     br(),
+                     br()
+                   )
+                   )),
+          
+          
+          tabPanel("Resultados",
+                   
+                   br(),
+                   
+                   fluidRow(
+                     sidebarPanel(
+                       width = 3,
+                       
+                       selectInput(
+                         inputId = "visualizador_SP_res",
+                         label = "Visualización",
+                         choices = c("Serie de tiempo",
+                                     "Anual gráfico",
+                                     "Anual mapa"),
+                         selected = "Serie de tiempo"
+                       ),
+
+                       selectInput(
+                         inputId = "indicador_SP_res",
+                         label = "Indicador",
+                         choices = data %>%
+                           filter(str_detect(p2, "Resultados")) %>%
+                           distinct(nomindicador) %>%
+                           arrange(nomindicador) %>%
+                           pull(nomindicador)
+                       ),
+
+                       uiOutput("corte_SP_res"),
+
+                       uiOutput("fecha_dat_SP_res"),
+
+                       br(),
+
+                       conditionalPanel(condition = "input.visualizador_SP_res != 'Anual mapa'",
+                                        uiOutput("sel_SP_res_pais")),
+
+                       br(),
+
+                       uiOutput("sel_SP_res_region"),
+
+                       br(),
+                       
+                       tags$a(
+                         href = "https://umad.cienciassociales.edu.uy/",
+                         "Unidad de Métodos y Acceso a Datos",
+                         style = "font-size:12px; color:Navy;
+                   text-decoration:underline;"
+                       ),
+                   br(),
+                   br(),
+                   img(
+                     src = "logo_umad.png",
+                     height = "70%",
+                     width = "70%",
+                     align = "left"
+                   ),
+                   style = "display:inline-block;",
+                   
+                     ),
+                   
+                   mainPanel(
+                     tags$h3(style = "display:inline-block",
+                             uiOutput("title_dat_SP_res")),
+
+                     div(
+                       style = "display:inline-block",
+                       dropdown(
+                         style = "minimal",
+                         status = "primary",
+                         width = "500px",
+                         right = TRUE,
+                         icon = icon("calculator", lib = "font-awesome"),
+                         uiOutput("info_dat_SP_res")
+                       )
+                     ),
+
+                     div(
+                       style = "display:inline-block",
+                       dropdown(
+                         style = "minimal",
+                         status = "primary",
+                         width = "500px",
+                         right = TRUE,
+                         icon = icon("exclamation", lib = "font-awesome"),
+                         uiOutput("rel_dat_SP_res")
+                       )
+                     ),
+
+                     tags$h5(uiOutput("subtitle_dat_SP_res")),
+
+                     br(),
+
+                     conditionalPanel(condition = "input.visualizador_SP_res != 'Anual mapa'",
+                                      withSpinner(
+                                        plotOutput("p_dat_SP_res", height = "600px"),
+                                        type = 2
+                                      )),
+
+                     conditionalPanel(condition = "input.visualizador_SP_res == 'Anual mapa'",
+                                      withSpinner(
+                                        leafletOutput("map_SP_res"),
+                                        type = 2
+                                      )),
+
+                     conditionalPanel(
+                       condition = "input.visualizador_SP_res != 'Anual mapa'",
+                       downloadButton(outputId = "baja_plot_SP_res",
+                                      label = "Descarga el gráfico")
+                     ),
+                     br(),
+                     br(),
+                     withSpinner(DTOutput("tab_dat_SP_res"),
+                                 type = 2),
+                     br(),
+                     downloadButton("dl_tabla_dat_SP_res", "Descarga la tabla"),
+                     br(),
+                     br()
+                   )
+                   )),
+          
+          tabPanel("Deuda",
+                   
+                   br(),
+                   
+                   fluidRow(
+                     sidebarPanel(
+                       width = 3,
+                       
+                       selectInput(
+                         inputId = "visualizador_SP_deuda",
+                         label = "Visualización",
+                         choices = c("Serie de tiempo",
+                                     "Anual gráfico",
+                                     "Anual mapa"),
+                         selected = "Serie de tiempo"
+                       ),
+
+                       selectInput(
+                         inputId = "indicador_SP_deuda",
+                         label = "Indicador",
+                         choices = data %>%
+                           filter(str_detect(p2, "Deuda")) %>%
+                           distinct(nomindicador) %>%
+                           arrange(nomindicador) %>%
+                           pull(nomindicador)
+                       ),
+
+                       uiOutput("corte_SP_deuda"),
+
+                       uiOutput("fecha_dat_SP_deuda"),
+
+                       br(),
+
+                       conditionalPanel(condition = "input.visualizador_SP_deuda != 'Anual mapa'",
+                                        uiOutput("sel_SP_deuda_pais")),
+
+                       br(),
+
+                       uiOutput("sel_SP_deuda_region"),
+
+                       br(),
+                       
+                       tags$a(
+                         href = "https://umad.cienciassociales.edu.uy/",
+                         "Unidad de Métodos y Acceso a Datos",
+                         style = "font-size:12px; color:Navy;
+                   text-decoration:underline;"
+                       ),
+                   br(),
+                   br(),
+                   img(
+                     src = "logo_umad.png",
+                     height = "70%",
+                     width = "70%",
+                     align = "left"
+                   ),
+                   style = "display:inline-block;",
+                   
+                     ),
+                   
+                   mainPanel(
+                     tags$h3(style = "display:inline-block",
+                             uiOutput("title_dat_SP_deuda")),
+
+                     div(
+                       style = "display:inline-block",
+                       dropdown(
+                         style = "minimal",
+                         status = "primary",
+                         width = "500px",
+                         right = TRUE,
+                         icon = icon("calculator", lib = "font-awesome"),
+                         uiOutput("info_dat_SP_deuda")
+                       )
+                     ),
+
+                     div(
+                       style = "display:inline-block",
+                       dropdown(
+                         style = "minimal",
+                         status = "primary",
+                         width = "500px",
+                         right = TRUE,
+                         icon = icon("exclamation", lib = "font-awesome"),
+                         uiOutput("rel_dat_SP_deuda")
+                       )
+                     ),
+
+                     tags$h5(uiOutput("subtitle_dat_SP_deuda")),
+
+                     br(),
+
+                     conditionalPanel(condition = "input.visualizador_SP_deuda != 'Anual mapa'",
+                                      withSpinner(
+                                        plotOutput("p_dat_SP_deuda", height = "600px"),
+                                        type = 2
+                                      )),
+
+                     conditionalPanel(condition = "input.visualizador_SP_deuda == 'Anual mapa'",
+                                      withSpinner(
+                                        leafletOutput("map_SP_deuda"),
+                                        type = 2
+                                      )),
+
+                     conditionalPanel(
+                       condition = "input.visualizador_SP_deuda != 'Anual mapa'",
+                       downloadButton(outputId = "baja_plot_SP_deuda",
+                                      label = "Descarga el gráfico")
+                     ),
+                     br(),
+                     br(),
+                     withSpinner(DTOutput("tab_dat_SP_deuda"),
+                                 type = 2),
+                     br(),
+                     downloadButton("dl_tabla_dat_SP_deuda", "Descarga la tabla"),
+                     br(),
+                     br()
+                   )
+                   )),
+          
+          tabPanel("Empleo",
+                   
+                   br(),
+                   
+                   fluidRow(
+                     sidebarPanel(
+                       width = 3,
+                       
+                       selectInput(
+                         inputId = "visualizador_SP_empleo",
+                         label = "Visualización",
+                         choices = c("Serie de tiempo",
+                                     "Anual gráfico",
+                                     "Anual mapa"),
+                         selected = "Serie de tiempo"
+                       ),
+
+                       selectInput(
+                         inputId = "indicador_SP_empleo",
+                         label = "Indicador",
+                         choices = data %>%
+                           filter(str_detect(p2, "Empleo")) %>%
+                           distinct(nomindicador) %>%
+                           arrange(nomindicador) %>%
+                           pull(nomindicador)
+                       ),
+
+                       uiOutput("corte_SP_empleo"),
+
+                       uiOutput("fecha_dat_SP_empleo"),
+
+                       br(),
+
+                       conditionalPanel(condition = "input.visualizador_SP_empleo != 'Anual mapa'",
+                                        uiOutput("sel_SP_empleo_pais")),
+
+                       br(),
+
+                       uiOutput("sel_SP_empleo_region"),
+
+                       br(),
+
+                       tags$a(
+                         href = "https://umad.cienciassociales.edu.uy/",
+                         "Unidad de Métodos y Acceso a Datos",
+                         style = "font-size:12px; color:Navy;
+                   text-decoration:underline;"
+                       ),
+                   br(),
+                   br(),
+                   img(
+                     src = "logo_umad.png",
+                     height = "70%",
+                     width = "70%",
+                     align = "left"
+                   ),
+                   style = "display:inline-block;",
+                   
+                     ),
+                   
+                   mainPanel(
+                     tags$h3(style = "display:inline-block",
+                             uiOutput("title_dat_SP_empleo")),
+
+                     div(
+                       style = "display:inline-block",
+                       dropdown(
+                         style = "minimal",
+                         status = "primary",
+                         width = "500px",
+                         right = TRUE,
+                         icon = icon("calculator", lib = "font-awesome"),
+                         uiOutput("info_dat_SP_empleo")
+                       )
+                     ),
+
+                     div(
+                       style = "display:inline-block",
+                       dropdown(
+                         style = "minimal",
+                         status = "primary",
+                         width = "500px",
+                         right = TRUE,
+                         icon = icon("exclamation", lib = "font-awesome"),
+                         uiOutput("rel_dat_SP_empleo")
+                       )
+                     ),
+
+                     tags$h5(uiOutput("subtitle_dat_SP_empleo")),
+
+                     br(),
+
+                     conditionalPanel(condition = "input.visualizador_SP_empleo != 'Anual mapa'",
+                                      withSpinner(
+                                        plotOutput("p_dat_SP_empleo", height = "600px"),
+                                        type = 2
+                                      )),
+
+                     conditionalPanel(condition = "input.visualizador_SP_empleo == 'Anual mapa'",
+                                      withSpinner(leafletOutput("map_SP_empleo"),
+                                                  type = 2)),
+
+                     conditionalPanel(
+                       condition = "input.visualizador_SP_empleo != 'Anual mapa'",
+                       downloadButton(outputId = "baja_plot_SP_empleo",
+                                      label = "Descarga el gráfico")
+                     ),
+                     br(),
+                     br(),
+                     withSpinner(DTOutput("tab_dat_SP_empleo"),
+                                 type = 2),
+                     br(),
+                     downloadButton("dl_tabla_dat_SP_empleo", "Descarga la tabla"),
+                     br(),
+                     br()
+                   )
+                   ))
+          ),
+        
       ),
       
       tabPanel(
@@ -2767,33 +3315,372 @@ ui <- navbarPage(
         title = "Empleo",
         icon = icon("users", lib = "font-awesome"),
         
-        br(),
-        
-        fluidRow(
-          sidebarPanel(
-            width = 3,
-            
-            tags$a(
-              href = "https://umad.cienciassociales.edu.uy/",
-              "Unidad de Métodos y Acceso a Datos",
-              style = "font-size:12px; color:Navy;text-decoration:underline;"
-            ),
-            
-            br(),
-            br(),
-            img(
-              src = "logo_umad.png",
-              height = "70%",
-              width = "70%",
-              align = "left"
-            ),
-            style = "display:inline-block;",
-          ),
+        tabsetPanel(
+          type = "pills",
+          id   = "CP",
           
-          mainPanel()
-        ),
-      )
+          
+          tabPanel("Empleo",
+                   
+                   br(),
+                   
+                   fluidRow(
+                     sidebarPanel(
+                       width = 3,
+                       
+                       selectInput(
+                         inputId = "visualizador_EST_empleo",
+                         label = "Visualización",
+                         choices = c("Serie de tiempo",
+                                     "Anual gráfico",
+                                     "Anual mapa"),
+                         selected = "Serie de tiempo"
+                       ),
+
+                       selectInput(
+                         inputId = "indicador_EST_empleo",
+                         label = "Indicador",
+                         choices = data %>%
+                           filter(str_detect(p2, "Empleo")) %>%
+                           distinct(nomindicador) %>%
+                           arrange(nomindicador) %>%
+                           pull(nomindicador)
+                       ),
+
+                       uiOutput("corte_EST_empleo"),
+
+                       uiOutput("fecha_dat_EST_empleo"),
+
+                       br(),
+
+                       conditionalPanel(condition = "input.visualizador_EST_empleo != 'Anual mapa'",
+                                        uiOutput("sel_EST_empleo_pais")),
+
+                       br(),
+
+                       uiOutput("sel_EST_empleo_region"),
+
+                       br(),
+                       
+                       tags$a(
+                         href = "https://umad.cienciassociales.edu.uy/",
+                         "Unidad de Métodos y Acceso a Datos",
+                         style = "font-size:12px; color:Navy;
+                   text-decoration:underline;"
+                       ),
+                   br(),
+                   br(),
+                   img(
+                     src = "logo_umad.png",
+                     height = "70%",
+                     width = "70%",
+                     align = "left"
+                   ),
+                   style = "display:inline-block;",
+                   
+                     ),
+                   
+                   mainPanel(
+                     tags$h3(style = "display:inline-block",
+                             uiOutput("title_dat_EST_empleo")),
+
+                     div(
+                       style = "display:inline-block",
+                       dropdown(
+                         style = "minimal",
+                         status = "primary",
+                         width = "500px",
+                         right = TRUE,
+                         icon = icon("calculator", lib = "font-awesome"),
+                         uiOutput("info_dat_EST_empleo")
+                       )
+                     ),
+
+                     div(
+                       style = "display:inline-block",
+                       dropdown(
+                         style = "minimal",
+                         status = "primary",
+                         width = "500px",
+                         right = TRUE,
+                         icon = icon("exclamation", lib = "font-awesome"),
+                         uiOutput("rel_dat_EST_empleo")
+                       )
+                     ),
+
+                     tags$h5(uiOutput("subtitle_dat_EST_empleo")),
+
+                     br(),
+
+                     conditionalPanel(condition = "input.visualizador_EST_empleo != 'Anual mapa'",
+                                      withSpinner(
+                                        plotOutput("p_dat_EST_empleo", height = "600px"),
+                                        type = 2
+                                      )),
+
+                     conditionalPanel(condition = "input.visualizador_EST_empleo == 'Anual mapa'",
+                                      withSpinner(leafletOutput("map_EST_empleo"),
+                                                  type = 2)),
+
+                     conditionalPanel(
+                       condition = "input.visualizador_EST_empleo != 'Anual mapa'",
+                       downloadButton(outputId = "baja_plot_EST_empleo",
+                                      label = "Descarga el gráfico")
+                     ),
+                     br(),
+                     br(),
+                     withSpinner(DTOutput("tab_dat_EST_empleo"),
+                                 type = 2),
+                     br(),
+                     downloadButton("dl_tabla_dat_EST_empleo", "Descarga la tabla"),
+                     br(),
+                     br()
+                   )
+                   )),
+          
+          
+          tabPanel("Salarios",
+                   
+                   br(),
+                   
+                   fluidRow(
+                     sidebarPanel(
+                       width = 3,
+                       
+                       selectInput(
+                         inputId = "visualizador_EST_salarios",
+                         label = "Visualización",
+                         choices = c("Serie de tiempo",
+                                     "Anual gráfico",
+                                     "Anual mapa"),
+                         selected = "Serie de tiempo"
+                       ),
+
+                       selectInput(
+                         inputId = "indicador_EST_salarios",
+                         label = "Indicador",
+                         choices = data %>%
+                           filter(str_detect(p2, "Salarios")) %>%
+                           distinct(nomindicador) %>%
+                           arrange(nomindicador) %>%
+                           pull(nomindicador)
+                       ),
+
+                       uiOutput("corte_EST_salarios"),
+
+                       uiOutput("fecha_dat_EST_salarios"),
+
+                       br(),
+
+                       conditionalPanel(condition = "input.visualizador_EST_salarios != 'Anual mapa'",
+                                        uiOutput("sel_EST_salarios_pais")),
+
+                       br(),
+
+                       uiOutput("sel_EST_salarios_region"),
+
+                       br(),
+                       
+                       tags$a(
+                         href = "https://umad.cienciassociales.edu.uy/",
+                         "Unidad de Métodos y Acceso a Datos",
+                         style = "font-size:12px; color:Navy;
+                   text-decoration:underline;"
+                       ),
+                   br(),
+                   br(),
+                   img(
+                     src = "logo_umad.png",
+                     height = "70%",
+                     width = "70%",
+                     align = "left"
+                   ),
+                   style = "display:inline-block;",
+                   
+                     ),
+                   
+                   mainPanel(
+                     tags$h3(style = "display:inline-block",
+                             uiOutput("title_dat_EST_salarios")),
+
+                     div(
+                       style = "display:inline-block",
+                       dropdown(
+                         style = "minimal",
+                         status = "primary",
+                         width = "500px",
+                         right = TRUE,
+                         icon = icon("calculator", lib = "font-awesome"),
+                         uiOutput("info_dat_EST_salarios")
+                       )
+                     ),
+
+                     div(
+                       style = "display:inline-block",
+                       dropdown(
+                         style = "minimal",
+                         status = "primary",
+                         width = "500px",
+                         right = TRUE,
+                         icon = icon("exclamation", lib = "font-awesome"),
+                         uiOutput("rel_dat_EST_salarios")
+                       )
+                     ),
+
+                     tags$h5(uiOutput("subtitle_dat_EST_salarios")),
+
+                     br(),
+
+                     conditionalPanel(condition = "input.visualizador_EST_salarios != 'Anual mapa'",
+                                      withSpinner(
+                                        plotOutput("p_dat_EST_salarios", height = "600px"),
+                                        type = 2
+                                      )),
+
+                     conditionalPanel(condition = "input.visualizador_EST_salarios == 'Anual mapa'",
+                                      withSpinner(
+                                        leafletOutput("map_EST_salarios"),
+                                        type = 2
+                                      )),
+
+                     conditionalPanel(
+                       condition = "input.visualizador_EST_salarios != 'Anual mapa'",
+                       downloadButton(outputId = "baja_plot_EST_salarios",
+                                      label = "Descarga el gráfico")
+                     ),
+                     br(),
+                     br(),
+                     withSpinner(DTOutput("tab_dat_EST_salarios"),
+                                 type = 2),
+                     br(),
+                     downloadButton("dl_tabla_dat_EST_salarios", "Descarga la tabla"),
+                     br(),
+                     br()
+                   )
+                   )),
+          
+          tabPanel("Transferencias",
+                   
+                   br(),
+                   
+                   fluidRow(
+                     sidebarPanel(
+                       width = 3,
+                       
+                       selectInput(
+                         inputId = "visualizador_EST_tran",
+                         label = "Visualización",
+                         choices = c("Serie de tiempo",
+                                     "Anual gráfico",
+                                     "Anual mapa"),
+                         selected = "Serie de tiempo"
+                       ),
+
+                       selectInput(
+                         inputId = "indicador_EST_tran",
+                         label = "Indicador",
+                         choices = data %>%
+                           filter(str_detect(p2, "Transferencias")) %>%
+                           distinct(nomindicador) %>%
+                           arrange(nomindicador) %>%
+                           pull(nomindicador)
+                       ),
+
+                       uiOutput("corte_EST_tran"),
+
+                       uiOutput("fecha_dat_EST_tran"),
+
+                       br(),
+
+                       conditionalPanel(condition = "input.visualizador_EST_tran != 'Anual mapa'",
+                                        uiOutput("sel_EST_tran_pais")),
+
+                       br(),
+
+                       uiOutput("sel_EST_tran_region"),
+
+                       br(),
+                       
+                       tags$a(
+                         href = "https://umad.cienciassociales.edu.uy/",
+                         "Unidad de Métodos y Acceso a Datos",
+                         style = "font-size:12px; color:Navy;
+                   text-decoration:underline;"
+                       ),
+                   br(),
+                   br(),
+                   img(
+                     src = "logo_umad.png",
+                     height = "70%",
+                     width = "70%",
+                     align = "left"
+                   ),
+                   style = "display:inline-block;",
+                   
+                     ),
+                   
+                   mainPanel(
+                     tags$h3(style = "display:inline-block",
+                             uiOutput("title_dat_EST_tran")),
+
+                     div(
+                       style = "display:inline-block",
+                       dropdown(
+                         style = "minimal",
+                         status = "primary",
+                         width = "500px",
+                         right = TRUE,
+                         icon = icon("calculator", lib = "font-awesome"),
+                         uiOutput("info_dat_EST_tran")
+                       )
+                     ),
+
+                     div(
+                       style = "display:inline-block",
+                       dropdown(
+                         style = "minimal",
+                         status = "primary",
+                         width = "500px",
+                         right = TRUE,
+                         icon = icon("exclamation", lib = "font-awesome"),
+                         uiOutput("rel_dat_EST_tran")
+                       )
+                     ),
+
+                     tags$h5(uiOutput("subtitle_dat_EST_tran")),
+
+                     br(),
+
+                     conditionalPanel(condition = "input.visualizador_EST_tran != 'Anual mapa'",
+                                      withSpinner(
+                                        plotOutput("p_dat_EST_tran", height = "600px"),
+                                        type = 2
+                                      )),
+
+                     conditionalPanel(condition = "input.visualizador_EST_tran == 'Anual mapa'",
+                                      withSpinner(
+                                        leafletOutput("map_EST_tran"),
+                                        type = 2
+                                      )),
+
+                     conditionalPanel(
+                       condition = "input.visualizador_EST_tran != 'Anual mapa'",
+                       downloadButton(outputId = "baja_plot_EST_tran",
+                                      label = "Descarga el gráfico")
+                     ),
+                     br(),
+                     br(),
+                     withSpinner(DTOutput("tab_dat_EST_tran"),
+                                 type = 2),
+                     br(),
+                     downloadButton("dl_tabla_dat_EST_tran", "Descarga la tabla"),
+                     br(),
+                     br()
+                   )
+                   )),
+        )
     )
+)
     
     
     server <- function(session, input, output) {
@@ -15077,6 +15964,4598 @@ ui <- navbarPage(
             
           } else if (input$visualizador_DEMO_pob %in% c("Anual gráfico", "Anual mapa")) {
             openxlsx::write.xlsx(list_dat_DEMO_pob_a(), file)
+            
+          }
+        }
+      )
+      
+      ##  24.  POB (dat_POB)   ====================================
+      
+      # Data POB
+      
+      dat_POB <- reactive({
+        req(input$indicador_POB)
+        
+        data %>%
+          filter(nomindicador == input$indicador_POB) %>%
+          janitor::remove_empty("cols")
+        
+      })
+      
+      
+      # Titulo
+      output$title_dat_POB <- renderUI({
+        helpText(HTML(unique(dat_POB()$nomindicador)))
+      })
+      
+      # Subtitulo
+      output$subtitle_dat_POB <- renderUI({
+        helpText(HTML(unique(dat_POB()$definicion)))
+      })
+      
+      # Metodología
+      output$info_dat_POB <- renderUI({
+        helpText(HTML(
+          paste(
+            "<b>Método de Agregación:</b>",
+            unique(dat_POB()$metodo_de_agregacion),
+            "<b>Metodología:</b>",
+            unique(dat_POB()$concepto_estadistico_y_metodologia)
+          )
+        ))
+      })
+      
+      # Relevancia:
+      output$rel_dat_POB <- renderUI({
+        helpText(HTML(paste(
+          "<b>Relvancia:</b>", unique(dat_POB()$relevancia)
+        )))
+      })
+      
+      
+      output$fecha_dat_POB <- renderUI({
+        if (input$visualizador_POB == "Serie de tiempo") {
+          tagList(
+            tags$style(
+              type = 'text/css',
+              '#big_slider .irs-grid-text {font-size: 10px; transform: rotate(-90deg) translate(-15px);} ,.irs-grid-pol.large {height: 0px;}'
+            ),
+            div(
+              id = 'big_slider',
+              
+              sliderTextInput(
+                inputId = "fecha_dat_POB",
+                label = "Seleccione años",
+                choices = sort(unique(dat_POB()$fecha)),
+                selected = c(min(dat_POB()$fecha),
+                             max(dat_POB()$fecha)),
+                hide_min_max = T,
+                grid = TRUE,
+                width = "100%"
+              )
+            )
+          )
+          
+        } else {
+          selectInput(
+            inputId = "fecha_POB",
+            label = "Seleccione año:",
+            choices = dat_POB() %>%
+              drop_na(valor) %>%
+              select(fecha) %>%
+              arrange(desc(fecha)) %>%
+              unique() %>%
+              pull(),
+            selected = "2019"
+          )
+          
+        }
+        
+      })
+      
+      
+      output$corte_POB <- renderUI({
+        if (input$indicador_POB %in% vars_corte) {
+          selectInput(
+            inputId = "corte_POB",
+            label = "Seleccione categorías",
+            choices =  dat_POB() %>%
+              distinct(get(names(dat_POB(
+              )[, ncol(dat_POB())]))) %>%
+              pull(),
+            selected = dat_POB() %>%
+              filter(jerarquia == 1) %>%
+              distinct(get(names(dat_POB(
+              )[, ncol(dat_POB())]))) %>%
+              pull()
+          )
+        } else {
+          return(NULL)
+        }
+        
+      })
+      
+      
+      # Checkbox por pais
+      output$sel_POB_pais <- renderUI({
+        if (input$visualizador_POB == "Serie de tiempo") {
+          dropdown(
+            label = "Seleccione países",
+            status = "default",
+            width = 400,
+            circle = F,
+            
+            checkboxGroupInput(
+              inputId = "chbox_pais_POB",
+              label = "Seleccione países",
+              inline = TRUE,
+              choices = dat_POB() %>%
+                filter(region == 0) %>%
+                filter(nomindicador == input$indicador_POB) %>%
+                distinct(cod_pais) %>%
+                pull(),
+              selected = c("URY", "ARG", "BRA", "PRY")
+            )
+          )
+          
+        } else {
+          checkboxGroupInput(
+            inputId = "chbox_pais_reg_POB",
+            label = "Mostrar:",
+            inline = FALSE,
+            choices = c("Países", "Regiones"),
+            selected = "Países"
+          )
+          
+        }
+        
+      })
+      
+      # Checkbox por región
+      output$sel_POB_region <- renderUI({
+        if (input$visualizador_POB == "Serie de tiempo") {
+          dropdown(
+            label = "Seleccione regiones",
+            status = "default",
+            width = 400,
+            circle = F,
+            
+            checkboxGroupInput(
+              inputId = "chbox_reg_POB",
+              label = "Seleccione regiones",
+              inline = TRUE,
+              choices = dat_POB() %>%
+                filter(region == 1) %>%
+                filter(nomindicador == input$indicador_POB) %>%
+                distinct(pais) %>%
+                pull(),
+              selected = NULL
+            )
+          )
+          
+        } else {
+          return(NULL)
+          
+        }
+      })
+      
+      
+      dat_POB_anual <- reactive({
+        if (input$indicador_POB %in% vars_corte) {
+          dat_POB() %>%
+            filter(get(names(dat_POB()[, ncol(dat_POB())])) %in% input$corte_POB) %>%
+            filter(fecha == input$fecha_POB)
+          
+        } else {
+          dat_POB() %>%
+            filter(fecha == input$fecha_POB)
+          
+          
+        }
+      })
+      
+      dat_POB_simple <- reactive({
+        if (input$indicador_POB %in% vars_corte) {
+          dat_POB() %>%
+            filter(get(names(dat_POB()[, ncol(dat_POB())])) %in% input$corte_POB) %>%
+            filter(fecha >= input$fecha_dat_POB[1] &
+                     fecha <= input$fecha_dat_POB[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_POB |
+                     pais %in% input$chbox_reg_POB)
+          
+        } else {
+          dat_POB() %>%
+            filter(fecha >= input$fecha_dat_POB[1] &
+                     fecha <= input$fecha_dat_POB[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_POB |
+                     pais %in% input$chbox_reg_POB)
+        }
+        
+      })
+      
+      
+      # Gráficos POB
+      output$p_dat_POB <- renderPlot({
+        if (input$visualizador_POB == "Serie de tiempo") {
+          req(input$fecha_dat_POB, input$indicador_POB)
+          
+          plot_POB <- ggplot(data = dat_POB_simple(),
+                                  aes(x = fecha, y = valor)) +
+            geom_line(aes(color = pais), size = 1, alpha = 0.5) +
+            geom_point(aes(color = pais), size = 3) +
+            theme(axis.text.x = element_text(angle = 0),
+                  legend.position = "bottom") +
+            labs(x = "",
+                 y = "",
+                 caption = wrapit(
+                   paste(
+                     "Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de",
+                     unique(dat_POB_simple()$fuente)
+                   )
+                 )) +
+            scale_y_continuous(labels = addUnits) +
+            scale_colour_manual(name = "", values = paleta_expandida) +
+            if (input$indicador_POB %in% vars_corte) {
+              ggtitle(paste0(input$indicador_POB, " (", input$corte_POB, ")"))
+              
+            } else {
+              ggtitle(paste(input$indicador_POB))
+              
+            }
+          
+          print(plot_POB)
+          ggsave(
+            "www/indicador POB.png",
+            width = 30,
+            height = 20,
+            units = "cm"
+          )
+          
+        } else if (input$visualizador_POB == "Anual gráfico") {
+          base_plot_POB <- dat_POB_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_POB)
+          
+          validate(need(
+            nrow(base_plot_POB) > 0,
+            'No hay datos disponible para esta búsqueda'
+          ))
+          
+          plot_POB <- ggplot(base_plot_POB,
+                                  aes(x = fct_reorder(pais, valor), y = valor)) +
+            geom_segment(
+              aes(
+                x = fct_reorder(pais, valor),
+                xend = fct_reorder(pais, valor),
+                y = 0,
+                yend = valor
+              ),
+              size = 1,
+              color = "#2c3e50"
+            ) +
+            geom_point(color = "#2c3e50", size = 4) +
+            theme_light() +
+            coord_flip() +
+            theme(
+              axis.text.y = element_text(size = 12),
+              panel.grid.major.y = element_blank(),
+              panel.border = element_blank(),
+              axis.ticks.y = element_blank()
+            ) +
+            labs(x = "",
+                 y = "",
+                 caption = wrapit(
+                   paste(
+                     "Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de",
+                     unique(dat_POB_anual()$fuente)
+                   )
+                 )) +
+            scale_y_continuous(labels = addUnits) +
+            if (input$indicador_POB %in% vars_corte) {
+              ggtitle(paste0(input$indicador_POB, " (", input$corte_POB, ")"))
+              
+            } else {
+              ggtitle(paste(input$indicador_POB))
+              
+            }
+          
+          print(plot_POB)
+          ggsave(
+            "www/indicador POB.png",
+            width = 25,
+            height = 30,
+            units = "cm"
+          )
+          
+        }
+        
+      })
+      
+      output$map_POB <- renderLeaflet({
+        # Read this shape file with the rgdal library.
+        world_spdf <- readOGR(dsn = "data" ,
+                              layer = "TM_WORLD_BORDERS_SIMPL-0.3",
+                              verbose = FALSE)
+        
+        # Pegar datos
+        world_spdf@data <- world_spdf@data %>%
+          left_join(select(dat_POB_anual(), pais_eng, valor_original),
+                    by = c("NAME" = "pais_eng"))
+        
+        # Library
+        
+        # Create a color palette with handmade bins.
+        
+        
+        if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -1000) {
+          round_number <- 1000
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -100) {
+          round_number <- 100
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -10) {
+          round_number <- 10
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -1) {
+          round_number <- 1
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 1000) {
+          round_number <- 1000
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 100) {
+          round_number <- 100
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 10) {
+          round_number <- 10
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 1) {
+          round_number <- 1
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= -1) {
+          round_number <- .1
+          
+        }
+        
+        min_val <-
+          plyr::round_any(min(world_spdf@data$valor_original, na.rm = T),
+                          round_number,
+                          floor)
+        max_val <-
+          plyr::round_any(max(world_spdf@data$valor_original, na.rm = T),
+                          round_number,
+                          ceiling)
+        dif <- max_val - min_val
+        dif_5 <- dif / 5
+        val_1 <- min_val + dif_5
+        val_2 <- min_val + (dif_5 * 2)
+        val_3 <- min_val + (dif_5 * 3)
+        val_4 <- min_val + (dif_5 * 4)
+        
+        mybins <- c(min_val, val_1, val_2, val_3, val_4, max_val)
+        
+        mypalette <- colorBin(
+          palette = "YlOrBr",
+          domain = world_spdf@data$valor_original,
+          na.color = "transparent",
+          bins = mybins
+        )
+        
+        # Prepare the text for tooltips:
+        mytext <- paste(
+          "País: ",
+          world_spdf@data$NAME,
+          "<br/>",
+          "Valor: ",
+          round(world_spdf@data$valor_original, 2),
+          sep = ""
+        ) %>%
+          lapply(htmltools::HTML)
+        
+        # Final Map
+        leaflet(world_spdf) %>%
+          addTiles()  %>%
+          setView(lat = 30,
+                  lng = 0 ,
+                  zoom = 1) %>%
+          addPolygons(
+            fillColor = ~ mypalette(valor_original),
+            stroke = TRUE,
+            fillOpacity = 0.9,
+            color = "white",
+            weight = 0.3,
+            label = mytext,
+            labelOptions = labelOptions(
+              style = list("font-weight" = "normal", padding = "3px 8px"),
+              textsize = "13px",
+              direction = "auto"
+            )
+          ) %>%
+          addLegend(
+            pal = mypalette,
+            values =  ~ valor_original,
+            opacity = 0.9,
+            title = wrapit(input$indicador_POB),
+            position = "bottomleft"
+          )
+        
+      })
+      
+      # Botón descarga grafico
+      output$baja_plot_POB <- downloadHandler(filename <- function() {
+        paste("indicador POB", "png", sep = ".")
+      },
+      
+      content <- function(file) {
+        file.copy("www/indicador POB.png", file)
+      },
+      contentType = "www/indicador POB")
+      
+      
+      ## Data series temporal
+      
+      # Data para tabla y exportar
+      dat_POB_st <- reactive({
+        if (input$indicador_POB %in% vars_corte) {
+          dat_POB() %>%
+            filter(fecha >= input$fecha_dat_POB[1] &
+                     fecha <= input$fecha_dat_POB[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_POB |
+                     pais %in% input$chbox_reg_POB) %>%
+            select(pais, fecha, names(dat_POB()[, ncol(dat_POB())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_POB() %>%
+            filter(fecha >= input$fecha_dat_POB[1] &
+                     fecha <= input$fecha_dat_POB[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_POB |
+                     pais %in% input$chbox_reg_POB) %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+        }
+      })
+      
+      # Metadata
+      dat_POB_m <- reactive({
+        dat_POB() %>%
+          select(
+            nomindicador,
+            definicion,
+            metodo_de_agregacion,
+            concepto_estadistico_y_metodologia,
+            relevancia,
+            limitaciones_y_excepciones
+          ) %>%
+          mutate(`Unidad de Métodos y Acceso a Datos (FCS -UdelaR)` = " ") %>%
+          distinct() %>%
+          gather(key = "", value = " ")
+        
+      })
+      
+      # Data completa
+      dat_POB_c <- reactive({
+        if (input$indicador_POB %in% vars_corte) {
+          dat_POB() %>%
+            select(pais, fecha, names(dat_POB()[, ncol(dat_POB())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_POB() %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+        }
+        
+      })
+      
+      # Lista para descarga
+      list_dat_POB_st <- reactive({
+        list_dat_POB <- list(
+          "Data" = dat_POB_st(),
+          "Metadata" = dat_POB_m(),
+          "Data Completa" = dat_POB_c()
+        )
+      })
+      
+      
+      ## Data por año
+      # Data para tabla y exportar
+      dat_POB_a <- reactive({
+        if (input$indicador_POB %in% vars_corte) {
+          dat_POB_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_POB) %>%
+            select(pais, fecha, names(dat_POB()[, ncol(dat_POB())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_POB_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_POB) %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        }
+      })
+      
+      # Lista para descarga
+      list_dat_POB_a <- reactive({
+        list_dat_POB <- list(
+          "Data" = dat_POB_a(),
+          "Metadata" = dat_POB_m(),
+          "Data Completa" = dat_POB_c()
+        )
+      })
+      
+      # Tablas en shiny
+      output$tab_dat_POB <- renderDT({
+        if (input$indicador_POB %in% vars_corte) {
+          DT::datatable(
+            dat_POB_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Corte", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_POB,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(4, '', mark = ",")
+          
+        } else if (input$visualizador_POB == "Serie de tiempo") {
+          DT::datatable(
+            dat_POB_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_POB,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        } else if (input$visualizador_POB %in% c("Anual gráfico", "Anual mapa")) {
+          DT::datatable(
+            dat_POB_a(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_POB,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        }
+      })
+      
+      # Descarga tabla
+      output$dl_tabla_dat_POB <- downloadHandler(
+        filename = function() {
+          paste("resultados-", input$indicador_POB, ".xlsx", sep = "")
+        },
+        content = function(file) {
+          if (input$visualizador_POB == "Serie de tiempo") {
+            openxlsx::write.xlsx(list_dat_POB_st(), file)
+            
+          } else if (input$visualizador_POB %in% c("Anual gráfico", "Anual mapa")) {
+            openxlsx::write.xlsx(list_dat_POB_a(), file)
+            
+          }
+        }
+      )
+      
+      ##  25.  SP_ig (dat_SP_ig)   ====================================
+      
+      # Data SP_ig
+      
+      dat_SP_ig <- reactive({
+        req(input$indicador_SP_ig)
+        
+        data %>%
+          filter(nomindicador == input$indicador_SP_ig) %>%
+          janitor::remove_empty("cols")
+        
+      })
+      
+      
+      # Titulo
+      output$title_dat_SP_ig <- renderUI({
+        helpText(HTML(unique(dat_SP_ig()$nomindicador)))
+      })
+      
+      # Subtitulo
+      output$subtitle_dat_SP_ig <- renderUI({
+        helpText(HTML(unique(dat_SP_ig()$definicion)))
+      })
+      
+      # Metodología
+      output$info_dat_SP_ig <- renderUI({
+        helpText(HTML(
+          paste(
+            "<b>Método de Agregación:</b>",
+            unique(dat_SP_ig()$metodo_de_agregacion),
+            "<b>Metodología:</b>",
+            unique(dat_SP_ig()$concepto_estadistico_y_metodologia)
+          )
+        ))
+      })
+      
+      # Relevancia:
+      output$rel_dat_SP_ig <- renderUI({
+        helpText(HTML(paste(
+          "<b>Relvancia:</b>", unique(dat_SP_ig()$relevancia)
+        )))
+      })
+      
+      
+      output$fecha_dat_SP_ig <- renderUI({
+        if (input$visualizador_SP_ig == "Serie de tiempo") {
+          tagList(
+            tags$style(
+              type = 'text/css',
+              '#big_slider .irs-grid-text {font-size: 10px; transform: rotate(-90deg) translate(-15px);} ,.irs-grid-pol.large {height: 0px;}'
+            ),
+            div(
+              id = 'big_slider',
+              
+              sliderTextInput(
+                inputId = "fecha_dat_SP_ig",
+                label = "Seleccione años",
+                choices = sort(unique(dat_SP_ig()$fecha)),
+                selected = c(min(dat_SP_ig()$fecha),
+                             max(dat_SP_ig()$fecha)),
+                hide_min_max = T,
+                grid = TRUE,
+                width = "100%"
+              )
+            )
+          )
+          
+        } else {
+          selectInput(
+            inputId = "fecha_SP_ig",
+            label = "Seleccione año:",
+            choices = dat_SP_ig() %>%
+              drop_na(valor) %>%
+              select(fecha) %>%
+              arrange(desc(fecha)) %>%
+              unique() %>%
+              pull(),
+            selected = "2019"
+          )
+          
+        }
+        
+      })
+      
+      
+      output$corte_SP_ig <- renderUI({
+        if (input$indicador_SP_ig %in% vars_corte) {
+          selectInput(
+            inputId = "corte_SP_ig",
+            label = "Seleccione categorías",
+            choices =  dat_SP_ig() %>%
+              distinct(get(names(dat_SP_ig(
+              )[, ncol(dat_SP_ig())]))) %>%
+              pull(),
+            selected = dat_SP_ig() %>%
+              filter(jerarquia == 1) %>%
+              distinct(get(names(dat_SP_ig(
+              )[, ncol(dat_SP_ig())]))) %>%
+              pull()
+          )
+        } else {
+          return(NULL)
+        }
+        
+      })
+      
+      
+      # Checkbox por pais
+      output$sel_SP_ig_pais <- renderUI({
+        if (input$visualizador_SP_ig == "Serie de tiempo") {
+          dropdown(
+            label = "Seleccione países",
+            status = "default",
+            width = 400,
+            circle = F,
+            
+            checkboxGroupInput(
+              inputId = "chbox_pais_SP_ig",
+              label = "Seleccione países",
+              inline = TRUE,
+              choices = dat_SP_ig() %>%
+                filter(region == 0) %>%
+                filter(nomindicador == input$indicador_SP_ig) %>%
+                distinct(cod_pais) %>%
+                pull(),
+              selected = c("URY", "ARG", "BRA", "PRY")
+            )
+          )
+          
+        } else {
+          checkboxGroupInput(
+            inputId = "chbox_pais_reg_SP_ig",
+            label = "Mostrar:",
+            inline = FALSE,
+            choices = c("Países", "Regiones"),
+            selected = "Países"
+          )
+          
+        }
+        
+      })
+      
+      # Checkbox por región
+      output$sel_SP_ig_region <- renderUI({
+        if (input$visualizador_SP_ig == "Serie de tiempo") {
+          dropdown(
+            label = "Seleccione regiones",
+            status = "default",
+            width = 400,
+            circle = F,
+            
+            checkboxGroupInput(
+              inputId = "chbox_reg_SP_ig",
+              label = "Seleccione regiones",
+              inline = TRUE,
+              choices = dat_SP_ig() %>%
+                filter(region == 1) %>%
+                filter(nomindicador == input$indicador_SP_ig) %>%
+                distinct(pais) %>%
+                pull(),
+              selected = NULL
+            )
+          )
+          
+        } else {
+          return(NULL)
+          
+        }
+      })
+      
+      
+      dat_SP_ig_anual <- reactive({
+        if (input$indicador_SP_ig %in% vars_corte) {
+          dat_SP_ig() %>%
+            filter(get(names(dat_SP_ig()[, ncol(dat_SP_ig())])) %in% input$corte_SP_ig) %>%
+            filter(fecha == input$fecha_SP_ig)
+          
+        } else {
+          dat_SP_ig() %>%
+            filter(fecha == input$fecha_SP_ig)
+          
+          
+        }
+      })
+      
+      dat_SP_ig_simple <- reactive({
+        if (input$indicador_SP_ig %in% vars_corte) {
+          dat_SP_ig() %>%
+            filter(get(names(dat_SP_ig()[, ncol(dat_SP_ig())])) %in% input$corte_SP_ig) %>%
+            filter(fecha >= input$fecha_dat_SP_ig[1] &
+                     fecha <= input$fecha_dat_SP_ig[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_SP_ig |
+                     pais %in% input$chbox_reg_SP_ig)
+          
+        } else {
+          dat_SP_ig() %>%
+            filter(fecha >= input$fecha_dat_SP_ig[1] &
+                     fecha <= input$fecha_dat_SP_ig[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_SP_ig |
+                     pais %in% input$chbox_reg_SP_ig)
+        }
+        
+      })
+      
+      
+      # Gráficos SP_ig
+      output$p_dat_SP_ig <- renderPlot({
+        if (input$visualizador_SP_ig == "Serie de tiempo") {
+          req(input$fecha_dat_SP_ig, input$indicador_SP_ig)
+          
+          plot_SP_ig <- ggplot(data = dat_SP_ig_simple(),
+                             aes(x = fecha, y = valor)) +
+            geom_line(aes(color = pais), size = 1, alpha = 0.5) +
+            geom_point(aes(color = pais), size = 3) +
+            theme(axis.text.x = element_text(angle = 0),
+                  legend.position = "bottom") +
+            labs(x = "",
+                 y = "",
+                 caption = wrapit(
+                   paste(
+                     "Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de",
+                     unique(dat_SP_ig_simple()$fuente)
+                   )
+                 )) +
+            scale_y_continuous(labels = addUnits) +
+            scale_colour_manual(name = "", values = paleta_expandida) +
+            if (input$indicador_SP_ig %in% vars_corte) {
+              ggtitle(paste0(input$indicador_SP_ig, " (", input$corte_SP_ig, ")"))
+              
+            } else {
+              ggtitle(paste(input$indicador_SP_ig))
+              
+            }
+          
+          print(plot_SP_ig)
+          ggsave(
+            "www/indicador SP_ig.png",
+            width = 30,
+            height = 20,
+            units = "cm"
+          )
+          
+        } else if (input$visualizador_SP_ig == "Anual gráfico") {
+          base_plot_SP_ig <- dat_SP_ig_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_SP_ig)
+          
+          validate(need(
+            nrow(base_plot_SP_ig) > 0,
+            'No hay datos disponible para esta búsqueda'
+          ))
+          
+          plot_SP_ig <- ggplot(base_plot_SP_ig,
+                             aes(x = fct_reorder(pais, valor), y = valor)) +
+            geom_segment(
+              aes(
+                x = fct_reorder(pais, valor),
+                xend = fct_reorder(pais, valor),
+                y = 0,
+                yend = valor
+              ),
+              size = 1,
+              color = "#2c3e50"
+            ) +
+            geom_point(color = "#2c3e50", size = 4) +
+            theme_light() +
+            coord_flip() +
+            theme(
+              axis.text.y = element_text(size = 12),
+              panel.grid.major.y = element_blank(),
+              panel.border = element_blank(),
+              axis.ticks.y = element_blank()
+            ) +
+            labs(x = "",
+                 y = "",
+                 caption = wrapit(
+                   paste(
+                     "Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de",
+                     unique(dat_SP_ig_anual()$fuente)
+                   )
+                 )) +
+            scale_y_continuous(labels = addUnits) +
+            if (input$indicador_SP_ig %in% vars_corte) {
+              ggtitle(paste0(input$indicador_SP_ig, " (", input$corte_SP_ig, ")"))
+              
+            } else {
+              ggtitle(paste(input$indicador_SP_ig))
+              
+            }
+          
+          print(plot_SP_ig)
+          ggsave(
+            "www/indicador SP_ig.png",
+            width = 25,
+            height = 30,
+            units = "cm"
+          )
+          
+        }
+        
+      })
+      
+      output$map_SP_ig <- renderLeaflet({
+        # Read this shape file with the rgdal library.
+        world_spdf <- readOGR(dsn = "data" ,
+                              layer = "TM_WORLD_BORDERS_SIMPL-0.3",
+                              verbose = FALSE)
+        
+        # Pegar datos
+        world_spdf@data <- world_spdf@data %>%
+          left_join(select(dat_SP_ig_anual(), pais_eng, valor_original),
+                    by = c("NAME" = "pais_eng"))
+        
+        # Library
+        
+        # Create a color palette with handmade bins.
+        
+        
+        if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -1000) {
+          round_number <- 1000
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -100) {
+          round_number <- 100
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -10) {
+          round_number <- 10
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -1) {
+          round_number <- 1
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 1000) {
+          round_number <- 1000
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 100) {
+          round_number <- 100
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 10) {
+          round_number <- 10
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 1) {
+          round_number <- 1
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= -1) {
+          round_number <- .1
+          
+        }
+        
+        min_val <-
+          plyr::round_any(min(world_spdf@data$valor_original, na.rm = T),
+                          round_number,
+                          floor)
+        max_val <-
+          plyr::round_any(max(world_spdf@data$valor_original, na.rm = T),
+                          round_number,
+                          ceiling)
+        dif <- max_val - min_val
+        dif_5 <- dif / 5
+        val_1 <- min_val + dif_5
+        val_2 <- min_val + (dif_5 * 2)
+        val_3 <- min_val + (dif_5 * 3)
+        val_4 <- min_val + (dif_5 * 4)
+        
+        mybins <- c(min_val, val_1, val_2, val_3, val_4, max_val)
+        
+        mypalette <- colorBin(
+          palette = "YlOrBr",
+          domain = world_spdf@data$valor_original,
+          na.color = "transparent",
+          bins = mybins
+        )
+        
+        # Prepare the text for tooltips:
+        mytext <- paste(
+          "País: ",
+          world_spdf@data$NAME,
+          "<br/>",
+          "Valor: ",
+          round(world_spdf@data$valor_original, 2),
+          sep = ""
+        ) %>%
+          lapply(htmltools::HTML)
+        
+        # Final Map
+        leaflet(world_spdf) %>%
+          addTiles()  %>%
+          setView(lat = 30,
+                  lng = 0 ,
+                  zoom = 1) %>%
+          addPolygons(
+            fillColor = ~ mypalette(valor_original),
+            stroke = TRUE,
+            fillOpacity = 0.9,
+            color = "white",
+            weight = 0.3,
+            label = mytext,
+            labelOptions = labelOptions(
+              style = list("font-weight" = "normal", padding = "3px 8px"),
+              textsize = "13px",
+              direction = "auto"
+            )
+          ) %>%
+          addLegend(
+            pal = mypalette,
+            values =  ~ valor_original,
+            opacity = 0.9,
+            title = wrapit(input$indicador_SP_ig),
+            position = "bottomleft"
+          )
+        
+      })
+      
+      # Botón descarga grafico
+      output$baja_plot_SP_ig <- downloadHandler(filename <- function() {
+        paste("indicador SP_ig", "png", sep = ".")
+      },
+      
+      content <- function(file) {
+        file.copy("www/indicador SP_ig.png", file)
+      },
+      contentType = "www/indicador SP_ig")
+      
+      
+      ## Data series temporal
+      
+      # Data para tabla y exportar
+      dat_SP_ig_st <- reactive({
+        if (input$indicador_SP_ig %in% vars_corte) {
+          dat_SP_ig() %>%
+            filter(fecha >= input$fecha_dat_SP_ig[1] &
+                     fecha <= input$fecha_dat_SP_ig[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_SP_ig |
+                     pais %in% input$chbox_reg_SP_ig) %>%
+            select(pais, fecha, names(dat_SP_ig()[, ncol(dat_SP_ig())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_SP_ig() %>%
+            filter(fecha >= input$fecha_dat_SP_ig[1] &
+                     fecha <= input$fecha_dat_SP_ig[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_SP_ig |
+                     pais %in% input$chbox_reg_SP_ig) %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+        }
+      })
+      
+      # Metadata
+      dat_SP_ig_m <- reactive({
+        dat_SP_ig() %>%
+          select(
+            nomindicador,
+            definicion,
+            metodo_de_agregacion,
+            concepto_estadistico_y_metodologia,
+            relevancia,
+            limitaciones_y_excepciones
+          ) %>%
+          mutate(`Unidad de Métodos y Acceso a Datos (FCS -UdelaR)` = " ") %>%
+          distinct() %>%
+          gather(key = "", value = " ")
+        
+      })
+      
+      # Data completa
+      dat_SP_ig_c <- reactive({
+        if (input$indicador_SP_ig %in% vars_corte) {
+          dat_SP_ig() %>%
+            select(pais, fecha, names(dat_SP_ig()[, ncol(dat_SP_ig())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_SP_ig() %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+        }
+        
+      })
+      
+      # Lista para descarga
+      list_dat_SP_ig_st <- reactive({
+        list_dat_SP_ig <- list(
+          "Data" = dat_SP_ig_st(),
+          "Metadata" = dat_SP_ig_m(),
+          "Data Completa" = dat_SP_ig_c()
+        )
+      })
+      
+      
+      ## Data por año
+      # Data para tabla y exportar
+      dat_SP_ig_a <- reactive({
+        if (input$indicador_SP_ig %in% vars_corte) {
+          dat_SP_ig_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_SP_ig) %>%
+            select(pais, fecha, names(dat_SP_ig()[, ncol(dat_SP_ig())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_SP_ig_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_SP_ig) %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        }
+      })
+      
+      # Lista para descarga
+      list_dat_SP_ig_a <- reactive({
+        list_dat_SP_ig <- list(
+          "Data" = dat_SP_ig_a(),
+          "Metadata" = dat_SP_ig_m(),
+          "Data Completa" = dat_SP_ig_c()
+        )
+      })
+      
+      # Tablas en shiny
+      output$tab_dat_SP_ig <- renderDT({
+        if (input$indicador_SP_ig %in% vars_corte) {
+          DT::datatable(
+            dat_SP_ig_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Corte", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_SP_ig,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(4, '', mark = ",")
+          
+        } else if (input$visualizador_SP_ig == "Serie de tiempo") {
+          DT::datatable(
+            dat_SP_ig_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_SP_ig,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        } else if (input$visualizador_SP_ig %in% c("Anual gráfico", "Anual mapa")) {
+          DT::datatable(
+            dat_SP_ig_a(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_SP_ig,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        }
+      })
+      
+      # Descarga tabla
+      output$dl_tabla_dat_SP_ig <- downloadHandler(
+        filename = function() {
+          paste("resultados-", input$indicador_SP_ig, ".xlsx", sep = "")
+        },
+        content = function(file) {
+          if (input$visualizador_SP_ig == "Serie de tiempo") {
+            openxlsx::write.xlsx(list_dat_SP_ig_st(), file)
+            
+          } else if (input$visualizador_SP_ig %in% c("Anual gráfico", "Anual mapa")) {
+            openxlsx::write.xlsx(list_dat_SP_ig_a(), file)
+            
+          }
+        }
+      )
+      
+      ##  26.  SP_res (dat_SP_res)   ====================================
+      
+      # Data SP_res
+      
+      dat_SP_res <- reactive({
+        req(input$indicador_SP_res)
+        
+        data %>%
+          filter(nomindicador == input$indicador_SP_res) %>%
+          janitor::remove_empty("cols")
+        
+      })
+      
+      
+      # Titulo
+      output$title_dat_SP_res <- renderUI({
+        helpText(HTML(unique(dat_SP_res()$nomindicador)))
+      })
+      
+      # Subtitulo
+      output$subtitle_dat_SP_res <- renderUI({
+        helpText(HTML(unique(dat_SP_res()$definicion)))
+      })
+      
+      # Metodología
+      output$info_dat_SP_res <- renderUI({
+        helpText(HTML(
+          paste(
+            "<b>Método de Agregación:</b>",
+            unique(dat_SP_res()$metodo_de_agregacion),
+            "<b>Metodología:</b>",
+            unique(dat_SP_res()$concepto_estadistico_y_metodologia)
+          )
+        ))
+      })
+      
+      # Relevancia:
+      output$rel_dat_SP_res <- renderUI({
+        helpText(HTML(paste(
+          "<b>Relvancia:</b>", unique(dat_SP_res()$relevancia)
+        )))
+      })
+      
+      
+      output$fecha_dat_SP_res <- renderUI({
+        if (input$visualizador_SP_res == "Serie de tiempo") {
+          tagList(
+            tags$style(
+              type = 'text/css',
+              '#big_slider .irs-grid-text {font-size: 10px; transform: rotate(-90deg) translate(-15px);} ,.irs-grid-pol.large {height: 0px;}'
+            ),
+            div(
+              id = 'big_slider',
+              
+              sliderTextInput(
+                inputId = "fecha_dat_SP_res",
+                label = "Seleccione años",
+                choices = sort(unique(dat_SP_res()$fecha)),
+                selected = c(min(dat_SP_res()$fecha),
+                             max(dat_SP_res()$fecha)),
+                hide_min_max = T,
+                grid = TRUE,
+                width = "100%"
+              )
+            )
+          )
+          
+        } else {
+          selectInput(
+            inputId = "fecha_SP_res",
+            label = "Seleccione año:",
+            choices = dat_SP_res() %>%
+              drop_na(valor) %>%
+              select(fecha) %>%
+              arrange(desc(fecha)) %>%
+              unique() %>%
+              pull(),
+            selected = "2019"
+          )
+          
+        }
+        
+      })
+      
+      
+      output$corte_SP_res <- renderUI({
+        if (input$indicador_SP_res %in% vars_corte) {
+          selectInput(
+            inputId = "corte_SP_res",
+            label = "Seleccione categorías",
+            choices =  dat_SP_res() %>%
+              distinct(get(names(dat_SP_res(
+              )[, ncol(dat_SP_res())]))) %>%
+              pull(),
+            selected = dat_SP_res() %>%
+              filter(jerarquia == 1) %>%
+              distinct(get(names(dat_SP_res(
+              )[, ncol(dat_SP_res())]))) %>%
+              pull()
+          )
+        } else {
+          return(NULL)
+        }
+        
+      })
+      
+      
+      # Checkbox por pais
+      output$sel_SP_res_pais <- renderUI({
+        if (input$visualizador_SP_res == "Serie de tiempo") {
+          dropdown(
+            label = "Seleccione países",
+            status = "default",
+            width = 400,
+            circle = F,
+            
+            checkboxGroupInput(
+              inputId = "chbox_pais_SP_res",
+              label = "Seleccione países",
+              inline = TRUE,
+              choices = dat_SP_res() %>%
+                filter(region == 0) %>%
+                filter(nomindicador == input$indicador_SP_res) %>%
+                distinct(cod_pais) %>%
+                pull(),
+              selected = c("URY", "ARG", "BRA", "PRY")
+            )
+          )
+          
+        } else {
+          checkboxGroupInput(
+            inputId = "chbox_pais_reg_SP_res",
+            label = "Mostrar:",
+            inline = FALSE,
+            choices = c("Países", "Regiones"),
+            selected = "Países"
+          )
+          
+        }
+        
+      })
+      
+      # Checkbox por región
+      output$sel_SP_res_region <- renderUI({
+        if (input$visualizador_SP_res == "Serie de tiempo") {
+          dropdown(
+            label = "Seleccione regiones",
+            status = "default",
+            width = 400,
+            circle = F,
+            
+            checkboxGroupInput(
+              inputId = "chbox_reg_SP_res",
+              label = "Seleccione regiones",
+              inline = TRUE,
+              choices = dat_SP_res() %>%
+                filter(region == 1) %>%
+                filter(nomindicador == input$indicador_SP_res) %>%
+                distinct(pais) %>%
+                pull(),
+              selected = NULL
+            )
+          )
+          
+        } else {
+          return(NULL)
+          
+        }
+      })
+      
+      
+      dat_SP_res_anual <- reactive({
+        if (input$indicador_SP_res %in% vars_corte) {
+          dat_SP_res() %>%
+            filter(get(names(dat_SP_res()[, ncol(dat_SP_res())])) %in% input$corte_SP_res) %>%
+            filter(fecha == input$fecha_SP_res)
+          
+        } else {
+          dat_SP_res() %>%
+            filter(fecha == input$fecha_SP_res)
+          
+          
+        }
+      })
+      
+      dat_SP_res_simple <- reactive({
+        if (input$indicador_SP_res %in% vars_corte) {
+          dat_SP_res() %>%
+            filter(get(names(dat_SP_res()[, ncol(dat_SP_res())])) %in% input$corte_SP_res) %>%
+            filter(fecha >= input$fecha_dat_SP_res[1] &
+                     fecha <= input$fecha_dat_SP_res[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_SP_res |
+                     pais %in% input$chbox_reg_SP_res)
+          
+        } else {
+          dat_SP_res() %>%
+            filter(fecha >= input$fecha_dat_SP_res[1] &
+                     fecha <= input$fecha_dat_SP_res[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_SP_res |
+                     pais %in% input$chbox_reg_SP_res)
+        }
+        
+      })
+      
+      
+      # Gráficos SP_res
+      output$p_dat_SP_res <- renderPlot({
+        if (input$visualizador_SP_res == "Serie de tiempo") {
+          req(input$fecha_dat_SP_res, input$indicador_SP_res)
+          
+          plot_SP_res <- ggplot(data = dat_SP_res_simple(),
+                               aes(x = fecha, y = valor)) +
+            geom_line(aes(color = pais), size = 1, alpha = 0.5) +
+            geom_point(aes(color = pais), size = 3) +
+            theme(axis.text.x = element_text(angle = 0),
+                  legend.position = "bottom") +
+            labs(x = "",
+                 y = "",
+                 caption = wrapit(
+                   paste(
+                     "Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de",
+                     unique(dat_SP_res_simple()$fuente)
+                   )
+                 )) +
+            scale_y_continuous(labels = addUnits) +
+            scale_colour_manual(name = "", values = paleta_expandida) +
+            if (input$indicador_SP_res %in% vars_corte) {
+              ggtitle(paste0(input$indicador_SP_res, " (", input$corte_SP_res, ")"))
+              
+            } else {
+              ggtitle(paste(input$indicador_SP_res))
+              
+            }
+          
+          print(plot_SP_res)
+          ggsave(
+            "www/indicador SP_res.png",
+            width = 30,
+            height = 20,
+            units = "cm"
+          )
+          
+        } else if (input$visualizador_SP_res == "Anual gráfico") {
+          base_plot_SP_res <- dat_SP_res_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_SP_res)
+          
+          validate(need(
+            nrow(base_plot_SP_res) > 0,
+            'No hay datos disponible para esta búsqueda'
+          ))
+          
+          plot_SP_res <- ggplot(base_plot_SP_res,
+                               aes(x = fct_reorder(pais, valor), y = valor)) +
+            geom_segment(
+              aes(
+                x = fct_reorder(pais, valor),
+                xend = fct_reorder(pais, valor),
+                y = 0,
+                yend = valor
+              ),
+              size = 1,
+              color = "#2c3e50"
+            ) +
+            geom_point(color = "#2c3e50", size = 4) +
+            theme_light() +
+            coord_flip() +
+            theme(
+              axis.text.y = element_text(size = 12),
+              panel.grid.major.y = element_blank(),
+              panel.border = element_blank(),
+              axis.ticks.y = element_blank()
+            ) +
+            labs(x = "",
+                 y = "",
+                 caption = wrapit(
+                   paste(
+                     "Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de",
+                     unique(dat_SP_res_anual()$fuente)
+                   )
+                 )) +
+            scale_y_continuous(labels = addUnits) +
+            if (input$indicador_SP_res %in% vars_corte) {
+              ggtitle(paste0(input$indicador_SP_res, " (", input$corte_SP_res, ")"))
+              
+            } else {
+              ggtitle(paste(input$indicador_SP_res))
+              
+            }
+          
+          print(plot_SP_res)
+          ggsave(
+            "www/indicador SP_res.png",
+            width = 25,
+            height = 30,
+            units = "cm"
+          )
+          
+        }
+        
+      })
+      
+      output$map_SP_res <- renderLeaflet({
+        # Read this shape file with the rgdal library.
+        world_spdf <- readOGR(dsn = "data" ,
+                              layer = "TM_WORLD_BORDERS_SIMPL-0.3",
+                              verbose = FALSE)
+        
+        # Pegar datos
+        world_spdf@data <- world_spdf@data %>%
+          left_join(select(dat_SP_res_anual(), pais_eng, valor_original),
+                    by = c("NAME" = "pais_eng"))
+        
+        # Library
+        
+        # Create a color palette with handmade bins.
+        
+        
+        if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -1000) {
+          round_number <- 1000
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -100) {
+          round_number <- 100
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -10) {
+          round_number <- 10
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -1) {
+          round_number <- 1
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 1000) {
+          round_number <- 1000
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 100) {
+          round_number <- 100
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 10) {
+          round_number <- 10
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 1) {
+          round_number <- 1
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= -1) {
+          round_number <- .1
+          
+        }
+        
+        min_val <-
+          plyr::round_any(min(world_spdf@data$valor_original, na.rm = T),
+                          round_number,
+                          floor)
+        max_val <-
+          plyr::round_any(max(world_spdf@data$valor_original, na.rm = T),
+                          round_number,
+                          ceiling)
+        dif <- max_val - min_val
+        dif_5 <- dif / 5
+        val_1 <- min_val + dif_5
+        val_2 <- min_val + (dif_5 * 2)
+        val_3 <- min_val + (dif_5 * 3)
+        val_4 <- min_val + (dif_5 * 4)
+        
+        mybins <- c(min_val, val_1, val_2, val_3, val_4, max_val)
+        
+        mypalette <- colorBin(
+          palette = "YlOrBr",
+          domain = world_spdf@data$valor_original,
+          na.color = "transparent",
+          bins = mybins
+        )
+        
+        # Prepare the text for tooltips:
+        mytext <- paste(
+          "País: ",
+          world_spdf@data$NAME,
+          "<br/>",
+          "Valor: ",
+          round(world_spdf@data$valor_original, 2),
+          sep = ""
+        ) %>%
+          lapply(htmltools::HTML)
+        
+        # Final Map
+        leaflet(world_spdf) %>%
+          addTiles()  %>%
+          setView(lat = 30,
+                  lng = 0 ,
+                  zoom = 1) %>%
+          addPolygons(
+            fillColor = ~ mypalette(valor_original),
+            stroke = TRUE,
+            fillOpacity = 0.9,
+            color = "white",
+            weight = 0.3,
+            label = mytext,
+            labelOptions = labelOptions(
+              style = list("font-weight" = "normal", padding = "3px 8px"),
+              textsize = "13px",
+              direction = "auto"
+            )
+          ) %>%
+          addLegend(
+            pal = mypalette,
+            values =  ~ valor_original,
+            opacity = 0.9,
+            title = wrapit(input$indicador_SP_res),
+            position = "bottomleft"
+          )
+        
+      })
+      
+      # Botón descarga grafico
+      output$baja_plot_SP_res <- downloadHandler(filename <- function() {
+        paste("indicador SP_res", "png", sep = ".")
+      },
+      
+      content <- function(file) {
+        file.copy("www/indicador SP_res.png", file)
+      },
+      contentType = "www/indicador SP_res")
+      
+      
+      ## Data series temporal
+      
+      # Data para tabla y exportar
+      dat_SP_res_st <- reactive({
+        if (input$indicador_SP_res %in% vars_corte) {
+          dat_SP_res() %>%
+            filter(fecha >= input$fecha_dat_SP_res[1] &
+                     fecha <= input$fecha_dat_SP_res[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_SP_res |
+                     pais %in% input$chbox_reg_SP_res) %>%
+            select(pais, fecha, names(dat_SP_res()[, ncol(dat_SP_res())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_SP_res() %>%
+            filter(fecha >= input$fecha_dat_SP_res[1] &
+                     fecha <= input$fecha_dat_SP_res[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_SP_res |
+                     pais %in% input$chbox_reg_SP_res) %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+        }
+      })
+      
+      # Metadata
+      dat_SP_res_m <- reactive({
+        dat_SP_res() %>%
+          select(
+            nomindicador,
+            definicion,
+            metodo_de_agregacion,
+            concepto_estadistico_y_metodologia,
+            relevancia,
+            limitaciones_y_excepciones
+          ) %>%
+          mutate(`Unidad de Métodos y Acceso a Datos (FCS -UdelaR)` = " ") %>%
+          distinct() %>%
+          gather(key = "", value = " ")
+        
+      })
+      
+      # Data completa
+      dat_SP_res_c <- reactive({
+        if (input$indicador_SP_res %in% vars_corte) {
+          dat_SP_res() %>%
+            select(pais, fecha, names(dat_SP_res()[, ncol(dat_SP_res())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_SP_res() %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+        }
+        
+      })
+      
+      # Lista para descarga
+      list_dat_SP_res_st <- reactive({
+        list_dat_SP_res <- list(
+          "Data" = dat_SP_res_st(),
+          "Metadata" = dat_SP_res_m(),
+          "Data Completa" = dat_SP_res_c()
+        )
+      })
+      
+      
+      ## Data por año
+      # Data para tabla y exportar
+      dat_SP_res_a <- reactive({
+        if (input$indicador_SP_res %in% vars_corte) {
+          dat_SP_res_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_SP_res) %>%
+            select(pais, fecha, names(dat_SP_res()[, ncol(dat_SP_res())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_SP_res_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_SP_res) %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        }
+      })
+      
+      # Lista para descarga
+      list_dat_SP_res_a <- reactive({
+        list_dat_SP_res <- list(
+          "Data" = dat_SP_res_a(),
+          "Metadata" = dat_SP_res_m(),
+          "Data Completa" = dat_SP_res_c()
+        )
+      })
+      
+      # Tablas en shiny
+      output$tab_dat_SP_res <- renderDT({
+        if (input$indicador_SP_res %in% vars_corte) {
+          DT::datatable(
+            dat_SP_res_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Corte", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_SP_res,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(4, '', mark = ",")
+          
+        } else if (input$visualizador_SP_res == "Serie de tiempo") {
+          DT::datatable(
+            dat_SP_res_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_SP_res,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        } else if (input$visualizador_SP_res %in% c("Anual gráfico", "Anual mapa")) {
+          DT::datatable(
+            dat_SP_res_a(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_SP_res,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        }
+      })
+      
+      # Descarga tabla
+      output$dl_tabla_dat_SP_res <- downloadHandler(
+        filename = function() {
+          paste("resultados-", input$indicador_SP_res, ".xlsx", sep = "")
+        },
+        content = function(file) {
+          if (input$visualizador_SP_res == "Serie de tiempo") {
+            openxlsx::write.xlsx(list_dat_SP_res_st(), file)
+            
+          } else if (input$visualizador_SP_res %in% c("Anual gráfico", "Anual mapa")) {
+            openxlsx::write.xlsx(list_dat_SP_res_a(), file)
+            
+          }
+        }
+      )
+      
+      ##  27.  SP_deuda (dat_SP_deuda)   ====================================
+      
+      # Data SP_deuda
+      
+      dat_SP_deuda <- reactive({
+        req(input$indicador_SP_deuda)
+        
+        data %>%
+          filter(nomindicador == input$indicador_SP_deuda) %>%
+          janitor::remove_empty("cols")
+        
+      })
+      
+      
+      # Titulo
+      output$title_dat_SP_deuda <- renderUI({
+        helpText(HTML(unique(dat_SP_deuda()$nomindicador)))
+      })
+      
+      # Subtitulo
+      output$subtitle_dat_SP_deuda <- renderUI({
+        helpText(HTML(unique(dat_SP_deuda()$definicion)))
+      })
+      
+      # Metodología
+      output$info_dat_SP_deuda <- renderUI({
+        helpText(HTML(
+          paste(
+            "<b>Método de Agregación:</b>",
+            unique(dat_SP_deuda()$metodo_de_agregacion),
+            "<b>Metodología:</b>",
+            unique(dat_SP_deuda()$concepto_estadistico_y_metodologia)
+          )
+        ))
+      })
+      
+      # Relevancia:
+      output$rel_dat_SP_deuda <- renderUI({
+        helpText(HTML(paste(
+          "<b>Relvancia:</b>", unique(dat_SP_deuda()$relevancia)
+        )))
+      })
+      
+      
+      output$fecha_dat_SP_deuda <- renderUI({
+        if (input$visualizador_SP_deuda == "Serie de tiempo") {
+          tagList(
+            tags$style(
+              type = 'text/css',
+              '#big_slider .irs-grid-text {font-size: 10px; transform: rotate(-90deg) translate(-15px);} ,.irs-grid-pol.large {height: 0px;}'
+            ),
+            div(
+              id = 'big_slider',
+              
+              sliderTextInput(
+                inputId = "fecha_dat_SP_deuda",
+                label = "Seleccione años",
+                choices = sort(unique(dat_SP_deuda()$fecha)),
+                selected = c(min(dat_SP_deuda()$fecha),
+                             max(dat_SP_deuda()$fecha)),
+                hide_min_max = T,
+                grid = TRUE,
+                width = "100%"
+              )
+            )
+          )
+          
+        } else {
+          selectInput(
+            inputId = "fecha_SP_deuda",
+            label = "Seleccione año:",
+            choices = dat_SP_deuda() %>%
+              drop_na(valor) %>%
+              select(fecha) %>%
+              arrange(desc(fecha)) %>%
+              unique() %>%
+              pull(),
+            selected = "2019"
+          )
+          
+        }
+        
+      })
+      
+      
+      output$corte_SP_deuda <- renderUI({
+        if (input$indicador_SP_deuda %in% vars_corte) {
+          selectInput(
+            inputId = "corte_SP_deuda",
+            label = "Seleccione categorías",
+            choices =  dat_SP_deuda() %>%
+              distinct(get(names(dat_SP_deuda(
+              )[, ncol(dat_SP_deuda())]))) %>%
+              pull(),
+            selected = dat_SP_deuda() %>%
+              filter(jerarquia == 1) %>%
+              distinct(get(names(dat_SP_deuda(
+              )[, ncol(dat_SP_deuda())]))) %>%
+              pull()
+          )
+        } else {
+          return(NULL)
+        }
+        
+      })
+      
+      
+      # Checkbox por pais
+      output$sel_SP_deuda_pais <- renderUI({
+        if (input$visualizador_SP_deuda == "Serie de tiempo") {
+          dropdown(
+            label = "Seleccione países",
+            status = "default",
+            width = 400,
+            circle = F,
+            
+            checkboxGroupInput(
+              inputId = "chbox_pais_SP_deuda",
+              label = "Seleccione países",
+              inline = TRUE,
+              choices = dat_SP_deuda() %>%
+                filter(region == 0) %>%
+                filter(nomindicador == input$indicador_SP_deuda) %>%
+                distinct(cod_pais) %>%
+                pull(),
+              selected = c("URY", "ARG", "BRA", "PRY")
+            )
+          )
+          
+        } else {
+          checkboxGroupInput(
+            inputId = "chbox_pais_reg_SP_deuda",
+            label = "Mostrar:",
+            inline = FALSE,
+            choices = c("Países", "Regiones"),
+            selected = "Países"
+          )
+          
+        }
+        
+      })
+      
+      # Checkbox por región
+      output$sel_SP_deuda_region <- renderUI({
+        if (input$visualizador_SP_deuda == "Serie de tiempo") {
+          dropdown(
+            label = "Seleccione regiones",
+            status = "default",
+            width = 400,
+            circle = F,
+            
+            checkboxGroupInput(
+              inputId = "chbox_reg_SP_deuda",
+              label = "Seleccione regiones",
+              inline = TRUE,
+              choices = dat_SP_deuda() %>%
+                filter(region == 1) %>%
+                filter(nomindicador == input$indicador_SP_deuda) %>%
+                distinct(pais) %>%
+                pull(),
+              selected = NULL
+            )
+          )
+          
+        } else {
+          return(NULL)
+          
+        }
+      })
+      
+      
+      dat_SP_deuda_anual <- reactive({
+        if (input$indicador_SP_deuda %in% vars_corte) {
+          dat_SP_deuda() %>%
+            filter(get(names(dat_SP_deuda()[, ncol(dat_SP_deuda())])) %in% input$corte_SP_deuda) %>%
+            filter(fecha == input$fecha_SP_deuda)
+          
+        } else {
+          dat_SP_deuda() %>%
+            filter(fecha == input$fecha_SP_deuda)
+          
+          
+        }
+      })
+      
+      dat_SP_deuda_simple <- reactive({
+        if (input$indicador_SP_deuda %in% vars_corte) {
+          dat_SP_deuda() %>%
+            filter(get(names(dat_SP_deuda()[, ncol(dat_SP_deuda())])) %in% input$corte_SP_deuda) %>%
+            filter(fecha >= input$fecha_dat_SP_deuda[1] &
+                     fecha <= input$fecha_dat_SP_deuda[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_SP_deuda |
+                     pais %in% input$chbox_reg_SP_deuda)
+          
+        } else {
+          dat_SP_deuda() %>%
+            filter(fecha >= input$fecha_dat_SP_deuda[1] &
+                     fecha <= input$fecha_dat_SP_deuda[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_SP_deuda |
+                     pais %in% input$chbox_reg_SP_deuda)
+        }
+        
+      })
+      
+      
+      # Gráficos SP_deuda
+      output$p_dat_SP_deuda <- renderPlot({
+        if (input$visualizador_SP_deuda == "Serie de tiempo") {
+          req(input$fecha_dat_SP_deuda, input$indicador_SP_deuda)
+          
+          plot_SP_deuda <- ggplot(data = dat_SP_deuda_simple(),
+                                aes(x = fecha, y = valor)) +
+            geom_line(aes(color = pais), size = 1, alpha = 0.5) +
+            geom_point(aes(color = pais), size = 3) +
+            theme(axis.text.x = element_text(angle = 0),
+                  legend.position = "bottom") +
+            labs(x = "",
+                 y = "",
+                 caption = wrapit(
+                   paste(
+                     "Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de",
+                     unique(dat_SP_deuda_simple()$fuente)
+                   )
+                 )) +
+            scale_y_continuous(labels = addUnits) +
+            scale_colour_manual(name = "", values = paleta_expandida) +
+            if (input$indicador_SP_deuda %in% vars_corte) {
+              ggtitle(paste0(input$indicador_SP_deuda, " (", input$corte_SP_deuda, ")"))
+              
+            } else {
+              ggtitle(paste(input$indicador_SP_deuda))
+              
+            }
+          
+          print(plot_SP_deuda)
+          ggsave(
+            "www/indicador SP_deuda.png",
+            width = 30,
+            height = 20,
+            units = "cm"
+          )
+          
+        } else if (input$visualizador_SP_deuda == "Anual gráfico") {
+          base_plot_SP_deuda <- dat_SP_deuda_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_SP_deuda)
+          
+          validate(need(
+            nrow(base_plot_SP_deuda) > 0,
+            'No hay datos disponible para esta búsqueda'
+          ))
+          
+          plot_SP_deuda <- ggplot(base_plot_SP_deuda,
+                                aes(x = fct_reorder(pais, valor), y = valor)) +
+            geom_segment(
+              aes(
+                x = fct_reorder(pais, valor),
+                xend = fct_reorder(pais, valor),
+                y = 0,
+                yend = valor
+              ),
+              size = 1,
+              color = "#2c3e50"
+            ) +
+            geom_point(color = "#2c3e50", size = 4) +
+            theme_light() +
+            coord_flip() +
+            theme(
+              axis.text.y = element_text(size = 12),
+              panel.grid.major.y = element_blank(),
+              panel.border = element_blank(),
+              axis.ticks.y = element_blank()
+            ) +
+            labs(x = "",
+                 y = "",
+                 caption = wrapit(
+                   paste(
+                     "Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de",
+                     unique(dat_SP_deuda_anual()$fuente)
+                   )
+                 )) +
+            scale_y_continuous(labels = addUnits) +
+            if (input$indicador_SP_deuda %in% vars_corte) {
+              ggtitle(paste0(input$indicador_SP_deuda, " (", input$corte_SP_deuda, ")"))
+              
+            } else {
+              ggtitle(paste(input$indicador_SP_deuda))
+              
+            }
+          
+          print(plot_SP_deuda)
+          ggsave(
+            "www/indicador SP_deuda.png",
+            width = 25,
+            height = 30,
+            units = "cm"
+          )
+          
+        }
+        
+      })
+      
+      output$map_SP_deuda <- renderLeaflet({
+        # Read this shape file with the rgdal library.
+        world_spdf <- readOGR(dsn = "data" ,
+                              layer = "TM_WORLD_BORDERS_SIMPL-0.3",
+                              verbose = FALSE)
+        
+        # Pegar datos
+        world_spdf@data <- world_spdf@data %>%
+          left_join(select(dat_SP_deuda_anual(), pais_eng, valor_original),
+                    by = c("NAME" = "pais_eng"))
+        
+        # Library
+        
+        # Create a color palette with handmade bins.
+        
+        
+        if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -1000) {
+          round_number <- 1000
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -100) {
+          round_number <- 100
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -10) {
+          round_number <- 10
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -1) {
+          round_number <- 1
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 1000) {
+          round_number <- 1000
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 100) {
+          round_number <- 100
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 10) {
+          round_number <- 10
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 1) {
+          round_number <- 1
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= -1) {
+          round_number <- .1
+          
+        }
+        
+        min_val <-
+          plyr::round_any(min(world_spdf@data$valor_original, na.rm = T),
+                          round_number,
+                          floor)
+        max_val <-
+          plyr::round_any(max(world_spdf@data$valor_original, na.rm = T),
+                          round_number,
+                          ceiling)
+        dif <- max_val - min_val
+        dif_5 <- dif / 5
+        val_1 <- min_val + dif_5
+        val_2 <- min_val + (dif_5 * 2)
+        val_3 <- min_val + (dif_5 * 3)
+        val_4 <- min_val + (dif_5 * 4)
+        
+        mybins <- c(min_val, val_1, val_2, val_3, val_4, max_val)
+        
+        mypalette <- colorBin(
+          palette = "YlOrBr",
+          domain = world_spdf@data$valor_original,
+          na.color = "transparent",
+          bins = mybins
+        )
+        
+        # Prepare the text for tooltips:
+        mytext <- paste(
+          "País: ",
+          world_spdf@data$NAME,
+          "<br/>",
+          "Valor: ",
+          round(world_spdf@data$valor_original, 2),
+          sep = ""
+        ) %>%
+          lapply(htmltools::HTML)
+        
+        # Final Map
+        leaflet(world_spdf) %>%
+          addTiles()  %>%
+          setView(lat = 30,
+                  lng = 0 ,
+                  zoom = 1) %>%
+          addPolygons(
+            fillColor = ~ mypalette(valor_original),
+            stroke = TRUE,
+            fillOpacity = 0.9,
+            color = "white",
+            weight = 0.3,
+            label = mytext,
+            labelOptions = labelOptions(
+              style = list("font-weight" = "normal", padding = "3px 8px"),
+              textsize = "13px",
+              direction = "auto"
+            )
+          ) %>%
+          addLegend(
+            pal = mypalette,
+            values =  ~ valor_original,
+            opacity = 0.9,
+            title = wrapit(input$indicador_SP_deuda),
+            position = "bottomleft"
+          )
+        
+      })
+      
+      # Botón descarga grafico
+      output$baja_plot_SP_deuda <- downloadHandler(filename <- function() {
+        paste("indicador SP_deuda", "png", sep = ".")
+      },
+      
+      content <- function(file) {
+        file.copy("www/indicador SP_deuda.png", file)
+      },
+      contentType = "www/indicador SP_deuda")
+      
+      
+      ## Data series temporal
+      
+      # Data para tabla y exportar
+      dat_SP_deuda_st <- reactive({
+        if (input$indicador_SP_deuda %in% vars_corte) {
+          dat_SP_deuda() %>%
+            filter(fecha >= input$fecha_dat_SP_deuda[1] &
+                     fecha <= input$fecha_dat_SP_deuda[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_SP_deuda |
+                     pais %in% input$chbox_reg_SP_deuda) %>%
+            select(pais, fecha, names(dat_SP_deuda()[, ncol(dat_SP_deuda())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_SP_deuda() %>%
+            filter(fecha >= input$fecha_dat_SP_deuda[1] &
+                     fecha <= input$fecha_dat_SP_deuda[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_SP_deuda |
+                     pais %in% input$chbox_reg_SP_deuda) %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+        }
+      })
+      
+      # Metadata
+      dat_SP_deuda_m <- reactive({
+        dat_SP_deuda() %>%
+          select(
+            nomindicador,
+            definicion,
+            metodo_de_agregacion,
+            concepto_estadistico_y_metodologia,
+            relevancia,
+            limitaciones_y_excepciones
+          ) %>%
+          mutate(`Unidad de Métodos y Acceso a Datos (FCS -UdelaR)` = " ") %>%
+          distinct() %>%
+          gather(key = "", value = " ")
+        
+      })
+      
+      # Data completa
+      dat_SP_deuda_c <- reactive({
+        if (input$indicador_SP_deuda %in% vars_corte) {
+          dat_SP_deuda() %>%
+            select(pais, fecha, names(dat_SP_deuda()[, ncol(dat_SP_deuda())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_SP_deuda() %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+        }
+        
+      })
+      
+      # Lista para descarga
+      list_dat_SP_deuda_st <- reactive({
+        list_dat_SP_deuda <- list(
+          "Data" = dat_SP_deuda_st(),
+          "Metadata" = dat_SP_deuda_m(),
+          "Data Completa" = dat_SP_deuda_c()
+        )
+      })
+      
+      
+      ## Data por año
+      # Data para tabla y exportar
+      dat_SP_deuda_a <- reactive({
+        if (input$indicador_SP_deuda %in% vars_corte) {
+          dat_SP_deuda_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_SP_deuda) %>%
+            select(pais, fecha, names(dat_SP_deuda()[, ncol(dat_SP_deuda())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_SP_deuda_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_SP_deuda) %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        }
+      })
+      
+      # Lista para descarga
+      list_dat_SP_deuda_a <- reactive({
+        list_dat_SP_deuda <- list(
+          "Data" = dat_SP_deuda_a(),
+          "Metadata" = dat_SP_deuda_m(),
+          "Data Completa" = dat_SP_deuda_c()
+        )
+      })
+      
+      # Tablas en shiny
+      output$tab_dat_SP_deuda <- renderDT({
+        if (input$indicador_SP_deuda %in% vars_corte) {
+          DT::datatable(
+            dat_SP_deuda_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Corte", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_SP_deuda,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(4, '', mark = ",")
+          
+        } else if (input$visualizador_SP_deuda == "Serie de tiempo") {
+          DT::datatable(
+            dat_SP_deuda_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_SP_deuda,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        } else if (input$visualizador_SP_deuda %in% c("Anual gráfico", "Anual mapa")) {
+          DT::datatable(
+            dat_SP_deuda_a(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_SP_deuda,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        }
+      })
+      
+      # Descarga tabla
+      output$dl_tabla_dat_SP_deuda <- downloadHandler(
+        filename = function() {
+          paste("resultados-", input$indicador_SP_deuda, ".xlsx", sep = "")
+        },
+        content = function(file) {
+          if (input$visualizador_SP_deuda == "Serie de tiempo") {
+            openxlsx::write.xlsx(list_dat_SP_deuda_st(), file)
+            
+          } else if (input$visualizador_SP_deuda %in% c("Anual gráfico", "Anual mapa")) {
+            openxlsx::write.xlsx(list_dat_SP_deuda_a(), file)
+            
+          }
+        }
+      )
+      
+      ##  28.  SP_empleo (dat_SP_empleo)   ====================================
+      
+      # Data SP_empleo
+      
+      dat_SP_empleo <- reactive({
+        req(input$indicador_SP_empleo)
+        
+        data %>%
+          filter(nomindicador == input$indicador_SP_empleo) %>%
+          janitor::remove_empty("cols")
+        
+      })
+      
+      
+      # Titulo
+      output$title_dat_SP_empleo <- renderUI({
+        helpText(HTML(unique(dat_SP_empleo()$nomindicador)))
+      })
+      
+      # Subtitulo
+      output$subtitle_dat_SP_empleo <- renderUI({
+        helpText(HTML(unique(dat_SP_empleo()$definicion)))
+      })
+      
+      # Metodología
+      output$info_dat_SP_empleo <- renderUI({
+        helpText(HTML(
+          paste(
+            "<b>Método de Agregación:</b>",
+            unique(dat_SP_empleo()$metodo_de_agregacion),
+            "<b>Metodología:</b>",
+            unique(dat_SP_empleo()$concepto_estadistico_y_metodologia)
+          )
+        ))
+      })
+      
+      # Relevancia:
+      output$rel_dat_SP_empleo <- renderUI({
+        helpText(HTML(paste(
+          "<b>Relvancia:</b>", unique(dat_SP_empleo()$relevancia)
+        )))
+      })
+      
+      
+      output$fecha_dat_SP_empleo <- renderUI({
+        if (input$visualizador_SP_empleo == "Serie de tiempo") {
+          tagList(
+            tags$style(
+              type = 'text/css',
+              '#big_slider .irs-grid-text {font-size: 10px; transform: rotate(-90deg) translate(-15px);} ,.irs-grid-pol.large {height: 0px;}'
+            ),
+            div(
+              id = 'big_slider',
+              
+              sliderTextInput(
+                inputId = "fecha_dat_SP_empleo",
+                label = "Seleccione años",
+                choices = sort(unique(dat_SP_empleo()$fecha)),
+                selected = c(min(dat_SP_empleo()$fecha),
+                             max(dat_SP_empleo()$fecha)),
+                hide_min_max = T,
+                grid = TRUE,
+                width = "100%"
+              )
+            )
+          )
+          
+        } else {
+          selectInput(
+            inputId = "fecha_SP_empleo",
+            label = "Seleccione año:",
+            choices = dat_SP_empleo() %>%
+              drop_na(valor) %>%
+              select(fecha) %>%
+              arrange(desc(fecha)) %>%
+              unique() %>%
+              pull(),
+            selected = "2019"
+          )
+          
+        }
+        
+      })
+      
+      
+      output$corte_SP_empleo <- renderUI({
+        if (input$indicador_SP_empleo %in% vars_corte) {
+          selectInput(
+            inputId = "corte_SP_empleo",
+            label = "Seleccione categorías",
+            choices =  dat_SP_empleo() %>%
+              distinct(get(names(dat_SP_empleo(
+              )[, ncol(dat_SP_empleo())]))) %>%
+              pull(),
+            selected = dat_SP_empleo() %>%
+              filter(jerarquia == 1) %>%
+              distinct(get(names(dat_SP_empleo(
+              )[, ncol(dat_SP_empleo())]))) %>%
+              pull()
+          )
+        } else {
+          return(NULL)
+        }
+        
+      })
+      
+      
+      # Checkbox por pais
+      output$sel_SP_empleo_pais <- renderUI({
+        if (input$visualizador_SP_empleo == "Serie de tiempo") {
+          dropdown(
+            label = "Seleccione países",
+            status = "default",
+            width = 400,
+            circle = F,
+            
+            checkboxGroupInput(
+              inputId = "chbox_pais_SP_empleo",
+              label = "Seleccione países",
+              inline = TRUE,
+              choices = dat_SP_empleo() %>%
+                filter(region == 0) %>%
+                filter(nomindicador == input$indicador_SP_empleo) %>%
+                distinct(cod_pais) %>%
+                pull(),
+              selected = c("URY", "ARG", "BRA", "PRY")
+            )
+          )
+          
+        } else {
+          checkboxGroupInput(
+            inputId = "chbox_pais_reg_SP_empleo",
+            label = "Mostrar:",
+            inline = FALSE,
+            choices = c("Países", "Regiones"),
+            selected = "Países"
+          )
+          
+        }
+        
+      })
+      
+      # Checkbox por región
+      output$sel_SP_empleo_region <- renderUI({
+        if (input$visualizador_SP_empleo == "Serie de tiempo") {
+          dropdown(
+            label = "Seleccione regiones",
+            status = "default",
+            width = 400,
+            circle = F,
+            
+            checkboxGroupInput(
+              inputId = "chbox_reg_SP_empleo",
+              label = "Seleccione regiones",
+              inline = TRUE,
+              choices = dat_SP_empleo() %>%
+                filter(region == 1) %>%
+                filter(nomindicador == input$indicador_SP_empleo) %>%
+                distinct(pais) %>%
+                pull(),
+              selected = NULL
+            )
+          )
+          
+        } else {
+          return(NULL)
+          
+        }
+      })
+      
+      
+      dat_SP_empleo_anual <- reactive({
+        if (input$indicador_SP_empleo %in% vars_corte) {
+          dat_SP_empleo() %>%
+            filter(get(names(dat_SP_empleo()[, ncol(dat_SP_empleo())])) %in% input$corte_SP_empleo) %>%
+            filter(fecha == input$fecha_SP_empleo)
+          
+        } else {
+          dat_SP_empleo() %>%
+            filter(fecha == input$fecha_SP_empleo)
+          
+          
+        }
+      })
+      
+      dat_SP_empleo_simple <- reactive({
+        if (input$indicador_SP_empleo %in% vars_corte) {
+          dat_SP_empleo() %>%
+            filter(get(names(dat_SP_empleo()[, ncol(dat_SP_empleo())])) %in% input$corte_SP_empleo) %>%
+            filter(fecha >= input$fecha_dat_SP_empleo[1] &
+                     fecha <= input$fecha_dat_SP_empleo[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_SP_empleo |
+                     pais %in% input$chbox_reg_SP_empleo)
+          
+        } else {
+          dat_SP_empleo() %>%
+            filter(fecha >= input$fecha_dat_SP_empleo[1] &
+                     fecha <= input$fecha_dat_SP_empleo[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_SP_empleo |
+                     pais %in% input$chbox_reg_SP_empleo)
+        }
+        
+      })
+      
+      
+      # Gráficos SP_empleo
+      output$p_dat_SP_empleo <- renderPlot({
+        if (input$visualizador_SP_empleo == "Serie de tiempo") {
+          req(input$fecha_dat_SP_empleo, input$indicador_SP_empleo)
+          
+          plot_SP_empleo <- ggplot(data = dat_SP_empleo_simple(),
+                                  aes(x = fecha, y = valor)) +
+            geom_line(aes(color = pais), size = 1, alpha = 0.5) +
+            geom_point(aes(color = pais), size = 3) +
+            theme(axis.text.x = element_text(angle = 0),
+                  legend.position = "bottom") +
+            labs(x = "",
+                 y = "",
+                 caption = wrapit(
+                   paste(
+                     "Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de",
+                     unique(dat_SP_empleo_simple()$fuente)
+                   )
+                 )) +
+            scale_y_continuous(labels = addUnits) +
+            scale_colour_manual(name = "", values = paleta_expandida) +
+            if (input$indicador_SP_empleo %in% vars_corte) {
+              ggtitle(paste0(input$indicador_SP_empleo, " (", input$corte_SP_empleo, ")"))
+              
+            } else {
+              ggtitle(paste(input$indicador_SP_empleo))
+              
+            }
+          
+          print(plot_SP_empleo)
+          ggsave(
+            "www/indicador SP_empleo.png",
+            width = 30,
+            height = 20,
+            units = "cm"
+          )
+          
+        } else if (input$visualizador_SP_empleo == "Anual gráfico") {
+          base_plot_SP_empleo <- dat_SP_empleo_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_SP_empleo)
+          
+          validate(need(
+            nrow(base_plot_SP_empleo) > 0,
+            'No hay datos disponible para esta búsqueda'
+          ))
+          
+          plot_SP_empleo <- ggplot(base_plot_SP_empleo,
+                                  aes(x = fct_reorder(pais, valor), y = valor)) +
+            geom_segment(
+              aes(
+                x = fct_reorder(pais, valor),
+                xend = fct_reorder(pais, valor),
+                y = 0,
+                yend = valor
+              ),
+              size = 1,
+              color = "#2c3e50"
+            ) +
+            geom_point(color = "#2c3e50", size = 4) +
+            theme_light() +
+            coord_flip() +
+            theme(
+              axis.text.y = element_text(size = 12),
+              panel.grid.major.y = element_blank(),
+              panel.border = element_blank(),
+              axis.ticks.y = element_blank()
+            ) +
+            labs(x = "",
+                 y = "",
+                 caption = wrapit(
+                   paste(
+                     "Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de",
+                     unique(dat_SP_empleo_anual()$fuente)
+                   )
+                 )) +
+            scale_y_continuous(labels = addUnits) +
+            if (input$indicador_SP_empleo %in% vars_corte) {
+              ggtitle(paste0(input$indicador_SP_empleo, " (", input$corte_SP_empleo, ")"))
+              
+            } else {
+              ggtitle(paste(input$indicador_SP_empleo))
+              
+            }
+          
+          print(plot_SP_empleo)
+          ggsave(
+            "www/indicador SP_empleo.png",
+            width = 25,
+            height = 30,
+            units = "cm"
+          )
+          
+        }
+        
+      })
+      
+      output$map_SP_empleo <- renderLeaflet({
+        # Read this shape file with the rgdal library.
+        world_spdf <- readOGR(dsn = "data" ,
+                              layer = "TM_WORLD_BORDERS_SIMPL-0.3",
+                              verbose = FALSE)
+        
+        # Pegar datos
+        world_spdf@data <- world_spdf@data %>%
+          left_join(select(dat_SP_empleo_anual(), pais_eng, valor_original),
+                    by = c("NAME" = "pais_eng"))
+        
+        # Library
+        
+        # Create a color palette with handmade bins.
+        
+        
+        if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -1000) {
+          round_number <- 1000
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -100) {
+          round_number <- 100
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -10) {
+          round_number <- 10
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -1) {
+          round_number <- 1
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 1000) {
+          round_number <- 1000
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 100) {
+          round_number <- 100
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 10) {
+          round_number <- 10
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 1) {
+          round_number <- 1
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= -1) {
+          round_number <- .1
+          
+        }
+        
+        min_val <-
+          plyr::round_any(min(world_spdf@data$valor_original, na.rm = T),
+                          round_number,
+                          floor)
+        max_val <-
+          plyr::round_any(max(world_spdf@data$valor_original, na.rm = T),
+                          round_number,
+                          ceiling)
+        dif <- max_val - min_val
+        dif_5 <- dif / 5
+        val_1 <- min_val + dif_5
+        val_2 <- min_val + (dif_5 * 2)
+        val_3 <- min_val + (dif_5 * 3)
+        val_4 <- min_val + (dif_5 * 4)
+        
+        mybins <- c(min_val, val_1, val_2, val_3, val_4, max_val)
+        
+        mypalette <- colorBin(
+          palette = "YlOrBr",
+          domain = world_spdf@data$valor_original,
+          na.color = "transparent",
+          bins = mybins
+        )
+        
+        # Prepare the text for tooltips:
+        mytext <- paste(
+          "País: ",
+          world_spdf@data$NAME,
+          "<br/>",
+          "Valor: ",
+          round(world_spdf@data$valor_original, 2),
+          sep = ""
+        ) %>%
+          lapply(htmltools::HTML)
+        
+        # Final Map
+        leaflet(world_spdf) %>%
+          addTiles()  %>%
+          setView(lat = 30,
+                  lng = 0 ,
+                  zoom = 1) %>%
+          addPolygons(
+            fillColor = ~ mypalette(valor_original),
+            stroke = TRUE,
+            fillOpacity = 0.9,
+            color = "white",
+            weight = 0.3,
+            label = mytext,
+            labelOptions = labelOptions(
+              style = list("font-weight" = "normal", padding = "3px 8px"),
+              textsize = "13px",
+              direction = "auto"
+            )
+          ) %>%
+          addLegend(
+            pal = mypalette,
+            values =  ~ valor_original,
+            opacity = 0.9,
+            title = wrapit(input$indicador_SP_empleo),
+            position = "bottomleft"
+          )
+        
+      })
+      
+      # Botón descarga grafico
+      output$baja_plot_SP_empleo <- downloadHandler(filename <- function() {
+        paste("indicador SP_empleo", "png", sep = ".")
+      },
+      
+      content <- function(file) {
+        file.copy("www/indicador SP_empleo.png", file)
+      },
+      contentType = "www/indicador SP_empleo")
+      
+      
+      ## Data series temporal
+      
+      # Data para tabla y exportar
+      dat_SP_empleo_st <- reactive({
+        if (input$indicador_SP_empleo %in% vars_corte) {
+          dat_SP_empleo() %>%
+            filter(fecha >= input$fecha_dat_SP_empleo[1] &
+                     fecha <= input$fecha_dat_SP_empleo[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_SP_empleo |
+                     pais %in% input$chbox_reg_SP_empleo) %>%
+            select(pais, fecha, names(dat_SP_empleo()[, ncol(dat_SP_empleo())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_SP_empleo() %>%
+            filter(fecha >= input$fecha_dat_SP_empleo[1] &
+                     fecha <= input$fecha_dat_SP_empleo[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_SP_empleo |
+                     pais %in% input$chbox_reg_SP_empleo) %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+        }
+      })
+      
+      # Metadata
+      dat_SP_empleo_m <- reactive({
+        dat_SP_empleo() %>%
+          select(
+            nomindicador,
+            definicion,
+            metodo_de_agregacion,
+            concepto_estadistico_y_metodologia,
+            relevancia,
+            limitaciones_y_excepciones
+          ) %>%
+          mutate(`Unidad de Métodos y Acceso a Datos (FCS -UdelaR)` = " ") %>%
+          distinct() %>%
+          gather(key = "", value = " ")
+        
+      })
+      
+      # Data completa
+      dat_SP_empleo_c <- reactive({
+        if (input$indicador_SP_empleo %in% vars_corte) {
+          dat_SP_empleo() %>%
+            select(pais, fecha, names(dat_SP_empleo()[, ncol(dat_SP_empleo())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_SP_empleo() %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+        }
+        
+      })
+      
+      # Lista para descarga
+      list_dat_SP_empleo_st <- reactive({
+        list_dat_SP_empleo <- list(
+          "Data" = dat_SP_empleo_st(),
+          "Metadata" = dat_SP_empleo_m(),
+          "Data Completa" = dat_SP_empleo_c()
+        )
+      })
+      
+      
+      ## Data por año
+      # Data para tabla y exportar
+      dat_SP_empleo_a <- reactive({
+        if (input$indicador_SP_empleo %in% vars_corte) {
+          dat_SP_empleo_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_SP_empleo) %>%
+            select(pais, fecha, names(dat_SP_empleo()[, ncol(dat_SP_empleo())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_SP_empleo_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_SP_empleo) %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        }
+      })
+      
+      # Lista para descarga
+      list_dat_SP_empleo_a <- reactive({
+        list_dat_SP_empleo <- list(
+          "Data" = dat_SP_empleo_a(),
+          "Metadata" = dat_SP_empleo_m(),
+          "Data Completa" = dat_SP_empleo_c()
+        )
+      })
+      
+      # Tablas en shiny
+      output$tab_dat_SP_empleo <- renderDT({
+        if (input$indicador_SP_empleo %in% vars_corte) {
+          DT::datatable(
+            dat_SP_empleo_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Corte", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_SP_empleo,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(4, '', mark = ",")
+          
+        } else if (input$visualizador_SP_empleo == "Serie de tiempo") {
+          DT::datatable(
+            dat_SP_empleo_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_SP_empleo,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        } else if (input$visualizador_SP_empleo %in% c("Anual gráfico", "Anual mapa")) {
+          DT::datatable(
+            dat_SP_empleo_a(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_SP_empleo,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        }
+      })
+      
+      # Descarga tabla
+      output$dl_tabla_dat_SP_empleo <- downloadHandler(
+        filename = function() {
+          paste("resultados-", input$indicador_SP_empleo, ".xlsx", sep = "")
+        },
+        content = function(file) {
+          if (input$visualizador_SP_empleo == "Serie de tiempo") {
+            openxlsx::write.xlsx(list_dat_SP_empleo_st(), file)
+            
+          } else if (input$visualizador_SP_empleo %in% c("Anual gráfico", "Anual mapa")) {
+            openxlsx::write.xlsx(list_dat_SP_empleo_a(), file)
+            
+          }
+        }
+      )
+      
+      ##  29.  EST_empleo (dat_EST_empleo)   ====================================
+      
+      # Data EST_empleo
+      
+      dat_EST_empleo <- reactive({
+        req(input$indicador_EST_empleo)
+        
+        data %>%
+          filter(nomindicador == input$indicador_EST_empleo) %>%
+          janitor::remove_empty("cols")
+        
+      })
+      
+      
+      # Titulo
+      output$title_dat_EST_empleo <- renderUI({
+        helpText(HTML(unique(dat_EST_empleo()$nomindicador)))
+      })
+      
+      # Subtitulo
+      output$subtitle_dat_EST_empleo <- renderUI({
+        helpText(HTML(unique(dat_EST_empleo()$definicion)))
+      })
+      
+      # Metodología
+      output$info_dat_EST_empleo <- renderUI({
+        helpText(HTML(
+          paste(
+            "<b>Método de Agregación:</b>",
+            unique(dat_EST_empleo()$metodo_de_agregacion),
+            "<b>Metodología:</b>",
+            unique(dat_EST_empleo()$concepto_estadistico_y_metodologia)
+          )
+        ))
+      })
+      
+      # Relevancia:
+      output$rel_dat_EST_empleo <- renderUI({
+        helpText(HTML(paste(
+          "<b>Relvancia:</b>", unique(dat_EST_empleo()$relevancia)
+        )))
+      })
+      
+      
+      output$fecha_dat_EST_empleo <- renderUI({
+        if (input$visualizador_EST_empleo == "Serie de tiempo") {
+          tagList(
+            tags$style(
+              type = 'text/css',
+              '#big_slider .irs-grid-text {font-size: 10px; transform: rotate(-90deg) translate(-15px);} ,.irs-grid-pol.large {height: 0px;}'
+            ),
+            div(
+              id = 'big_slider',
+              
+              sliderTextInput(
+                inputId = "fecha_dat_EST_empleo",
+                label = "Seleccione años",
+                choices = sort(unique(dat_EST_empleo()$fecha)),
+                selected = c(min(dat_EST_empleo()$fecha),
+                             max(dat_EST_empleo()$fecha)),
+                hide_min_max = T,
+                grid = TRUE,
+                width = "100%"
+              )
+            )
+          )
+          
+        } else {
+          selectInput(
+            inputId = "fecha_EST_empleo",
+            label = "Seleccione año:",
+            choices = dat_EST_empleo() %>%
+              drop_na(valor) %>%
+              select(fecha) %>%
+              arrange(desc(fecha)) %>%
+              unique() %>%
+              pull(),
+            selected = "2019"
+          )
+          
+        }
+        
+      })
+      
+      
+      output$corte_EST_empleo <- renderUI({
+        if (input$indicador_EST_empleo %in% vars_corte) {
+          selectInput(
+            inputId = "corte_EST_empleo",
+            label = "Seleccione categorías",
+            choices =  dat_EST_empleo() %>%
+              distinct(get(names(dat_EST_empleo(
+              )[, ncol(dat_EST_empleo())]))) %>%
+              pull(),
+            selected = dat_EST_empleo() %>%
+              filter(jerarquia == 1) %>%
+              distinct(get(names(dat_EST_empleo(
+              )[, ncol(dat_EST_empleo())]))) %>%
+              pull()
+          )
+        } else {
+          return(NULL)
+        }
+        
+      })
+      
+      
+      # Checkbox por pais
+      output$sel_EST_empleo_pais <- renderUI({
+        if (input$visualizador_EST_empleo == "Serie de tiempo") {
+          dropdown(
+            label = "Seleccione países",
+            status = "default",
+            width = 400,
+            circle = F,
+            
+            checkboxGroupInput(
+              inputId = "chbox_pais_EST_empleo",
+              label = "Seleccione países",
+              inline = TRUE,
+              choices = dat_EST_empleo() %>%
+                filter(region == 0) %>%
+                filter(nomindicador == input$indicador_EST_empleo) %>%
+                distinct(cod_pais) %>%
+                pull(),
+              selected = c("URY", "ARG", "BRA", "PRY")
+            )
+          )
+          
+        } else {
+          checkboxGroupInput(
+            inputId = "chbox_pais_reg_EST_empleo",
+            label = "Mostrar:",
+            inline = FALSE,
+            choices = c("Países", "Regiones"),
+            selected = "Países"
+          )
+          
+        }
+        
+      })
+      
+      # Checkbox por región
+      output$sel_EST_empleo_region <- renderUI({
+        if (input$visualizador_EST_empleo == "Serie de tiempo") {
+          dropdown(
+            label = "Seleccione regiones",
+            status = "default",
+            width = 400,
+            circle = F,
+            
+            checkboxGroupInput(
+              inputId = "chbox_reg_EST_empleo",
+              label = "Seleccione regiones",
+              inline = TRUE,
+              choices = dat_EST_empleo() %>%
+                filter(region == 1) %>%
+                filter(nomindicador == input$indicador_EST_empleo) %>%
+                distinct(pais) %>%
+                pull(),
+              selected = NULL
+            )
+          )
+          
+        } else {
+          return(NULL)
+          
+        }
+      })
+      
+      
+      dat_EST_empleo_anual <- reactive({
+        if (input$indicador_EST_empleo %in% vars_corte) {
+          dat_EST_empleo() %>%
+            filter(get(names(dat_EST_empleo()[, ncol(dat_EST_empleo())])) %in% input$corte_EST_empleo) %>%
+            filter(fecha == input$fecha_EST_empleo)
+          
+        } else {
+          dat_EST_empleo() %>%
+            filter(fecha == input$fecha_EST_empleo)
+          
+          
+        }
+      })
+      
+      dat_EST_empleo_simple <- reactive({
+        if (input$indicador_EST_empleo %in% vars_corte) {
+          dat_EST_empleo() %>%
+            filter(get(names(dat_EST_empleo()[, ncol(dat_EST_empleo())])) %in% input$corte_EST_empleo) %>%
+            filter(fecha >= input$fecha_dat_EST_empleo[1] &
+                     fecha <= input$fecha_dat_EST_empleo[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_EST_empleo |
+                     pais %in% input$chbox_reg_EST_empleo)
+          
+        } else {
+          dat_EST_empleo() %>%
+            filter(fecha >= input$fecha_dat_EST_empleo[1] &
+                     fecha <= input$fecha_dat_EST_empleo[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_EST_empleo |
+                     pais %in% input$chbox_reg_EST_empleo)
+        }
+        
+      })
+      
+      
+      # Gráficos EST_empleo
+      output$p_dat_EST_empleo <- renderPlot({
+        if (input$visualizador_EST_empleo == "Serie de tiempo") {
+          req(input$fecha_dat_EST_empleo, input$indicador_EST_empleo)
+          
+          plot_EST_empleo <- ggplot(data = dat_EST_empleo_simple(),
+                                   aes(x = fecha, y = valor)) +
+            geom_line(aes(color = pais), size = 1, alpha = 0.5) +
+            geom_point(aes(color = pais), size = 3) +
+            theme(axis.text.x = element_text(angle = 0),
+                  legend.position = "bottom") +
+            labs(x = "",
+                 y = "",
+                 caption = wrapit(
+                   paste(
+                     "Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de",
+                     unique(dat_EST_empleo_simple()$fuente)
+                   )
+                 )) +
+            scale_y_continuous(labels = addUnits) +
+            scale_colour_manual(name = "", values = paleta_expandida) +
+            if (input$indicador_EST_empleo %in% vars_corte) {
+              ggtitle(paste0(input$indicador_EST_empleo, " (", input$corte_EST_empleo, ")"))
+              
+            } else {
+              ggtitle(paste(input$indicador_EST_empleo))
+              
+            }
+          
+          print(plot_EST_empleo)
+          ggsave(
+            "www/indicador EST_empleo.png",
+            width = 30,
+            height = 20,
+            units = "cm"
+          )
+          
+        } else if (input$visualizador_EST_empleo == "Anual gráfico") {
+          base_plot_EST_empleo <- dat_EST_empleo_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_EST_empleo)
+          
+          validate(need(
+            nrow(base_plot_EST_empleo) > 0,
+            'No hay datos disponible para esta búsqueda'
+          ))
+          
+          plot_EST_empleo <- ggplot(base_plot_EST_empleo,
+                                   aes(x = fct_reorder(pais, valor), y = valor)) +
+            geom_segment(
+              aes(
+                x = fct_reorder(pais, valor),
+                xend = fct_reorder(pais, valor),
+                y = 0,
+                yend = valor
+              ),
+              size = 1,
+              color = "#2c3e50"
+            ) +
+            geom_point(color = "#2c3e50", size = 4) +
+            theme_light() +
+            coord_flip() +
+            theme(
+              axis.text.y = element_text(size = 12),
+              panel.grid.major.y = element_blank(),
+              panel.border = element_blank(),
+              axis.ticks.y = element_blank()
+            ) +
+            labs(x = "",
+                 y = "",
+                 caption = wrapit(
+                   paste(
+                     "Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de",
+                     unique(dat_EST_empleo_anual()$fuente)
+                   )
+                 )) +
+            scale_y_continuous(labels = addUnits) +
+            if (input$indicador_EST_empleo %in% vars_corte) {
+              ggtitle(paste0(input$indicador_SP_empleo, " (", input$corte_SP_empleo, ")"))
+              
+            } else {
+              ggtitle(paste(input$indicador_SP_empleo))
+              
+            }
+          
+          print(plot_SP_empleo)
+          ggsave(
+            "www/indicador SP_empleo.png",
+            width = 25,
+            height = 30,
+            units = "cm"
+          )
+          
+        }
+        
+      })
+      
+      output$map_EST_empleo <- renderLeaflet({
+        # Read this shape file with the rgdal library.
+        world_spdf <- readOGR(dsn = "data" ,
+                              layer = "TM_WORLD_BORDERS_SIMPL-0.3",
+                              verbose = FALSE)
+        
+        # Pegar datos
+        world_spdf@data <- world_spdf@data %>%
+          left_join(select(dat_EST_empleo_anual(), pais_eng, valor_original),
+                    by = c("NAME" = "pais_eng"))
+        
+        # Library
+        
+        # Create a color palette with handmade bins.
+        
+        
+        if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -1000) {
+          round_number <- 1000
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -100) {
+          round_number <- 100
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -10) {
+          round_number <- 10
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -1) {
+          round_number <- 1
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 1000) {
+          round_number <- 1000
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 100) {
+          round_number <- 100
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 10) {
+          round_number <- 10
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 1) {
+          round_number <- 1
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= -1) {
+          round_number <- .1
+          
+        }
+        
+        min_val <-
+          plyr::round_any(min(world_spdf@data$valor_original, na.rm = T),
+                          round_number,
+                          floor)
+        max_val <-
+          plyr::round_any(max(world_spdf@data$valor_original, na.rm = T),
+                          round_number,
+                          ceiling)
+        dif <- max_val - min_val
+        dif_5 <- dif / 5
+        val_1 <- min_val + dif_5
+        val_2 <- min_val + (dif_5 * 2)
+        val_3 <- min_val + (dif_5 * 3)
+        val_4 <- min_val + (dif_5 * 4)
+        
+        mybins <- c(min_val, val_1, val_2, val_3, val_4, max_val)
+        
+        mypalette <- colorBin(
+          palette = "YlOrBr",
+          domain = world_spdf@data$valor_original,
+          na.color = "transparent",
+          bins = mybins
+        )
+        
+        # Prepare the text for tooltips:
+        mytext <- paste(
+          "País: ",
+          world_spdf@data$NAME,
+          "<br/>",
+          "Valor: ",
+          round(world_spdf@data$valor_original, 2),
+          sep = ""
+        ) %>%
+          lapply(htmltools::HTML)
+        
+        # Final Map
+        leaflet(world_spdf) %>%
+          addTiles()  %>%
+          setView(lat = 30,
+                  lng = 0 ,
+                  zoom = 1) %>%
+          addPolygons(
+            fillColor = ~ mypalette(valor_original),
+            stroke = TRUE,
+            fillOpacity = 0.9,
+            color = "white",
+            weight = 0.3,
+            label = mytext,
+            labelOptions = labelOptions(
+              style = list("font-weight" = "normal", padding = "3px 8px"),
+              textsize = "13px",
+              direction = "auto"
+            )
+          ) %>%
+          addLegend(
+            pal = mypalette,
+            values =  ~ valor_original,
+            opacity = 0.9,
+            title = wrapit(input$indicador_EST_empleo),
+            position = "bottomleft"
+          )
+        
+      })
+      
+      # Botón descarga grafico
+      output$baja_plot_EST_empleo <- downloadHandler(filename <- function() {
+        paste("indicador EST_empleo", "png", sep = ".")
+      },
+      
+      content <- function(file) {
+        file.copy("www/indicador EST_empleo.png", file)
+      },
+      contentType = "www/indicador EST_empleo")
+      
+      
+      ## Data series temporal
+      
+      # Data para tabla y exportar
+      dat_EST_empleo_st <- reactive({
+        if (input$indicador_EST_empleo %in% vars_corte) {
+          dat_EST_empleo() %>%
+            filter(fecha >= input$fecha_dat_EST_empleo[1] &
+                     fecha <= input$fecha_dat_EST_empleo[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_EST_empleo |
+                     pais %in% input$chbox_reg_EST_empleo) %>%
+            select(pais, fecha, names(dat_EST_empleo()[, ncol(dat_EST_empleo())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_EST_empleo() %>%
+            filter(fecha >= input$fecha_dat_EST_empleo[1] &
+                     fecha <= input$fecha_dat_EST_empleo[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_EST_empleo |
+                     pais %in% input$chbox_reg_EST_empleo) %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+        }
+      })
+      
+      # Metadata
+      dat_EST_empleo_m <- reactive({
+        dat_EST_empleo() %>%
+          select(
+            nomindicador,
+            definicion,
+            metodo_de_agregacion,
+            concepto_estadistico_y_metodologia,
+            relevancia,
+            limitaciones_y_excepciones
+          ) %>%
+          mutate(`Unidad de Métodos y Acceso a Datos (FCS -UdelaR)` = " ") %>%
+          distinct() %>%
+          gather(key = "", value = " ")
+        
+      })
+      
+      # Data completa
+      dat_EST_empleo_c <- reactive({
+        if (input$indicador_EST_empleo %in% vars_corte) {
+          dat_EST_empleo() %>%
+            select(pais, fecha, names(dat_EST_empleo()[, ncol(dat_EST_empleo())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_EST_empleo() %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+        }
+        
+      })
+      
+      # Lista para descarga
+      list_dat_EST_empleo_st <- reactive({
+        list_dat_EST_empleo <- list(
+          "Data" = dat_EST_empleo_st(),
+          "Metadata" = dat_EST_empleo_m(),
+          "Data Completa" = dat_EST_empleo_c()
+        )
+      })
+      
+      
+      ## Data por año
+      # Data para tabla y exportar
+      dat_EST_empleo_a <- reactive({
+        if (input$indicador_EST_empleo %in% vars_corte) {
+          dat_EST_empleo_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_EST_empleo) %>%
+            select(pais, fecha, names(dat_EST_empleo()[, ncol(dat_EST_empleo())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_EST_empleo_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_EST_empleo) %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        }
+      })
+      
+      # Lista para descarga
+      list_dat_EST_empleo_a <- reactive({
+        list_dat_EST_empleo <- list(
+          "Data" = dat_EST_empleo_a(),
+          "Metadata" = dat_EST_empleo_m(),
+          "Data Completa" = dat_EST_empleo_c()
+        )
+      })
+      
+      # Tablas en shiny
+      output$tab_dat_EST_empleo <- renderDT({
+        if (input$indicador_EST_empleo %in% vars_corte) {
+          DT::datatable(
+            dat_EST_empleo_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Corte", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_EST_empleo,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(4, '', mark = ",")
+          
+        } else if (input$visualizador_EST_empleo == "Serie de tiempo") {
+          DT::datatable(
+            dat_EST_empleo_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_EST_empleo,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        } else if (input$visualizador_EST_empleo %in% c("Anual gráfico", "Anual mapa")) {
+          DT::datatable(
+            dat_EST_empleo_a(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_EST_empleo,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        }
+      })
+      
+      # Descarga tabla
+      output$dl_tabla_dat_EST_empleo <- downloadHandler(
+        filename = function() {
+          paste("resultados-", input$indicador_EST_empleo, ".xlsx", sep = "")
+        },
+        content = function(file) {
+          if (input$visualizador_EST_empleo == "Serie de tiempo") {
+            openxlsx::write.xlsx(list_dat_EST_empleo_st(), file)
+            
+          } else if (input$visualizador_EST_empleo %in% c("Anual gráfico", "Anual mapa")) {
+            openxlsx::write.xlsx(list_dat_EST_empleo_a(), file)
+            
+          }
+        }
+      )
+      
+      ##  30.  EST_salarios (dat_EST_salarios)   ====================================
+      
+      # Data EST_salarios
+      
+      dat_EST_salarios <- reactive({
+        req(input$indicador_EST_salarios)
+        
+        data %>%
+          filter(nomindicador == input$indicador_EST_salarios) %>%
+          janitor::remove_empty("cols")
+        
+      })
+      
+      
+      # Titulo
+      output$title_dat_EST_salarios <- renderUI({
+        helpText(HTML(unique(dat_EST_salarios()$nomindicador)))
+      })
+      
+      # Subtitulo
+      output$subtitle_dat_EST_salarios <- renderUI({
+        helpText(HTML(unique(dat_EST_salarios()$definicion)))
+      })
+      
+      # Metodología
+      output$info_dat_EST_salarios <- renderUI({
+        helpText(HTML(
+          paste(
+            "<b>Método de Agregación:</b>",
+            unique(dat_EST_salarios()$metodo_de_agregacion),
+            "<b>Metodología:</b>",
+            unique(dat_EST_salarios()$concepto_estadistico_y_metodologia)
+          )
+        ))
+      })
+      
+      # Relevancia:
+      output$rel_dat_EST_salarios <- renderUI({
+        helpText(HTML(paste(
+          "<b>Relvancia:</b>", unique(dat_EST_salarios()$relevancia)
+        )))
+      })
+      
+      
+      output$fecha_dat_EST_salarios <- renderUI({
+        if (input$visualizador_EST_salarios == "Serie de tiempo") {
+          tagList(
+            tags$style(
+              type = 'text/css',
+              '#big_slider .irs-grid-text {font-size: 10px; transform: rotate(-90deg) translate(-15px);} ,.irs-grid-pol.large {height: 0px;}'
+            ),
+            div(
+              id = 'big_slider',
+              
+              sliderTextInput(
+                inputId = "fecha_dat_EST_salarios",
+                label = "Seleccione años",
+                choices = sort(unique(dat_EST_salarios()$fecha)),
+                selected = c(min(dat_EST_salarios()$fecha),
+                             max(dat_EST_salarios()$fecha)),
+                hide_min_max = T,
+                grid = TRUE,
+                width = "100%"
+              )
+            )
+          )
+          
+        } else {
+          selectInput(
+            inputId = "fecha_EST_salarios",
+            label = "Seleccione año:",
+            choices = dat_EST_salarios() %>%
+              drop_na(valor) %>%
+              select(fecha) %>%
+              arrange(desc(fecha)) %>%
+              unique() %>%
+              pull(),
+            selected = "2019"
+          )
+          
+        }
+        
+      })
+      
+      
+      output$corte_EST_salarios <- renderUI({
+        if (input$indicador_EST_salarios %in% vars_corte) {
+          selectInput(
+            inputId = "corte_EST_salarios",
+            label = "Seleccione categorías",
+            choices =  dat_EST_salarios() %>%
+              distinct(get(names(dat_EST_salarios(
+              )[, ncol(dat_EST_salarios())]))) %>%
+              pull(),
+            selected = dat_EST_salarios() %>%
+              filter(jerarquia == 1) %>%
+              distinct(get(names(dat_EST_salarios(
+              )[, ncol(dat_EST_salarios())]))) %>%
+              pull()
+          )
+        } else {
+          return(NULL)
+        }
+        
+      })
+      
+      
+      # Checkbox por pais
+      output$sel_EST_salarios_pais <- renderUI({
+        if (input$visualizador_EST_salarios == "Serie de tiempo") {
+          dropdown(
+            label = "Seleccione países",
+            status = "default",
+            width = 400,
+            circle = F,
+            
+            checkboxGroupInput(
+              inputId = "chbox_pais_EST_salarios",
+              label = "Seleccione países",
+              inline = TRUE,
+              choices = dat_EST_salarios() %>%
+                filter(region == 0) %>%
+                filter(nomindicador == input$indicador_EST_salarios) %>%
+                distinct(cod_pais) %>%
+                pull(),
+              selected = c("URY", "ARG", "BRA", "PRY")
+            )
+          )
+          
+        } else {
+          checkboxGroupInput(
+            inputId = "chbox_pais_reg_EST_salarios",
+            label = "Mostrar:",
+            inline = FALSE,
+            choices = c("Países", "Regiones"),
+            selected = "Países"
+          )
+          
+        }
+        
+      })
+      
+      # Checkbox por región
+      output$sel_EST_salarios_region <- renderUI({
+        if (input$visualizador_EST_salarios == "Serie de tiempo") {
+          dropdown(
+            label = "Seleccione regiones",
+            status = "default",
+            width = 400,
+            circle = F,
+            
+            checkboxGroupInput(
+              inputId = "chbox_reg_EST_salarios",
+              label = "Seleccione regiones",
+              inline = TRUE,
+              choices = dat_EST_salarios() %>%
+                filter(region == 1) %>%
+                filter(nomindicador == input$indicador_EST_salarios) %>%
+                distinct(pais) %>%
+                pull(),
+              selected = NULL
+            )
+          )
+          
+        } else {
+          return(NULL)
+          
+        }
+      })
+      
+      
+      dat_EST_salarios_anual <- reactive({
+        if (input$indicador_EST_salarios %in% vars_corte) {
+          dat_EST_salarios() %>%
+            filter(get(names(dat_EST_salarios()[, ncol(dat_EST_salarios())])) %in% input$corte_EST_salarios) %>%
+            filter(fecha == input$fecha_EST_salarios)
+          
+        } else {
+          dat_EST_salarios() %>%
+            filter(fecha == input$fecha_EST_salarios)
+          
+          
+        }
+      })
+      
+      dat_EST_salarios_simple <- reactive({
+        if (input$indicador_EST_salarios %in% vars_corte) {
+          dat_EST_salarios() %>%
+            filter(get(names(dat_EST_salarios()[, ncol(dat_EST_salarios())])) %in% input$corte_EST_salarios) %>%
+            filter(fecha >= input$fecha_dat_EST_salarios[1] &
+                     fecha <= input$fecha_dat_EST_salarios[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_EST_salarios |
+                     pais %in% input$chbox_reg_EST_salarios)
+          
+        } else {
+          dat_EST_salarios() %>%
+            filter(fecha >= input$fecha_dat_EST_salarios[1] &
+                     fecha <= input$fecha_dat_EST_salarios[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_EST_salarios |
+                     pais %in% input$chbox_reg_EST_salarios)
+        }
+        
+      })
+      
+      
+      # Gráficos EST_salarios
+      output$p_dat_EST_salarios <- renderPlot({
+        if (input$visualizador_EST_salarios == "Serie de tiempo") {
+          req(input$fecha_dat_EST_salarios, input$indicador_EST_salarios)
+          
+          plot_EST_salarios <- ggplot(data = dat_EST_salarios_simple(),
+                                    aes(x = fecha, y = valor)) +
+            geom_line(aes(color = pais), size = 1, alpha = 0.5) +
+            geom_point(aes(color = pais), size = 3) +
+            theme(axis.text.x = element_text(angle = 0),
+                  legend.position = "bottom") +
+            labs(x = "",
+                 y = "",
+                 caption = wrapit(
+                   paste(
+                     "Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de",
+                     unique(dat_EST_salarios_simple()$fuente)
+                   )
+                 )) +
+            scale_y_continuous(labels = addUnits) +
+            scale_colour_manual(name = "", values = paleta_expandida) +
+            if (input$indicador_EST_salarios %in% vars_corte) {
+              ggtitle(paste0(input$indicador_EST_salarios, " (", input$corte_EST_salarios, ")"))
+              
+            } else {
+              ggtitle(paste(input$indicador_EST_salarios))
+              
+            }
+          
+          print(plot_EST_salarios)
+          ggsave(
+            "www/indicador EST_salarios.png",
+            width = 30,
+            height = 20,
+            units = "cm"
+          )
+          
+        } else if (input$visualizador_EST_salarios == "Anual gráfico") {
+          base_plot_EST_salarios <- dat_EST_salarios_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_EST_salarios)
+          
+          validate(need(
+            nrow(base_plot_EST_salarios) > 0,
+            'No hay datos disponible para esta búsqueda'
+          ))
+          
+          plot_EST_salarios <- ggplot(base_plot_EST_salarios,
+                                    aes(x = fct_reorder(pais, valor), y = valor)) +
+            geom_segment(
+              aes(
+                x = fct_reorder(pais, valor),
+                xend = fct_reorder(pais, valor),
+                y = 0,
+                yend = valor
+              ),
+              size = 1,
+              color = "#2c3e50"
+            ) +
+            geom_point(color = "#2c3e50", size = 4) +
+            theme_light() +
+            coord_flip() +
+            theme(
+              axis.text.y = element_text(size = 12),
+              panel.grid.major.y = element_blank(),
+              panel.border = element_blank(),
+              axis.ticks.y = element_blank()
+            ) +
+            labs(x = "",
+                 y = "",
+                 caption = wrapit(
+                   paste(
+                     "Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de",
+                     unique(dat_EST_salarios_anual()$fuente)
+                   )
+                 )) +
+            scale_y_continuous(labels = addUnits) +
+            if (input$indicador_EST_salarios %in% vars_corte) {
+              ggtitle(paste0(input$indicador_SP_empleo, " (", input$corte_SP_empleo, ")"))
+              
+            } else {
+              ggtitle(paste(input$indicador_SP_empleo))
+              
+            }
+          
+          print(plot_SP_empleo)
+          ggsave(
+            "www/indicador SP_empleo.png",
+            width = 25,
+            height = 30,
+            units = "cm"
+          )
+          
+        }
+        
+      })
+      
+      output$map_EST_salarios <- renderLeaflet({
+        # Read this shape file with the rgdal library.
+        world_spdf <- readOGR(dsn = "data" ,
+                              layer = "TM_WORLD_BORDERS_SIMPL-0.3",
+                              verbose = FALSE)
+        
+        # Pegar datos
+        world_spdf@data <- world_spdf@data %>%
+          left_join(select(dat_EST_salarios_anual(), pais_eng, valor_original),
+                    by = c("NAME" = "pais_eng"))
+        
+        # Library
+        
+        # Create a color palette with handmade bins.
+        
+        
+        if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -1000) {
+          round_number <- 1000
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -100) {
+          round_number <- 100
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -10) {
+          round_number <- 10
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -1) {
+          round_number <- 1
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 1000) {
+          round_number <- 1000
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 100) {
+          round_number <- 100
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 10) {
+          round_number <- 10
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 1) {
+          round_number <- 1
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= -1) {
+          round_number <- .1
+          
+        }
+        
+        min_val <-
+          plyr::round_any(min(world_spdf@data$valor_original, na.rm = T),
+                          round_number,
+                          floor)
+        max_val <-
+          plyr::round_any(max(world_spdf@data$valor_original, na.rm = T),
+                          round_number,
+                          ceiling)
+        dif <- max_val - min_val
+        dif_5 <- dif / 5
+        val_1 <- min_val + dif_5
+        val_2 <- min_val + (dif_5 * 2)
+        val_3 <- min_val + (dif_5 * 3)
+        val_4 <- min_val + (dif_5 * 4)
+        
+        mybins <- c(min_val, val_1, val_2, val_3, val_4, max_val)
+        
+        mypalette <- colorBin(
+          palette = "YlOrBr",
+          domain = world_spdf@data$valor_original,
+          na.color = "transparent",
+          bins = mybins
+        )
+        
+        # Prepare the text for tooltips:
+        mytext <- paste(
+          "País: ",
+          world_spdf@data$NAME,
+          "<br/>",
+          "Valor: ",
+          round(world_spdf@data$valor_original, 2),
+          sep = ""
+        ) %>%
+          lapply(htmltools::HTML)
+        
+        # Final Map
+        leaflet(world_spdf) %>%
+          addTiles()  %>%
+          setView(lat = 30,
+                  lng = 0 ,
+                  zoom = 1) %>%
+          addPolygons(
+            fillColor = ~ mypalette(valor_original),
+            stroke = TRUE,
+            fillOpacity = 0.9,
+            color = "white",
+            weight = 0.3,
+            label = mytext,
+            labelOptions = labelOptions(
+              style = list("font-weight" = "normal", padding = "3px 8px"),
+              textsize = "13px",
+              direction = "auto"
+            )
+          ) %>%
+          addLegend(
+            pal = mypalette,
+            values =  ~ valor_original,
+            opacity = 0.9,
+            title = wrapit(input$indicador_EST_salarios),
+            position = "bottomleft"
+          )
+        
+      })
+      
+      # Botón descarga grafico
+      output$baja_plot_EST_salarios <- downloadHandler(filename <- function() {
+        paste("indicador EST_salarios", "png", sep = ".")
+      },
+      
+      content <- function(file) {
+        file.copy("www/indicador EST_salarios.png", file)
+      },
+      contentType = "www/indicador EST_salarios")
+      
+      
+      ## Data series temporal
+      
+      # Data para tabla y exportar
+      dat_EST_salarios_st <- reactive({
+        if (input$indicador_EST_salarios %in% vars_corte) {
+          dat_EST_salarios() %>%
+            filter(fecha >= input$fecha_dat_EST_salarios[1] &
+                     fecha <= input$fecha_dat_EST_salarios[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_EST_salarios |
+                     pais %in% input$chbox_reg_EST_salarios) %>%
+            select(pais, fecha, names(dat_EST_salarios()[, ncol(dat_EST_salarios())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_EST_salarios() %>%
+            filter(fecha >= input$fecha_dat_EST_salarios[1] &
+                     fecha <= input$fecha_dat_EST_salarios[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_EST_salarios |
+                     pais %in% input$chbox_reg_EST_salarios) %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+        }
+      })
+      
+      # Metadata
+      dat_EST_salarios_m <- reactive({
+        dat_EST_salarios() %>%
+          select(
+            nomindicador,
+            definicion,
+            metodo_de_agregacion,
+            concepto_estadistico_y_metodologia,
+            relevancia,
+            limitaciones_y_excepciones
+          ) %>%
+          mutate(`Unidad de Métodos y Acceso a Datos (FCS -UdelaR)` = " ") %>%
+          distinct() %>%
+          gather(key = "", value = " ")
+        
+      })
+      
+      # Data completa
+      dat_EST_salarios_c <- reactive({
+        if (input$indicador_EST_salarios %in% vars_corte) {
+          dat_EST_salarios() %>%
+            select(pais, fecha, names(dat_EST_salarios()[, ncol(dat_EST_salarios())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_EST_salarios() %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+        }
+        
+      })
+      
+      # Lista para descarga
+      list_dat_EST_salarios_st <- reactive({
+        list_dat_EST_salarios <- list(
+          "Data" = dat_EST_salarios_st(),
+          "Metadata" = dat_EST_salarios_m(),
+          "Data Completa" = dat_EST_salarios_c()
+        )
+      })
+      
+      
+      ## Data por año
+      # Data para tabla y exportar
+      dat_EST_salarios_a <- reactive({
+        if (input$indicador_EST_salarios %in% vars_corte) {
+          dat_EST_salarios_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_EST_salarios) %>%
+            select(pais, fecha, names(dat_EST_salarios()[, ncol(dat_EST_salarios())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_EST_salarios_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_EST_salarios) %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        }
+      })
+      
+      # Lista para descarga
+      list_dat_EST_salarios_a <- reactive({
+        list_dat_EST_salarios <- list(
+          "Data" = dat_EST_salarios_a(),
+          "Metadata" = dat_EST_salarios_m(),
+          "Data Completa" = dat_EST_salarios_c()
+        )
+      })
+      
+      # Tablas en shiny
+      output$tab_dat_EST_salarios <- renderDT({
+        if (input$indicador_EST_salarios %in% vars_corte) {
+          DT::datatable(
+            dat_EST_salarios_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Corte", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_EST_salarios,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(4, '', mark = ",")
+          
+        } else if (input$visualizador_EST_salarios == "Serie de tiempo") {
+          DT::datatable(
+            dat_EST_salarios_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_EST_salarios,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        } else if (input$visualizador_EST_salarios %in% c("Anual gráfico", "Anual mapa")) {
+          DT::datatable(
+            dat_EST_salarios_a(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_EST_salarios,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        }
+      })
+      
+      # Descarga tabla
+      output$dl_tabla_dat_EST_salarios <- downloadHandler(
+        filename = function() {
+          paste("resultados-", input$indicador_EST_salarios, ".xlsx", sep = "")
+        },
+        content = function(file) {
+          if (input$visualizador_EST_salarios == "Serie de tiempo") {
+            openxlsx::write.xlsx(list_dat_EST_salarios_st(), file)
+            
+          } else if (input$visualizador_EST_salarios %in% c("Anual gráfico", "Anual mapa")) {
+            openxlsx::write.xlsx(list_dat_EST_salarios_a(), file)
+            
+          }
+        }
+      )
+      
+      ##  31.  EST_tran (dat_EST_tran)   ====================================
+      
+      # Data EST_tran
+      
+      dat_EST_tran <- reactive({
+        req(input$indicador_EST_tran)
+        
+        data %>%
+          filter(nomindicador == input$indicador_EST_tran) %>%
+          janitor::remove_empty("cols")
+        
+      })
+      
+      
+      # Titulo
+      output$title_dat_EST_tran <- renderUI({
+        helpText(HTML(unique(dat_EST_tran()$nomindicador)))
+      })
+      
+      # Subtitulo
+      output$subtitle_dat_EST_tran <- renderUI({
+        helpText(HTML(unique(dat_EST_tran()$definicion)))
+      })
+      
+      # Metodología
+      output$info_dat_EST_tran <- renderUI({
+        helpText(HTML(
+          paste(
+            "<b>Método de Agregación:</b>",
+            unique(dat_EST_tran()$metodo_de_agregacion),
+            "<b>Metodología:</b>",
+            unique(dat_EST_tran()$concepto_estadistico_y_metodologia)
+          )
+        ))
+      })
+      
+      # Relevancia:
+      output$rel_dat_EST_tran <- renderUI({
+        helpText(HTML(paste(
+          "<b>Relvancia:</b>", unique(dat_EST_tran()$relevancia)
+        )))
+      })
+      
+      
+      output$fecha_dat_EST_tran <- renderUI({
+        if (input$visualizador_EST_tran == "Serie de tiempo") {
+          tagList(
+            tags$style(
+              type = 'text/css',
+              '#big_slider .irs-grid-text {font-size: 10px; transform: rotate(-90deg) translate(-15px);} ,.irs-grid-pol.large {height: 0px;}'
+            ),
+            div(
+              id = 'big_slider',
+              
+              sliderTextInput(
+                inputId = "fecha_dat_EST_tran",
+                label = "Seleccione años",
+                choices = sort(unique(dat_EST_tran()$fecha)),
+                selected = c(min(dat_EST_tran()$fecha),
+                             max(dat_EST_tran()$fecha)),
+                hide_min_max = T,
+                grid = TRUE,
+                width = "100%"
+              )
+            )
+          )
+          
+        } else {
+          selectInput(
+            inputId = "fecha_EST_tran",
+            label = "Seleccione año:",
+            choices = dat_EST_tran() %>%
+              drop_na(valor) %>%
+              select(fecha) %>%
+              arrange(desc(fecha)) %>%
+              unique() %>%
+              pull(),
+            selected = "2019"
+          )
+          
+        }
+        
+      })
+      
+      
+      output$corte_EST_tran <- renderUI({
+        if (input$indicador_EST_tran %in% vars_corte) {
+          selectInput(
+            inputId = "corte_EST_tran",
+            label = "Seleccione categorías",
+            choices =  dat_EST_tran() %>%
+              distinct(get(names(dat_EST_tran(
+              )[, ncol(dat_EST_tran())]))) %>%
+              pull(),
+            selected = dat_EST_tran() %>%
+              filter(jerarquia == 1) %>%
+              distinct(get(names(dat_EST_tran(
+              )[, ncol(dat_EST_tran())]))) %>%
+              pull()
+          )
+        } else {
+          return(NULL)
+        }
+        
+      })
+      
+      
+      # Checkbox por pais
+      output$sel_EST_tran_pais <- renderUI({
+        if (input$visualizador_EST_tran == "Serie de tiempo") {
+          dropdown(
+            label = "Seleccione países",
+            status = "default",
+            width = 400,
+            circle = F,
+            
+            checkboxGroupInput(
+              inputId = "chbox_pais_EST_tran",
+              label = "Seleccione países",
+              inline = TRUE,
+              choices = dat_EST_tran() %>%
+                filter(region == 0) %>%
+                filter(nomindicador == input$indicador_EST_tran) %>%
+                distinct(cod_pais) %>%
+                pull(),
+              selected = c("URY", "ARG", "BRA", "PRY")
+            )
+          )
+          
+        } else {
+          checkboxGroupInput(
+            inputId = "chbox_pais_reg_EST_tran",
+            label = "Mostrar:",
+            inline = FALSE,
+            choices = c("Países", "Regiones"),
+            selected = "Países"
+          )
+          
+        }
+        
+      })
+      
+      # Checkbox por región
+      output$sel_EST_tran_region <- renderUI({
+        if (input$visualizador_EST_tran == "Serie de tiempo") {
+          dropdown(
+            label = "Seleccione regiones",
+            status = "default",
+            width = 400,
+            circle = F,
+            
+            checkboxGroupInput(
+              inputId = "chbox_reg_EST_tran",
+              label = "Seleccione regiones",
+              inline = TRUE,
+              choices = dat_EST_tran() %>%
+                filter(region == 1) %>%
+                filter(nomindicador == input$indicador_EST_tran) %>%
+                distinct(pais) %>%
+                pull(),
+              selected = NULL
+            )
+          )
+          
+        } else {
+          return(NULL)
+          
+        }
+      })
+      
+      
+      dat_EST_tran_anual <- reactive({
+        if (input$indicador_EST_tran %in% vars_corte) {
+          dat_EST_tran() %>%
+            filter(get(names(dat_EST_tran()[, ncol(dat_EST_tran())])) %in% input$corte_EST_tran) %>%
+            filter(fecha == input$fecha_EST_tran)
+          
+        } else {
+          dat_EST_tran() %>%
+            filter(fecha == input$fecha_EST_tran)
+          
+          
+        }
+      })
+      
+      dat_EST_tran_simple <- reactive({
+        if (input$indicador_EST_tran %in% vars_corte) {
+          dat_EST_tran() %>%
+            filter(get(names(dat_EST_tran()[, ncol(dat_EST_tran())])) %in% input$corte_EST_tran) %>%
+            filter(fecha >= input$fecha_dat_EST_tran[1] &
+                     fecha <= input$fecha_dat_EST_tran[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_EST_tran |
+                     pais %in% input$chbox_reg_EST_tran)
+          
+        } else {
+          dat_EST_tran() %>%
+            filter(fecha >= input$fecha_dat_EST_tran[1] &
+                     fecha <= input$fecha_dat_EST_tran[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_EST_tran |
+                     pais %in% input$chbox_reg_EST_tran)
+        }
+        
+      })
+      
+      
+      # Gráficos EST_tran
+      output$p_dat_EST_tran <- renderPlot({
+        if (input$visualizador_EST_tran == "Serie de tiempo") {
+          req(input$fecha_dat_EST_tran, input$indicador_EST_tran)
+          
+          plot_EST_tran <- ggplot(data = dat_EST_tran_simple(),
+                                      aes(x = fecha, y = valor)) +
+            geom_line(aes(color = pais), size = 1, alpha = 0.5) +
+            geom_point(aes(color = pais), size = 3) +
+            theme(axis.text.x = element_text(angle = 0),
+                  legend.position = "bottom") +
+            labs(x = "",
+                 y = "",
+                 caption = wrapit(
+                   paste(
+                     "Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de",
+                     unique(dat_EST_tran_simple()$fuente)
+                   )
+                 )) +
+            scale_y_continuous(labels = addUnits) +
+            scale_colour_manual(name = "", values = paleta_expandida) +
+            if (input$indicador_EST_tran %in% vars_corte) {
+              ggtitle(paste0(input$indicador_EST_tran, " (", input$corte_EST_tran, ")"))
+              
+            } else {
+              ggtitle(paste(input$indicador_EST_tran))
+              
+            }
+          
+          print(plot_EST_tran)
+          ggsave(
+            "www/indicador EST_tran.png",
+            width = 30,
+            height = 20,
+            units = "cm"
+          )
+          
+        } else if (input$visualizador_EST_tran == "Anual gráfico") {
+          base_plot_EST_tran <- dat_EST_tran_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_EST_tran)
+          
+          validate(need(
+            nrow(base_plot_EST_tran) > 0,
+            'No hay datos disponible para esta búsqueda'
+          ))
+          
+          plot_EST_tran <- ggplot(base_plot_EST_tran,
+                                      aes(x = fct_reorder(pais, valor), y = valor)) +
+            geom_segment(
+              aes(
+                x = fct_reorder(pais, valor),
+                xend = fct_reorder(pais, valor),
+                y = 0,
+                yend = valor
+              ),
+              size = 1,
+              color = "#2c3e50"
+            ) +
+            geom_point(color = "#2c3e50", size = 4) +
+            theme_light() +
+            coord_flip() +
+            theme(
+              axis.text.y = element_text(size = 12),
+              panel.grid.major.y = element_blank(),
+              panel.border = element_blank(),
+              axis.ticks.y = element_blank()
+            ) +
+            labs(x = "",
+                 y = "",
+                 caption = wrapit(
+                   paste(
+                     "Fuente: Unidad de Métodos y Acceso a Datos (FCS - UdelaR) en base a datos de",
+                     unique(dat_EST_tran_anual()$fuente)
+                   )
+                 )) +
+            scale_y_continuous(labels = addUnits) +
+            if (input$indicador_EST_tran %in% vars_corte) {
+              ggtitle(paste0(input$indicador_SP_empleo, " (", input$corte_SP_empleo, ")"))
+              
+            } else {
+              ggtitle(paste(input$indicador_SP_empleo))
+              
+            }
+          
+          print(plot_SP_empleo)
+          ggsave(
+            "www/indicador SP_empleo.png",
+            width = 25,
+            height = 30,
+            units = "cm"
+          )
+          
+        }
+        
+      })
+      
+      output$map_EST_tran <- renderLeaflet({
+        # Read this shape file with the rgdal library.
+        world_spdf <- readOGR(dsn = "data" ,
+                              layer = "TM_WORLD_BORDERS_SIMPL-0.3",
+                              verbose = FALSE)
+        
+        # Pegar datos
+        world_spdf@data <- world_spdf@data %>%
+          left_join(select(dat_EST_tran_anual(), pais_eng, valor_original),
+                    by = c("NAME" = "pais_eng"))
+        
+        # Library
+        
+        # Create a color palette with handmade bins.
+        
+        
+        if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -1000) {
+          round_number <- 1000
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -100) {
+          round_number <- 100
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -10) {
+          round_number <- 10
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) <= -1) {
+          round_number <- 1
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 1000) {
+          round_number <- 1000
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 100) {
+          round_number <- 100
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 10) {
+          round_number <- 10
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= 1) {
+          round_number <- 1
+          
+        } else if (mean(world_spdf@data$valor_original, na.rm = TRUE) >= -1) {
+          round_number <- .1
+          
+        }
+        
+        min_val <-
+          plyr::round_any(min(world_spdf@data$valor_original, na.rm = T),
+                          round_number,
+                          floor)
+        max_val <-
+          plyr::round_any(max(world_spdf@data$valor_original, na.rm = T),
+                          round_number,
+                          ceiling)
+        dif <- max_val - min_val
+        dif_5 <- dif / 5
+        val_1 <- min_val + dif_5
+        val_2 <- min_val + (dif_5 * 2)
+        val_3 <- min_val + (dif_5 * 3)
+        val_4 <- min_val + (dif_5 * 4)
+        
+        mybins <- c(min_val, val_1, val_2, val_3, val_4, max_val)
+        
+        mypalette <- colorBin(
+          palette = "YlOrBr",
+          domain = world_spdf@data$valor_original,
+          na.color = "transparent",
+          bins = mybins
+        )
+        
+        # Prepare the text for tooltips:
+        mytext <- paste(
+          "País: ",
+          world_spdf@data$NAME,
+          "<br/>",
+          "Valor: ",
+          round(world_spdf@data$valor_original, 2),
+          sep = ""
+        ) %>%
+          lapply(htmltools::HTML)
+        
+        # Final Map
+        leaflet(world_spdf) %>%
+          addTiles()  %>%
+          setView(lat = 30,
+                  lng = 0 ,
+                  zoom = 1) %>%
+          addPolygons(
+            fillColor = ~ mypalette(valor_original),
+            stroke = TRUE,
+            fillOpacity = 0.9,
+            color = "white",
+            weight = 0.3,
+            label = mytext,
+            labelOptions = labelOptions(
+              style = list("font-weight" = "normal", padding = "3px 8px"),
+              textsize = "13px",
+              direction = "auto"
+            )
+          ) %>%
+          addLegend(
+            pal = mypalette,
+            values =  ~ valor_original,
+            opacity = 0.9,
+            title = wrapit(input$indicador_EST_tran),
+            position = "bottomleft"
+          )
+        
+      })
+      
+      # Botón descarga grafico
+      output$baja_plot_EST_tran <- downloadHandler(filename <- function() {
+        paste("indicador EST_tran", "png", sep = ".")
+      },
+      
+      content <- function(file) {
+        file.copy("www/indicador EST_tran.png", file)
+      },
+      contentType = "www/indicador EST_tran")
+      
+      
+      ## Data series temporal
+      
+      # Data para tabla y exportar
+      dat_EST_tran_st <- reactive({
+        if (input$indicador_EST_tran %in% vars_corte) {
+          dat_EST_tran() %>%
+            filter(fecha >= input$fecha_dat_EST_tran[1] &
+                     fecha <= input$fecha_dat_EST_tran[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_EST_tran |
+                     pais %in% input$chbox_reg_EST_tran) %>%
+            select(pais, fecha, names(dat_EST_tran()[, ncol(dat_EST_tran())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_EST_tran() %>%
+            filter(fecha >= input$fecha_dat_EST_tran[1] &
+                     fecha <= input$fecha_dat_EST_tran[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_EST_tran |
+                     pais %in% input$chbox_reg_EST_tran) %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+        }
+      })
+      
+      # Metadata
+      dat_EST_tran_m <- reactive({
+        dat_EST_tran() %>%
+          select(
+            nomindicador,
+            definicion,
+            metodo_de_agregacion,
+            concepto_estadistico_y_metodologia,
+            relevancia,
+            limitaciones_y_excepciones
+          ) %>%
+          mutate(`Unidad de Métodos y Acceso a Datos (FCS -UdelaR)` = " ") %>%
+          distinct() %>%
+          gather(key = "", value = " ")
+        
+      })
+      
+      # Data completa
+      dat_EST_tran_c <- reactive({
+        if (input$indicador_EST_tran %in% vars_corte) {
+          dat_EST_tran() %>%
+            select(pais, fecha, names(dat_EST_tran()[, ncol(dat_EST_tran())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_EST_tran() %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+        }
+        
+      })
+      
+      # Lista para descarga
+      list_dat_EST_tran_st <- reactive({
+        list_dat_EST_tran <- list(
+          "Data" = dat_EST_tran_st(),
+          "Metadata" = dat_EST_tran_m(),
+          "Data Completa" = dat_EST_tran_c()
+        )
+      })
+      
+      
+      ## Data por año
+      # Data para tabla y exportar
+      dat_EST_tran_a <- reactive({
+        if (input$indicador_EST_tran %in% vars_corte) {
+          dat_EST_tran_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_EST_tran) %>%
+            select(pais, fecha, names(dat_EST_tran()[, ncol(dat_EST_tran())]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else {
+          dat_EST_tran_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_EST_tran) %>%
+            select(pais, fecha, valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        }
+      })
+      
+      # Lista para descarga
+      list_dat_EST_tran_a <- reactive({
+        list_dat_EST_tran <- list(
+          "Data" = dat_EST_tran_a(),
+          "Metadata" = dat_EST_tran_m(),
+          "Data Completa" = dat_EST_tran_c()
+        )
+      })
+      
+      # Tablas en shiny
+      output$tab_dat_EST_tran <- renderDT({
+        if (input$indicador_EST_tran %in% vars_corte) {
+          DT::datatable(
+            dat_EST_tran_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Corte", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_EST_tran,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(4, '', mark = ",")
+          
+        } else if (input$visualizador_EST_tran == "Serie de tiempo") {
+          DT::datatable(
+            dat_EST_tran_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_EST_tran,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        } else if (input$visualizador_EST_tran %in% c("Anual gráfico", "Anual mapa")) {
+          DT::datatable(
+            dat_EST_tran_a(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(input$indicador_EST_tran,
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        }
+      })
+      
+      # Descarga tabla
+      output$dl_tabla_dat_EST_tran <- downloadHandler(
+        filename = function() {
+          paste("resultados-", input$indicador_EST_tran, ".xlsx", sep = "")
+        },
+        content = function(file) {
+          if (input$visualizador_EST_tran == "Serie de tiempo") {
+            openxlsx::write.xlsx(list_dat_EST_tran_st(), file)
+            
+          } else if (input$visualizador_EST_tran %in% c("Anual gráfico", "Anual mapa")) {
+            openxlsx::write.xlsx(list_dat_EST_tran_a(), file)
             
           }
         }
