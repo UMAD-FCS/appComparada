@@ -82,7 +82,12 @@ data <- data %>%
     ),
     relevancia = case_when(is.na(relevancia) ~ "-",
                            TRUE ~ relevancia)
-  )
+  ) %>% 
+  mutate(sexo = case_when(
+    sexo == "Ambos" ~ "Ambos sexos",
+    TRUE ~ sexo
+  )) %>% 
+  filter(nomindicador != "Tasa de asistencia neta total, según nivel educativo, sexo y quintil (%), según WDI")
 
 library(RColorBrewer)
 paleta_expandida <-
@@ -106,6 +111,23 @@ vars_corte <- data %>%
   distinct(nomindicador) %>%
   pull(nomindicador)
 
+# Indicadores con 2 variables de corte
+vars_corte_2 <- data %>% 
+  select(nomindicador, p2, sector_productivo:decil) %>% 
+  pivot_longer(-c(nomindicador, p2)) %>% 
+  filter(!is.na(value)) %>% 
+  distinct(nomindicador, name, .keep_all = TRUE) %>% 
+  group_by(nomindicador) %>% 
+  summarise(n = n(),
+            p2 = first(p2)) %>% 
+  filter(n >= 2) %>% 
+  pull(nomindicador)
+
+# data_rec <- data %>%
+#   filter(nomindicador == "Desempleo, según nivel educativo y sexo (% de la fuerza laboral total según nivel educativo y sexo), según WDI") %>% 
+#   janitor::remove_empty("cols")
+#         
+# paste("Seleccione categoría de", gsub("2", "", gsub("_", " ", names(data_rec[, ncol(data_rec)]))))
 
 ##  2. USER INTERFACE  ======================================================
 
@@ -889,6 +911,8 @@ ui <- navbarPage(
                    uiOutput("corte_DE_ch"),
                    
                    uiOutput("fecha_dat_DE_ch"),
+                   
+                   uiOutput("corte_DE_ch_2"),
                    
                    br(),
                    
@@ -2206,7 +2230,7 @@ ui <- navbarPage(
     # * 2.6. Demografía  -------------------------------------
     
     title = "Demografía",
-    icon = icon("users", lib = "font-awesome"),
+    icon = icon("chart-line", lib = "font-awesome"),
     
     
     tabsetPanel(
@@ -2698,7 +2722,7 @@ ui <- navbarPage(
         # * 2.7. Pobreza e ingresos  -------------------------------------
         
         title = "Pobreza e ingresos",
-        icon = icon("users", lib = "font-awesome"),
+        icon = icon("piggy-bank"),
         
         br(),
         
@@ -2822,7 +2846,7 @@ ui <- navbarPage(
         # * 2.8. Sector Público  -------------------------------------
         
         title = "Sector Público",
-        icon = icon("users", lib = "font-awesome"),
+        icon =  icon("folder-open"),
         
         tabsetPanel(
           type = "pills",
@@ -2948,125 +2972,125 @@ ui <- navbarPage(
                    )),
           
           
-          tabPanel("Resultados",
-                   
-                   br(),
-                   
-                   fluidRow(
-                     sidebarPanel(
-                       width = 3,
-                       
-                       selectInput(
-                         inputId = "visualizador_SP_res",
-                         label = "Visualización",
-                         choices = c("Serie de tiempo",
-                                     "Anual gráfico",
-                                     "Anual mapa"),
-                         selected = "Serie de tiempo"
-                       ),
-
-                       selectInput(
-                         inputId = "indicador_SP_res",
-                         label = "Indicador",
-                         choices = data %>%
-                           filter(str_detect(p2, "Resultados")) %>%
-                           distinct(nomindicador) %>%
-                           arrange(nomindicador) %>%
-                           pull(nomindicador)
-                       ),
-
-                       uiOutput("corte_SP_res"),
-
-                       uiOutput("fecha_dat_SP_res"),
-
-                       br(),
-
-                       conditionalPanel(condition = "input.visualizador_SP_res != 'Anual mapa'",
-                                        uiOutput("sel_SP_res_pais")),
-
-                       br(),
-
-                       uiOutput("sel_SP_res_region"),
-
-                       br(),
-                       
-                       tags$a(
-                         href = "https://umad.cienciassociales.edu.uy/",
-                         "Unidad de Métodos y Acceso a Datos",
-                         style = "font-size:12px; color:Navy;
-                   text-decoration:underline;"
-                       ),
-                   br(),
-                   br(),
-                   img(
-                     src = "logo_umad.png",
-                     height = "70%",
-                     width = "70%",
-                     align = "left"
-                   ),
-                   style = "display:inline-block;",
-                   
-                     ),
-                   
-                   mainPanel(
-                     tags$h3(style = "display:inline-block",
-                             uiOutput("title_dat_SP_res")),
-
-                     div(
-                       style = "display:inline-block",
-                       dropdown(
-                         style = "minimal",
-                         status = "primary",
-                         width = "500px",
-                         right = TRUE,
-                         icon = icon("calculator", lib = "font-awesome"),
-                         uiOutput("info_dat_SP_res")
-                       )
-                     ),
-
-                     div(
-                       style = "display:inline-block",
-                       dropdown(
-                         style = "minimal",
-                         status = "primary",
-                         width = "500px",
-                         right = TRUE,
-                         icon = icon("exclamation", lib = "font-awesome"),
-                         uiOutput("rel_dat_SP_res")
-                       )
-                     ),
-
-                     tags$h5(uiOutput("subtitle_dat_SP_res")),
-
-                     br(),
-
-                     conditionalPanel(condition = "input.visualizador_SP_res != 'Anual mapa'",
-                                      withSpinner(
-                                        plotOutput("p_dat_SP_res", height = "600px"),
-                                        type = 2
-                                      )),
-
-                     conditionalPanel(condition = "input.visualizador_SP_res == 'Anual mapa'",
-                                      withSpinner(
-                                        leafletOutput("map_SP_res"),
-                                        type = 2
-                                      )),
-
-                     conditionalPanel(
-                       condition = "input.visualizador_SP_res != 'Anual mapa'",
-                       downloadButton(outputId = "baja_plot_SP_res",
-                                      label = "Descarga el gráfico")
-                     ),
-                     br(),
-                     br(),
-                     withSpinner(DTOutput("tab_dat_SP_res"),
-                                 type = 2),
-                     br(),
-                     downloadButton("dl_tabla_dat_SP_res", "Descarga la tabla"),
-                     br(),
-                     br()
-                   )
-                   )),
+          # tabPanel("Resultados",
+          #          
+          #          br(),
+          #          
+          #          fluidRow(
+          #            sidebarPanel(
+          #              width = 3,
+          #              
+          #              selectInput(
+          #                inputId = "visualizador_SP_res",
+          #                label = "Visualización",
+          #                choices = c("Serie de tiempo",
+          #                            "Anual gráfico",
+          #                            "Anual mapa"),
+          #                selected = "Serie de tiempo"
+          #              ),
+          # 
+          #              selectInput(
+          #                inputId = "indicador_SP_res",
+          #                label = "Indicador",
+          #                choices = data %>%
+          #                  filter(str_detect(p2, "Resultados")) %>%
+          #                  distinct(nomindicador) %>%
+          #                  arrange(nomindicador) %>%
+          #                  pull(nomindicador)
+          #              ),
+          # 
+          #              uiOutput("corte_SP_res"),
+          # 
+          #              uiOutput("fecha_dat_SP_res"),
+          # 
+          #              br(),
+          # 
+          #              conditionalPanel(condition = "input.visualizador_SP_res != 'Anual mapa'",
+          #                               uiOutput("sel_SP_res_pais")),
+          # 
+          #              br(),
+          # 
+          #              uiOutput("sel_SP_res_region"),
+          # 
+          #              br(),
+          #              
+          #              tags$a(
+          #                href = "https://umad.cienciassociales.edu.uy/",
+          #                "Unidad de Métodos y Acceso a Datos",
+          #                style = "font-size:12px; color:Navy;
+          #          text-decoration:underline;"
+          #              ),
+          #          br(),
+          #          br(),
+          #          img(
+          #            src = "logo_umad.png",
+          #            height = "70%",
+          #            width = "70%",
+          #            align = "left"
+          #          ),
+          #          style = "display:inline-block;",
+          #          
+          #            ),
+          #          
+          #          mainPanel(
+          #            tags$h3(style = "display:inline-block",
+          #                    uiOutput("title_dat_SP_res")),
+          # 
+          #            div(
+          #              style = "display:inline-block",
+          #              dropdown(
+          #                style = "minimal",
+          #                status = "primary",
+          #                width = "500px",
+          #                right = TRUE,
+          #                icon = icon("calculator", lib = "font-awesome"),
+          #                uiOutput("info_dat_SP_res")
+          #              )
+          #            ),
+          # 
+          #            div(
+          #              style = "display:inline-block",
+          #              dropdown(
+          #                style = "minimal",
+          #                status = "primary",
+          #                width = "500px",
+          #                right = TRUE,
+          #                icon = icon("exclamation", lib = "font-awesome"),
+          #                uiOutput("rel_dat_SP_res")
+          #              )
+          #            ),
+          # 
+          #            tags$h5(uiOutput("subtitle_dat_SP_res")),
+          # 
+          #            br(),
+          # 
+          #            conditionalPanel(condition = "input.visualizador_SP_res != 'Anual mapa'",
+          #                             withSpinner(
+          #                               plotOutput("p_dat_SP_res", height = "600px"),
+          #                               type = 2
+          #                             )),
+          # 
+          #            conditionalPanel(condition = "input.visualizador_SP_res == 'Anual mapa'",
+          #                             withSpinner(
+          #                               leafletOutput("map_SP_res"),
+          #                               type = 2
+          #                             )),
+          # 
+          #            conditionalPanel(
+          #              condition = "input.visualizador_SP_res != 'Anual mapa'",
+          #              downloadButton(outputId = "baja_plot_SP_res",
+          #                             label = "Descarga el gráfico")
+          #            ),
+          #            br(),
+          #            br(),
+          #            withSpinner(DTOutput("tab_dat_SP_res"),
+          #                        type = 2),
+          #            br(),
+          #            downloadButton("dl_tabla_dat_SP_res", "Descarga la tabla"),
+          #            br(),
+          #            br()
+          #          )
+          #          )),
           
           tabPanel("Deuda",
                    
@@ -3188,123 +3212,125 @@ ui <- navbarPage(
                    )
                    )),
           
-          tabPanel("Empleo",
-                   
-                   br(),
-                   
-                   fluidRow(
-                     sidebarPanel(
-                       width = 3,
-                       
-                       selectInput(
-                         inputId = "visualizador_SP_empleo",
-                         label = "Visualización",
-                         choices = c("Serie de tiempo",
-                                     "Anual gráfico",
-                                     "Anual mapa"),
-                         selected = "Serie de tiempo"
-                       ),
-
-                       selectInput(
-                         inputId = "indicador_SP_empleo",
-                         label = "Indicador",
-                         choices = data %>%
-                           filter(str_detect(p2, "Empleo")) %>%
-                           distinct(nomindicador) %>%
-                           arrange(nomindicador) %>%
-                           pull(nomindicador)
-                       ),
-
-                       uiOutput("corte_SP_empleo"),
-
-                       uiOutput("fecha_dat_SP_empleo"),
-
-                       br(),
-
-                       conditionalPanel(condition = "input.visualizador_SP_empleo != 'Anual mapa'",
-                                        uiOutput("sel_SP_empleo_pais")),
-
-                       br(),
-
-                       uiOutput("sel_SP_empleo_region"),
-
-                       br(),
-
-                       tags$a(
-                         href = "https://umad.cienciassociales.edu.uy/",
-                         "Unidad de Métodos y Acceso a Datos",
-                         style = "font-size:12px; color:Navy;
-                   text-decoration:underline;"
-                       ),
-                   br(),
-                   br(),
-                   img(
-                     src = "logo_umad.png",
-                     height = "70%",
-                     width = "70%",
-                     align = "left"
-                   ),
-                   style = "display:inline-block;",
-                   
-                     ),
-                   
-                   mainPanel(
-                     tags$h3(style = "display:inline-block",
-                             uiOutput("title_dat_SP_empleo")),
-
-                     div(
-                       style = "display:inline-block",
-                       dropdown(
-                         style = "minimal",
-                         status = "primary",
-                         width = "500px",
-                         right = TRUE,
-                         icon = icon("calculator", lib = "font-awesome"),
-                         uiOutput("info_dat_SP_empleo")
-                       )
-                     ),
-
-                     div(
-                       style = "display:inline-block",
-                       dropdown(
-                         style = "minimal",
-                         status = "primary",
-                         width = "500px",
-                         right = TRUE,
-                         icon = icon("exclamation", lib = "font-awesome"),
-                         uiOutput("rel_dat_SP_empleo")
-                       )
-                     ),
-
-                     tags$h5(uiOutput("subtitle_dat_SP_empleo")),
-
-                     br(),
-
-                     conditionalPanel(condition = "input.visualizador_SP_empleo != 'Anual mapa'",
-                                      withSpinner(
-                                        plotOutput("p_dat_SP_empleo", height = "600px"),
-                                        type = 2
-                                      )),
-
-                     conditionalPanel(condition = "input.visualizador_SP_empleo == 'Anual mapa'",
-                                      withSpinner(leafletOutput("map_SP_empleo"),
-                                                  type = 2)),
-
-                     conditionalPanel(
-                       condition = "input.visualizador_SP_empleo != 'Anual mapa'",
-                       downloadButton(outputId = "baja_plot_SP_empleo",
-                                      label = "Descarga el gráfico")
-                     ),
-                     br(),
-                     br(),
-                     withSpinner(DTOutput("tab_dat_SP_empleo"),
-                                 type = 2),
-                     br(),
-                     downloadButton("dl_tabla_dat_SP_empleo", "Descarga la tabla"),
-                     br(),
-                     br()
-                   )
-                   ))
+          # tabPanel("Empleo",
+          #          
+          #          br(),
+          #          
+          #          fluidRow(
+          #            sidebarPanel(
+          #              width = 3,
+          #              
+          #              selectInput(
+          #                inputId = "visualizador_SP_empleo",
+          #                label = "Visualización",
+          #                choices = c("Serie de tiempo",
+          #                            "Anual gráfico",
+          #                            "Anual mapa"),
+          #                selected = "Serie de tiempo"
+          #              ),
+          # 
+          #              selectInput(
+          #                inputId = "indicador_SP_empleo",
+          #                label = "Indicador",
+          #                choices = data %>%
+          #                  filter(str_detect(p2, "Empleo")) %>%
+          #                  distinct(nomindicador) %>%
+          #                  arrange(nomindicador) %>%
+          #                  pull(nomindicador)
+          #              ),
+          # 
+          #              uiOutput("corte_SP_empleo"),
+          # 
+          #              uiOutput("corte_SP_empleo_2"),
+          #              
+          #              uiOutput("fecha_dat_SP_empleo"),
+          # 
+          #              br(),
+          # 
+          #              conditionalPanel(condition = "input.visualizador_SP_empleo != 'Anual mapa'",
+          #                               uiOutput("sel_SP_empleo_pais")),
+          # 
+          #              br(),
+          # 
+          #              uiOutput("sel_SP_empleo_region"),
+          # 
+          #              br(),
+          # 
+          #              tags$a(
+          #                href = "https://umad.cienciassociales.edu.uy/",
+          #                "Unidad de Métodos y Acceso a Datos",
+          #                style = "font-size:12px; color:Navy;
+          #          text-decoration:underline;"
+          #              ),
+          #          br(),
+          #          br(),
+          #          img(
+          #            src = "logo_umad.png",
+          #            height = "70%",
+          #            width = "70%",
+          #            align = "left"
+          #          ),
+          #          style = "display:inline-block;",
+          #          
+          #            ),
+          #          
+          #          mainPanel(
+          #            tags$h3(style = "display:inline-block",
+          #                    uiOutput("title_dat_SP_empleo")),
+          # 
+          #            div(
+          #              style = "display:inline-block",
+          #              dropdown(
+          #                style = "minimal",
+          #                status = "primary",
+          #                width = "500px",
+          #                right = TRUE,
+          #                icon = icon("calculator", lib = "font-awesome"),
+          #                uiOutput("info_dat_SP_empleo")
+          #              )
+          #            ),
+          # 
+          #            div(
+          #              style = "display:inline-block",
+          #              dropdown(
+          #                style = "minimal",
+          #                status = "primary",
+          #                width = "500px",
+          #                right = TRUE,
+          #                icon = icon("exclamation", lib = "font-awesome"),
+          #                uiOutput("rel_dat_SP_empleo")
+          #              )
+          #            ),
+          # 
+          #            tags$h5(uiOutput("subtitle_dat_SP_empleo")),
+          # 
+          #            br(),
+          # 
+          #            conditionalPanel(condition = "input.visualizador_SP_empleo != 'Anual mapa'",
+          #                             withSpinner(
+          #                               plotOutput("p_dat_SP_empleo", height = "600px"),
+          #                               type = 2
+          #                             )),
+          # 
+          #            conditionalPanel(condition = "input.visualizador_SP_empleo == 'Anual mapa'",
+          #                             withSpinner(leafletOutput("map_SP_empleo"),
+          #                                         type = 2)),
+          # 
+          #            conditionalPanel(
+          #              condition = "input.visualizador_SP_empleo != 'Anual mapa'",
+          #              downloadButton(outputId = "baja_plot_SP_empleo",
+          #                             label = "Descarga el gráfico")
+          #            ),
+          #            br(),
+          #            br(),
+          #            withSpinner(DTOutput("tab_dat_SP_empleo"),
+          #                        type = 2),
+          #            br(),
+          #            downloadButton("dl_tabla_dat_SP_empleo", "Descarga la tabla"),
+          #            br(),
+          #            br()
+          #          )
+          #          ))
           ),
         
       ),
@@ -3313,7 +3339,7 @@ ui <- navbarPage(
         # * 2.9. Empleo, salarios y transferencias  -----------------------------
         
         title = "Empleo",
-        icon = icon("users", lib = "font-awesome"),
+        icon =  icon("briefcase"),
         
         tabsetPanel(
           type = "pills",
@@ -3348,6 +3374,9 @@ ui <- navbarPage(
                        ),
 
                        uiOutput("corte_EST_empleo"),
+                       
+                       uiOutput("corte_EST_empleo_2"),
+                       
 
                        uiOutput("fecha_dat_EST_empleo"),
 
@@ -3439,125 +3468,125 @@ ui <- navbarPage(
                    )),
           
           
-          tabPanel("Salarios",
-                   
-                   br(),
-                   
-                   fluidRow(
-                     sidebarPanel(
-                       width = 3,
-                       
-                       selectInput(
-                         inputId = "visualizador_EST_salarios",
-                         label = "Visualización",
-                         choices = c("Serie de tiempo",
-                                     "Anual gráfico",
-                                     "Anual mapa"),
-                         selected = "Serie de tiempo"
-                       ),
-
-                       selectInput(
-                         inputId = "indicador_EST_salarios",
-                         label = "Indicador",
-                         choices = data %>%
-                           filter(str_detect(p2, "Salarios")) %>%
-                           distinct(nomindicador) %>%
-                           arrange(nomindicador) %>%
-                           pull(nomindicador)
-                       ),
-
-                       uiOutput("corte_EST_salarios"),
-
-                       uiOutput("fecha_dat_EST_salarios"),
-
-                       br(),
-
-                       conditionalPanel(condition = "input.visualizador_EST_salarios != 'Anual mapa'",
-                                        uiOutput("sel_EST_salarios_pais")),
-
-                       br(),
-
-                       uiOutput("sel_EST_salarios_region"),
-
-                       br(),
-                       
-                       tags$a(
-                         href = "https://umad.cienciassociales.edu.uy/",
-                         "Unidad de Métodos y Acceso a Datos",
-                         style = "font-size:12px; color:Navy;
-                   text-decoration:underline;"
-                       ),
-                   br(),
-                   br(),
-                   img(
-                     src = "logo_umad.png",
-                     height = "70%",
-                     width = "70%",
-                     align = "left"
-                   ),
-                   style = "display:inline-block;",
-                   
-                     ),
-                   
-                   mainPanel(
-                     tags$h3(style = "display:inline-block",
-                             uiOutput("title_dat_EST_salarios")),
-
-                     div(
-                       style = "display:inline-block",
-                       dropdown(
-                         style = "minimal",
-                         status = "primary",
-                         width = "500px",
-                         right = TRUE,
-                         icon = icon("calculator", lib = "font-awesome"),
-                         uiOutput("info_dat_EST_salarios")
-                       )
-                     ),
-
-                     div(
-                       style = "display:inline-block",
-                       dropdown(
-                         style = "minimal",
-                         status = "primary",
-                         width = "500px",
-                         right = TRUE,
-                         icon = icon("exclamation", lib = "font-awesome"),
-                         uiOutput("rel_dat_EST_salarios")
-                       )
-                     ),
-
-                     tags$h5(uiOutput("subtitle_dat_EST_salarios")),
-
-                     br(),
-
-                     conditionalPanel(condition = "input.visualizador_EST_salarios != 'Anual mapa'",
-                                      withSpinner(
-                                        plotOutput("p_dat_EST_salarios", height = "600px"),
-                                        type = 2
-                                      )),
-
-                     conditionalPanel(condition = "input.visualizador_EST_salarios == 'Anual mapa'",
-                                      withSpinner(
-                                        leafletOutput("map_EST_salarios"),
-                                        type = 2
-                                      )),
-
-                     conditionalPanel(
-                       condition = "input.visualizador_EST_salarios != 'Anual mapa'",
-                       downloadButton(outputId = "baja_plot_EST_salarios",
-                                      label = "Descarga el gráfico")
-                     ),
-                     br(),
-                     br(),
-                     withSpinner(DTOutput("tab_dat_EST_salarios"),
-                                 type = 2),
-                     br(),
-                     downloadButton("dl_tabla_dat_EST_salarios", "Descarga la tabla"),
-                     br(),
-                     br()
-                   )
-                   )),
+          # tabPanel("Salarios",
+          #          
+          #          br(),
+          #          
+          #          fluidRow(
+          #            sidebarPanel(
+          #              width = 3,
+          #              
+          #              selectInput(
+          #                inputId = "visualizador_EST_salarios",
+          #                label = "Visualización",
+          #                choices = c("Serie de tiempo",
+          #                            "Anual gráfico",
+          #                            "Anual mapa"),
+          #                selected = "Serie de tiempo"
+          #              ),
+          # 
+          #              selectInput(
+          #                inputId = "indicador_EST_salarios",
+          #                label = "Indicador",
+          #                choices = data %>%
+          #                  filter(str_detect(p2, "Salarios")) %>%
+          #                  distinct(nomindicador) %>%
+          #                  arrange(nomindicador) %>%
+          #                  pull(nomindicador)
+          #              ),
+          # 
+          #              uiOutput("corte_EST_salarios"),
+          # 
+          #              uiOutput("fecha_dat_EST_salarios"),
+          # 
+          #              br(),
+          # 
+          #              conditionalPanel(condition = "input.visualizador_EST_salarios != 'Anual mapa'",
+          #                               uiOutput("sel_EST_salarios_pais")),
+          # 
+          #              br(),
+          # 
+          #              uiOutput("sel_EST_salarios_region"),
+          # 
+          #              br(),
+          #              
+          #              tags$a(
+          #                href = "https://umad.cienciassociales.edu.uy/",
+          #                "Unidad de Métodos y Acceso a Datos",
+          #                style = "font-size:12px; color:Navy;
+          #          text-decoration:underline;"
+          #              ),
+          #          br(),
+          #          br(),
+          #          img(
+          #            src = "logo_umad.png",
+          #            height = "70%",
+          #            width = "70%",
+          #            align = "left"
+          #          ),
+          #          style = "display:inline-block;",
+          #          
+          #            ),
+          #          
+          #          mainPanel(
+          #            tags$h3(style = "display:inline-block",
+          #                    uiOutput("title_dat_EST_salarios")),
+          # 
+          #            div(
+          #              style = "display:inline-block",
+          #              dropdown(
+          #                style = "minimal",
+          #                status = "primary",
+          #                width = "500px",
+          #                right = TRUE,
+          #                icon = icon("calculator", lib = "font-awesome"),
+          #                uiOutput("info_dat_EST_salarios")
+          #              )
+          #            ),
+          # 
+          #            div(
+          #              style = "display:inline-block",
+          #              dropdown(
+          #                style = "minimal",
+          #                status = "primary",
+          #                width = "500px",
+          #                right = TRUE,
+          #                icon = icon("exclamation", lib = "font-awesome"),
+          #                uiOutput("rel_dat_EST_salarios")
+          #              )
+          #            ),
+          # 
+          #            tags$h5(uiOutput("subtitle_dat_EST_salarios")),
+          # 
+          #            br(),
+          # 
+          #            conditionalPanel(condition = "input.visualizador_EST_salarios != 'Anual mapa'",
+          #                             withSpinner(
+          #                               plotOutput("p_dat_EST_salarios", height = "600px"),
+          #                               type = 2
+          #                             )),
+          # 
+          #            conditionalPanel(condition = "input.visualizador_EST_salarios == 'Anual mapa'",
+          #                             withSpinner(
+          #                               leafletOutput("map_EST_salarios"),
+          #                               type = 2
+          #                             )),
+          # 
+          #            conditionalPanel(
+          #              condition = "input.visualizador_EST_salarios != 'Anual mapa'",
+          #              downloadButton(outputId = "baja_plot_EST_salarios",
+          #                             label = "Descarga el gráfico")
+          #            ),
+          #            br(),
+          #            br(),
+          #            withSpinner(DTOutput("tab_dat_EST_salarios"),
+          #                        type = 2),
+          #            br(),
+          #            downloadButton("dl_tabla_dat_EST_salarios", "Descarga la tabla"),
+          #            br(),
+          #            br()
+          #          )
+          #          )),
           
           tabPanel("Transferencias",
                    
@@ -7214,9 +7243,10 @@ ui <- navbarPage(
         }
       )
       
-      ##  9.  DE_ch (dat_DE_ch)   ====================================
       
-      # Data DE_ch
+      ##  9.  DE_ch (DE_ch)   ====================================
+      
+      # Data SP_empleo
       
       dat_DE_ch <- reactive({
         req(input$indicador_DE_ch)
@@ -7226,7 +7256,6 @@ ui <- navbarPage(
           janitor::remove_empty("cols")
         
       })
-      
       
       # Titulo
       output$title_dat_DE_ch <- renderUI({
@@ -7303,7 +7332,9 @@ ui <- navbarPage(
         if (input$indicador_DE_ch %in% vars_corte) {
           selectInput(
             inputId = "corte_DE_ch",
-            label = "Seleccione categorías",
+            label = paste("Seleccione categoría de",
+                          gsub("2", "", gsub("_", " ", names(dat_DE_ch()[, ncol(dat_DE_ch())])))),
+            # label = paste("Seleccione categoría de", gsub(toupper("_", "", distinct(get(names(dat_DE_ch()[, ncol(dat_DE_ch())])))))),
             choices =  dat_DE_ch() %>%
               distinct(get(names(dat_DE_ch(
               )[, ncol(dat_DE_ch())]))) %>%
@@ -7312,6 +7343,27 @@ ui <- navbarPage(
               filter(jerarquia == 1) %>%
               distinct(get(names(dat_DE_ch(
               )[, ncol(dat_DE_ch())]))) %>%
+              pull()
+          )
+        } else {
+          return(NULL)
+        }
+        
+      })
+      
+      
+      output$corte_DE_ch_2 <- renderUI({
+        if (input$indicador_DE_ch %in% vars_corte_2) {
+          selectInput(
+            inputId = "corte_DE_ch_2",
+            label = paste("Seleccione categoría de",
+                          gsub("2", "", gsub("_", " ", names(dat_DE_ch()[, ncol(dat_DE_ch())-1])))),
+            choices =  dat_DE_ch() %>%
+              distinct(get(names(dat_DE_ch()[, ncol(dat_DE_ch())-1]))) %>%
+              pull(),
+            selected = dat_DE_ch() %>%
+              filter(jerarquia == 1) %>%
+              distinct(get(names(dat_DE_ch()[, ncol(dat_DE_ch())-1]))) %>%
               pull()
           )
         } else {
@@ -7386,7 +7438,14 @@ ui <- navbarPage(
       
       
       dat_DE_ch_anual <- reactive({
-        if (input$indicador_DE_ch %in% vars_corte) {
+        if (input$indicador_DE_ch %in% vars_corte_2) {
+          dat_DE_ch() %>%
+            filter(get(names(dat_DE_ch()[, ncol(dat_DE_ch())])) %in% input$corte_DE_ch) %>%
+            filter(get(names(dat_DE_ch()[, ncol(dat_DE_ch())-1])) %in% input$corte_DE_ch_2) %>%
+            filter(fecha == input$fecha_DE_ch)
+          
+        } else if(input$indicador_DE_ch %in% vars_corte) {
+          
           dat_DE_ch() %>%
             filter(get(names(dat_DE_ch()[, ncol(dat_DE_ch())])) %in% input$corte_DE_ch) %>%
             filter(fecha == input$fecha_DE_ch)
@@ -7400,14 +7459,24 @@ ui <- navbarPage(
       })
       
       dat_DE_ch_simple <- reactive({
-        if (input$indicador_DE_ch %in% vars_corte) {
+        
+        if (input$indicador_DE_ch %in% vars_corte_2) {
+          dat_DE_ch() %>%
+            filter(get(names(dat_DE_ch()[, ncol(dat_DE_ch())])) %in% input$corte_DE_ch) %>%
+            filter(get(names(dat_DE_ch()[, ncol(dat_DE_ch())-1])) %in% input$corte_DE_ch_2) %>%
+            filter(fecha >= input$fecha_dat_DE_ch[1] &
+                     fecha <= input$fecha_dat_DE_ch[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_DE_ch |
+                     pais %in% input$chbox_reg_DE_ch)
+          
+        } else if(input$indicador_DE_ch %in% vars_corte) {
+          
           dat_DE_ch() %>%
             filter(get(names(dat_DE_ch()[, ncol(dat_DE_ch())])) %in% input$corte_DE_ch) %>%
             filter(fecha >= input$fecha_dat_DE_ch[1] &
                      fecha <= input$fecha_dat_DE_ch[2]) %>%
             filter(cod_pais %in% input$chbox_pais_DE_ch |
                      pais %in% input$chbox_reg_DE_ch)
-          
         } else {
           dat_DE_ch() %>%
             filter(fecha >= input$fecha_dat_DE_ch[1] &
@@ -7425,7 +7494,7 @@ ui <- navbarPage(
           req(input$fecha_dat_DE_ch, input$indicador_DE_ch)
           
           plot_DE_ch <- ggplot(data = dat_DE_ch_simple(),
-                               aes(x = fecha, y = valor)) +
+                                   aes(x = fecha, y = valor)) +
             geom_line(aes(color = pais), size = 1, alpha = 0.5) +
             geom_point(aes(color = pais), size = 3) +
             theme(axis.text.x = element_text(angle = 0),
@@ -7440,7 +7509,11 @@ ui <- navbarPage(
                  )) +
             scale_y_continuous(labels = addUnits) +
             scale_colour_manual(name = "", values = paleta_expandida) +
-            if (input$indicador_DE_ch %in% vars_corte) {
+            if (input$indicador_DE_ch %in% vars_corte_2) {
+              ggtitle(paste0(input$indicador_DE_ch, " (", input$corte_DE_ch, " y ",input$corte_DE_ch_2 , ")"))
+              
+            } else if(input$indicador_DE_ch %in% vars_corte) {
+              
               ggtitle(paste0(input$indicador_DE_ch, " (", input$corte_DE_ch, ")"))
               
             } else {
@@ -7466,7 +7539,7 @@ ui <- navbarPage(
           ))
           
           plot_DE_ch <- ggplot(base_plot_DE_ch,
-                               aes(x = fct_reorder(pais, valor), y = valor)) +
+                                   aes(x = fct_reorder(pais, valor), y = valor)) +
             geom_segment(
               aes(
                 x = fct_reorder(pais, valor),
@@ -7495,7 +7568,11 @@ ui <- navbarPage(
                    )
                  )) +
             scale_y_continuous(labels = addUnits) +
-            if (input$indicador_DE_ch %in% vars_corte) {
+            if (input$indicador_DE_ch %in% vars_corte_2) {
+              ggtitle(paste0(input$indicador_DE_ch, " (", input$corte_DE_ch, " y ",input$corte_DE_ch_2 , ")"))
+              
+            } else if(input$indicador_DE_ch %in% vars_corte) {
+              
               ggtitle(paste0(input$indicador_DE_ch, " (", input$corte_DE_ch, ")"))
               
             } else {
@@ -7639,13 +7716,33 @@ ui <- navbarPage(
       
       # Data para tabla y exportar
       dat_DE_ch_st <- reactive({
-        if (input$indicador_DE_ch %in% vars_corte) {
+        if (input$indicador_DE_ch %in% vars_corte_2) {
           dat_DE_ch() %>%
+            filter(get(names(dat_DE_ch()[, ncol(dat_DE_ch())])) %in% input$corte_DE_ch) %>%
+            filter(get(names(dat_DE_ch()[, ncol(dat_DE_ch())-1])) %in% input$corte_DE_ch_2) %>%
             filter(fecha >= input$fecha_dat_DE_ch[1] &
                      fecha <= input$fecha_dat_DE_ch[2]) %>%
             filter(cod_pais %in% input$chbox_pais_DE_ch |
                      pais %in% input$chbox_reg_DE_ch) %>%
-            select(pais, fecha, names(dat_DE_ch()[, ncol(dat_DE_ch())]), valor) %>%
+            select(pais, 
+                   fecha, 
+                   # names(dat_DE_ch()[, ncol(dat_DE_ch())]), 
+                   # names(dat_DE_ch()[, ncol(dat_DE_ch())-1]), 
+                   valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else if(input$indicador_DE_ch %in% vars_corte) {
+          
+          dat_DE_ch() %>%
+            filter(get(names(dat_DE_ch()[, ncol(dat_DE_ch())])) %in% input$corte_DE_ch) %>%
+            filter(fecha >= input$fecha_dat_DE_ch[1] &
+                     fecha <= input$fecha_dat_DE_ch[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_DE_ch |
+                     pais %in% input$chbox_reg_DE_ch) %>%
+            select(pais, 
+                   fecha, 
+                   # names(dat_DE_ch()[, ncol(dat_DE_ch())]), 
+                   valor) %>%
             arrange(desc(fecha), fct_reorder(pais, -valor))
           
         } else {
@@ -7678,7 +7775,13 @@ ui <- navbarPage(
       
       # Data completa
       dat_DE_ch_c <- reactive({
-        if (input$indicador_DE_ch %in% vars_corte) {
+        if (input$indicador_DE_ch %in% vars_corte_2) {
+          dat_DE_ch() %>%
+            select(pais, fecha, names(dat_DE_ch()[, ncol(dat_DE_ch())]), names(dat_DE_ch()[, ncol(dat_DE_ch())-1]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else if(input$indicador_DE_ch %in% vars_corte) {
+          
           dat_DE_ch() %>%
             select(pais, fecha, names(dat_DE_ch()[, ncol(dat_DE_ch())]), valor) %>%
             arrange(desc(fecha), fct_reorder(pais, -valor))
@@ -7704,10 +7807,24 @@ ui <- navbarPage(
       ## Data por año
       # Data para tabla y exportar
       dat_DE_ch_a <- reactive({
-        if (input$indicador_DE_ch %in% vars_corte) {
+        if (input$indicador_DE_ch %in% vars_corte_2) {
           dat_DE_ch_anual() %>%
             filter(pais_region %in% input$chbox_pais_reg_DE_ch) %>%
-            select(pais, fecha, names(dat_DE_ch()[, ncol(dat_DE_ch())]), valor) %>%
+            select(pais, 
+                   fecha, 
+                   # names(dat_DE_ch()[, ncol(dat_DE_ch())]), 
+                   # names(dat_DE_ch()[, ncol(dat_DE_ch())-1]),
+                   valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else if(input$indicador_DE_ch %in% vars_corte) {
+          
+          dat_DE_ch_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_DE_ch) %>%
+            select(pais, 
+                   fecha, 
+                   # names(dat_DE_ch()[, ncol(dat_DE_ch())]), 
+                   valor) %>%
             arrange(desc(fecha), fct_reorder(pais, -valor))
           
         } else {
@@ -7730,18 +7847,60 @@ ui <- navbarPage(
       
       # Tablas en shiny
       output$tab_dat_DE_ch <- renderDT({
-        if (input$indicador_DE_ch %in% vars_corte) {
+        if (input$indicador_DE_ch %in% vars_corte_2 & input$visualizador_DE_ch %in% c("Anual gráfico", "Anual mapa")) {
           DT::datatable(
-            dat_DE_ch_st(),
+            dat_DE_ch_a(),
             rownames = FALSE,
-            colnames = c("País/Región", "Fecha", "Corte", "Valor"),
+            colnames = c("País/Región", "Fecha", "Valor"),
             options = list(columnDefs = list(
               list(className = 'dt-center', targets = 1:2)
             )),
-            caption = htmltools::tags$caption(input$indicador_DE_ch,
+            caption = htmltools::tags$caption(paste0(input$indicador_DE_ch, " (", input$corte_DE_ch, " y ",input$corte_DE_ch_2 , ")"),
                                               style = "color:black; font-size:110%;")
           ) %>%
-            formatCurrency(4, '', mark = ",")
+            formatCurrency(3, '', mark = ",")
+          
+        } else if(input$indicador_DE_ch %in% vars_corte_2) {
+          
+          DT::datatable(
+            dat_DE_ch_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(paste0(input$indicador_DE_ch, " (", input$corte_DE_ch, " y ",input$corte_DE_ch_2 , ")"),
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        } else if(input$indicador_DE_ch %in% vars_corte & input$visualizador_DE_ch %in% c("Anual gráfico", "Anual mapa")) {
+          
+          DT::datatable(
+            dat_DE_ch_a(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(paste0(input$indicador_DE_ch, " (", input$corte_DE_ch, ")"),
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        } else if(input$indicador_DE_ch %in% vars_corte) {
+          
+          DT::datatable(
+            dat_DE_ch_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha","Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(paste0(input$indicador_DE_ch, " (", input$corte_DE_ch, ")"),
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
           
         } else if (input$visualizador_DE_ch == "Serie de tiempo") {
           DT::datatable(
@@ -7787,7 +7946,6 @@ ui <- navbarPage(
           }
         }
       )
-      
       
       
       ##  10.  DE_cti (dat_DE_cti)   ====================================
@@ -18278,7 +18436,6 @@ ui <- navbarPage(
         
       })
       
-      
       # Titulo
       output$title_dat_SP_empleo <- renderUI({
         helpText(HTML(unique(dat_SP_empleo()$nomindicador)))
@@ -18354,7 +18511,9 @@ ui <- navbarPage(
         if (input$indicador_SP_empleo %in% vars_corte) {
           selectInput(
             inputId = "corte_SP_empleo",
-            label = "Seleccione categorías",
+            label = paste("Seleccione categoría de",
+                          gsub("2", "", gsub("_", " ", names(dat_SP_empleo()[, ncol(dat_SP_empleo())])))),
+            # label = paste("Seleccione categoría de", gsub(toupper("_", "", distinct(get(names(dat_SP_empleo()[, ncol(dat_SP_empleo())])))))),
             choices =  dat_SP_empleo() %>%
               distinct(get(names(dat_SP_empleo(
               )[, ncol(dat_SP_empleo())]))) %>%
@@ -18363,6 +18522,27 @@ ui <- navbarPage(
               filter(jerarquia == 1) %>%
               distinct(get(names(dat_SP_empleo(
               )[, ncol(dat_SP_empleo())]))) %>%
+              pull()
+          )
+        } else {
+          return(NULL)
+        }
+        
+      })
+      
+      
+      output$corte_SP_empleo_2 <- renderUI({
+        if (input$indicador_SP_empleo %in% vars_corte_2) {
+          selectInput(
+            inputId = "corte_SP_empleo_2",
+            label = paste("Seleccione categoría de",
+                          gsub("2", "", gsub("_", " ", names(dat_SP_empleo()[, ncol(dat_SP_empleo())-1])))),
+            choices =  dat_SP_empleo() %>%
+              distinct(get(names(dat_SP_empleo()[, ncol(dat_SP_empleo())-1]))) %>%
+              pull(),
+            selected = dat_SP_empleo() %>%
+              filter(jerarquia == 1) %>%
+              distinct(get(names(dat_SP_empleo()[, ncol(dat_SP_empleo())-1]))) %>%
               pull()
           )
         } else {
@@ -18437,7 +18617,14 @@ ui <- navbarPage(
       
       
       dat_SP_empleo_anual <- reactive({
-        if (input$indicador_SP_empleo %in% vars_corte) {
+        if (input$indicador_SP_empleo %in% vars_corte_2) {
+          dat_SP_empleo() %>%
+            filter(get(names(dat_SP_empleo()[, ncol(dat_SP_empleo())])) %in% input$corte_SP_empleo) %>%
+            filter(get(names(dat_SP_empleo()[, ncol(dat_SP_empleo())-1])) %in% input$corte_SP_empleo_2) %>%
+            filter(fecha == input$fecha_SP_empleo)
+          
+        } else if(input$indicador_SP_empleo %in% vars_corte) {
+          
           dat_SP_empleo() %>%
             filter(get(names(dat_SP_empleo()[, ncol(dat_SP_empleo())])) %in% input$corte_SP_empleo) %>%
             filter(fecha == input$fecha_SP_empleo)
@@ -18451,14 +18638,24 @@ ui <- navbarPage(
       })
       
       dat_SP_empleo_simple <- reactive({
-        if (input$indicador_SP_empleo %in% vars_corte) {
+        
+        if (input$indicador_SP_empleo %in% vars_corte_2) {
+          dat_SP_empleo() %>%
+            filter(get(names(dat_SP_empleo()[, ncol(dat_SP_empleo())])) %in% input$corte_SP_empleo) %>%
+            filter(get(names(dat_SP_empleo()[, ncol(dat_SP_empleo())-1])) %in% input$corte_SP_empleo_2) %>%
+            filter(fecha >= input$fecha_dat_SP_empleo[1] &
+                     fecha <= input$fecha_dat_SP_empleo[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_SP_empleo |
+                     pais %in% input$chbox_reg_SP_empleo)
+          
+        } else if(input$indicador_SP_empleo %in% vars_corte) {
+          
           dat_SP_empleo() %>%
             filter(get(names(dat_SP_empleo()[, ncol(dat_SP_empleo())])) %in% input$corte_SP_empleo) %>%
             filter(fecha >= input$fecha_dat_SP_empleo[1] &
                      fecha <= input$fecha_dat_SP_empleo[2]) %>%
             filter(cod_pais %in% input$chbox_pais_SP_empleo |
                      pais %in% input$chbox_reg_SP_empleo)
-          
         } else {
           dat_SP_empleo() %>%
             filter(fecha >= input$fecha_dat_SP_empleo[1] &
@@ -18491,7 +18688,11 @@ ui <- navbarPage(
                  )) +
             scale_y_continuous(labels = addUnits) +
             scale_colour_manual(name = "", values = paleta_expandida) +
-            if (input$indicador_SP_empleo %in% vars_corte) {
+            if (input$indicador_SP_empleo %in% vars_corte_2) {
+              ggtitle(paste0(input$indicador_SP_empleo, " (", input$corte_SP_empleo, " y ",input$corte_SP_empleo_2 , ")"))
+              
+            } else if(input$indicador_SP_empleo %in% vars_corte) {
+
               ggtitle(paste0(input$indicador_SP_empleo, " (", input$corte_SP_empleo, ")"))
               
             } else {
@@ -18546,7 +18747,11 @@ ui <- navbarPage(
                    )
                  )) +
             scale_y_continuous(labels = addUnits) +
-            if (input$indicador_SP_empleo %in% vars_corte) {
+            if (input$indicador_SP_empleo %in% vars_corte_2) {
+              ggtitle(paste0(input$indicador_SP_empleo, " (", input$corte_SP_empleo, " y ",input$corte_SP_empleo_2 , ")"))
+              
+            } else if(input$indicador_SP_empleo %in% vars_corte) {
+              
               ggtitle(paste0(input$indicador_SP_empleo, " (", input$corte_SP_empleo, ")"))
               
             } else {
@@ -18690,13 +18895,33 @@ ui <- navbarPage(
       
       # Data para tabla y exportar
       dat_SP_empleo_st <- reactive({
-        if (input$indicador_SP_empleo %in% vars_corte) {
+        if (input$indicador_SP_empleo %in% vars_corte_2) {
           dat_SP_empleo() %>%
+            filter(get(names(dat_SP_empleo()[, ncol(dat_SP_empleo())])) %in% input$corte_SP_empleo) %>%
+            filter(get(names(dat_SP_empleo()[, ncol(dat_SP_empleo())-1])) %in% input$corte_SP_empleo_2) %>%
             filter(fecha >= input$fecha_dat_SP_empleo[1] &
                      fecha <= input$fecha_dat_SP_empleo[2]) %>%
             filter(cod_pais %in% input$chbox_pais_SP_empleo |
                      pais %in% input$chbox_reg_SP_empleo) %>%
-            select(pais, fecha, names(dat_SP_empleo()[, ncol(dat_SP_empleo())]), valor) %>%
+            select(pais, 
+                   fecha, 
+                   # names(dat_SP_empleo()[, ncol(dat_SP_empleo())]), 
+                   # names(dat_SP_empleo()[, ncol(dat_SP_empleo())-1]), 
+                   valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else if(input$indicador_SP_empleo %in% vars_corte) {
+          
+          dat_SP_empleo() %>%
+            filter(get(names(dat_SP_empleo()[, ncol(dat_SP_empleo())])) %in% input$corte_SP_empleo) %>%
+            filter(fecha >= input$fecha_dat_SP_empleo[1] &
+                     fecha <= input$fecha_dat_SP_empleo[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_SP_empleo |
+                     pais %in% input$chbox_reg_SP_empleo) %>%
+            select(pais, 
+                   fecha, 
+                   # names(dat_SP_empleo()[, ncol(dat_SP_empleo())]), 
+                   valor) %>%
             arrange(desc(fecha), fct_reorder(pais, -valor))
           
         } else {
@@ -18729,7 +18954,13 @@ ui <- navbarPage(
       
       # Data completa
       dat_SP_empleo_c <- reactive({
-        if (input$indicador_SP_empleo %in% vars_corte) {
+        if (input$indicador_SP_empleo %in% vars_corte_2) {
+          dat_SP_empleo() %>%
+            select(pais, fecha, names(dat_SP_empleo()[, ncol(dat_SP_empleo())]), names(dat_SP_empleo()[, ncol(dat_SP_empleo())-1]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else if(input$indicador_SP_empleo %in% vars_corte) {
+
           dat_SP_empleo() %>%
             select(pais, fecha, names(dat_SP_empleo()[, ncol(dat_SP_empleo())]), valor) %>%
             arrange(desc(fecha), fct_reorder(pais, -valor))
@@ -18755,10 +18986,24 @@ ui <- navbarPage(
       ## Data por año
       # Data para tabla y exportar
       dat_SP_empleo_a <- reactive({
-        if (input$indicador_SP_empleo %in% vars_corte) {
+        if (input$indicador_SP_empleo %in% vars_corte_2) {
           dat_SP_empleo_anual() %>%
             filter(pais_region %in% input$chbox_pais_reg_SP_empleo) %>%
-            select(pais, fecha, names(dat_SP_empleo()[, ncol(dat_SP_empleo())]), valor) %>%
+            select(pais, 
+                   fecha, 
+                   # names(dat_SP_empleo()[, ncol(dat_SP_empleo())]), 
+                   # names(dat_SP_empleo()[, ncol(dat_SP_empleo())-1]),
+                   valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else if(input$indicador_SP_empleo %in% vars_corte) {
+
+          dat_SP_empleo_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_SP_empleo) %>%
+            select(pais, 
+                   fecha, 
+                   # names(dat_SP_empleo()[, ncol(dat_SP_empleo())]), 
+                   valor) %>%
             arrange(desc(fecha), fct_reorder(pais, -valor))
           
         } else {
@@ -18781,18 +19026,60 @@ ui <- navbarPage(
       
       # Tablas en shiny
       output$tab_dat_SP_empleo <- renderDT({
-        if (input$indicador_SP_empleo %in% vars_corte) {
+        if (input$indicador_SP_empleo %in% vars_corte_2 & input$visualizador_SP_empleo %in% c("Anual gráfico", "Anual mapa")) {
           DT::datatable(
-            dat_SP_empleo_st(),
+            dat_SP_empleo_a(),
             rownames = FALSE,
-            colnames = c("País/Región", "Fecha", "Corte", "Valor"),
+            colnames = c("País/Región", "Fecha", "Valor"),
             options = list(columnDefs = list(
               list(className = 'dt-center', targets = 1:2)
             )),
-            caption = htmltools::tags$caption(input$indicador_SP_empleo,
+            caption = htmltools::tags$caption(paste0(input$indicador_SP_empleo, " (", input$corte_SP_empleo, " y ",input$corte_SP_empleo_2 , ")"),
                                               style = "color:black; font-size:110%;")
           ) %>%
-            formatCurrency(4, '', mark = ",")
+            formatCurrency(3, '', mark = ",")
+          
+        } else if(input$indicador_SP_empleo %in% vars_corte_2) {
+          
+          DT::datatable(
+            dat_SP_empleo_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(paste0(input$indicador_SP_empleo, " (", input$corte_SP_empleo, " y ",input$corte_SP_empleo_2 , ")"),
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+        
+        } else if(input$indicador_SP_empleo %in% vars_corte & input$visualizador_SP_empleo %in% c("Anual gráfico", "Anual mapa")) {
+          
+          DT::datatable(
+            dat_SP_empleo_a(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(paste0(input$indicador_SP_empleo, " (", input$corte_SP_empleo, ")"),
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        } else if(input$indicador_SP_empleo %in% vars_corte) {
+
+          DT::datatable(
+            dat_SP_empleo_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha","Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(paste0(input$indicador_SP_empleo, " (", input$corte_SP_empleo, ")"),
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
           
         } else if (input$visualizador_SP_empleo == "Serie de tiempo") {
           DT::datatable(
@@ -18839,6 +19126,7 @@ ui <- navbarPage(
         }
       )
       
+      
       ##  29.  EST_empleo (dat_EST_empleo)   ====================================
       
       # Data EST_empleo
@@ -18851,7 +19139,6 @@ ui <- navbarPage(
           janitor::remove_empty("cols")
         
       })
-      
       
       # Titulo
       output$title_dat_EST_empleo <- renderUI({
@@ -18928,7 +19215,9 @@ ui <- navbarPage(
         if (input$indicador_EST_empleo %in% vars_corte) {
           selectInput(
             inputId = "corte_EST_empleo",
-            label = "Seleccione categorías",
+            label = paste("Seleccione categoría de",
+                          gsub("2", "", gsub("_", " ", names(dat_EST_empleo()[, ncol(dat_EST_empleo())])))),
+            # label = paste("Seleccione categoría de", gsub(toupper("_", "", distinct(get(names(dat_EST_empleo()[, ncol(dat_EST_empleo())])))))),
             choices =  dat_EST_empleo() %>%
               distinct(get(names(dat_EST_empleo(
               )[, ncol(dat_EST_empleo())]))) %>%
@@ -18937,6 +19226,27 @@ ui <- navbarPage(
               filter(jerarquia == 1) %>%
               distinct(get(names(dat_EST_empleo(
               )[, ncol(dat_EST_empleo())]))) %>%
+              pull()
+          )
+        } else {
+          return(NULL)
+        }
+        
+      })
+      
+      
+      output$corte_EST_empleo_2 <- renderUI({
+        if (input$indicador_EST_empleo %in% vars_corte_2) {
+          selectInput(
+            inputId = "corte_EST_empleo_2",
+            label = paste("Seleccione categoría de",
+                          gsub("2", "", gsub("_", " ", names(dat_EST_empleo()[, ncol(dat_EST_empleo())-1])))),
+            choices =  dat_EST_empleo() %>%
+              distinct(get(names(dat_EST_empleo()[, ncol(dat_EST_empleo())-1]))) %>%
+              pull(),
+            selected = dat_EST_empleo() %>%
+              filter(jerarquia == 1) %>%
+              distinct(get(names(dat_EST_empleo()[, ncol(dat_EST_empleo())-1]))) %>%
               pull()
           )
         } else {
@@ -19011,7 +19321,14 @@ ui <- navbarPage(
       
       
       dat_EST_empleo_anual <- reactive({
-        if (input$indicador_EST_empleo %in% vars_corte) {
+        if (input$indicador_EST_empleo %in% vars_corte_2) {
+          dat_EST_empleo() %>%
+            filter(get(names(dat_EST_empleo()[, ncol(dat_EST_empleo())])) %in% input$corte_EST_empleo) %>%
+            filter(get(names(dat_EST_empleo()[, ncol(dat_EST_empleo())-1])) %in% input$corte_EST_empleo_2) %>%
+            filter(fecha == input$fecha_EST_empleo)
+          
+        } else if(input$indicador_EST_empleo %in% vars_corte) {
+          
           dat_EST_empleo() %>%
             filter(get(names(dat_EST_empleo()[, ncol(dat_EST_empleo())])) %in% input$corte_EST_empleo) %>%
             filter(fecha == input$fecha_EST_empleo)
@@ -19025,14 +19342,24 @@ ui <- navbarPage(
       })
       
       dat_EST_empleo_simple <- reactive({
-        if (input$indicador_EST_empleo %in% vars_corte) {
+        
+        if (input$indicador_EST_empleo %in% vars_corte_2) {
+          dat_EST_empleo() %>%
+            filter(get(names(dat_EST_empleo()[, ncol(dat_EST_empleo())])) %in% input$corte_EST_empleo) %>%
+            filter(get(names(dat_EST_empleo()[, ncol(dat_EST_empleo())-1])) %in% input$corte_EST_empleo_2) %>%
+            filter(fecha >= input$fecha_dat_EST_empleo[1] &
+                     fecha <= input$fecha_dat_EST_empleo[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_EST_empleo |
+                     pais %in% input$chbox_reg_EST_empleo)
+          
+        } else if(input$indicador_EST_empleo %in% vars_corte) {
+          
           dat_EST_empleo() %>%
             filter(get(names(dat_EST_empleo()[, ncol(dat_EST_empleo())])) %in% input$corte_EST_empleo) %>%
             filter(fecha >= input$fecha_dat_EST_empleo[1] &
                      fecha <= input$fecha_dat_EST_empleo[2]) %>%
             filter(cod_pais %in% input$chbox_pais_EST_empleo |
                      pais %in% input$chbox_reg_EST_empleo)
-          
         } else {
           dat_EST_empleo() %>%
             filter(fecha >= input$fecha_dat_EST_empleo[1] &
@@ -19065,7 +19392,11 @@ ui <- navbarPage(
                  )) +
             scale_y_continuous(labels = addUnits) +
             scale_colour_manual(name = "", values = paleta_expandida) +
-            if (input$indicador_EST_empleo %in% vars_corte) {
+            if (input$indicador_EST_empleo %in% vars_corte_2) {
+              ggtitle(paste0(input$indicador_EST_empleo, " (", input$corte_EST_empleo, " y ",input$corte_EST_empleo_2 , ")"))
+              
+            } else if(input$indicador_EST_empleo %in% vars_corte) {
+              
               ggtitle(paste0(input$indicador_EST_empleo, " (", input$corte_EST_empleo, ")"))
               
             } else {
@@ -19120,17 +19451,21 @@ ui <- navbarPage(
                    )
                  )) +
             scale_y_continuous(labels = addUnits) +
-            if (input$indicador_EST_empleo %in% vars_corte) {
-              ggtitle(paste0(input$indicador_SP_empleo, " (", input$corte_SP_empleo, ")"))
+            if (input$indicador_EST_empleo %in% vars_corte_2) {
+              ggtitle(paste0(input$indicador_EST_empleo, " (", input$corte_EST_empleo, " y ",input$corte_EST_empleo_2 , ")"))
+              
+            } else if(input$indicador_EST_empleo %in% vars_corte) {
+              
+              ggtitle(paste0(input$indicador_EST_empleo, " (", input$corte_EST_empleo, ")"))
               
             } else {
-              ggtitle(paste(input$indicador_SP_empleo))
+              ggtitle(paste(input$indicador_EST_empleo))
               
             }
           
-          print(plot_SP_empleo)
+          print(plot_EST_empleo)
           ggsave(
-            "www/indicador SP_empleo.png",
+            "www/indicador EST_empleo.png",
             width = 25,
             height = 30,
             units = "cm"
@@ -19264,13 +19599,33 @@ ui <- navbarPage(
       
       # Data para tabla y exportar
       dat_EST_empleo_st <- reactive({
-        if (input$indicador_EST_empleo %in% vars_corte) {
+        if (input$indicador_EST_empleo %in% vars_corte_2) {
           dat_EST_empleo() %>%
+            filter(get(names(dat_EST_empleo()[, ncol(dat_EST_empleo())])) %in% input$corte_EST_empleo) %>%
+            filter(get(names(dat_EST_empleo()[, ncol(dat_EST_empleo())-1])) %in% input$corte_EST_empleo_2) %>%
             filter(fecha >= input$fecha_dat_EST_empleo[1] &
                      fecha <= input$fecha_dat_EST_empleo[2]) %>%
             filter(cod_pais %in% input$chbox_pais_EST_empleo |
                      pais %in% input$chbox_reg_EST_empleo) %>%
-            select(pais, fecha, names(dat_EST_empleo()[, ncol(dat_EST_empleo())]), valor) %>%
+            select(pais, 
+                   fecha, 
+                   # names(dat_EST_empleo()[, ncol(dat_EST_empleo())]), 
+                   # names(dat_EST_empleo()[, ncol(dat_EST_empleo())-1]), 
+                   valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else if(input$indicador_EST_empleo %in% vars_corte) {
+          
+          dat_EST_empleo() %>%
+            filter(get(names(dat_EST_empleo()[, ncol(dat_EST_empleo())])) %in% input$corte_EST_empleo) %>%
+            filter(fecha >= input$fecha_dat_EST_empleo[1] &
+                     fecha <= input$fecha_dat_EST_empleo[2]) %>%
+            filter(cod_pais %in% input$chbox_pais_EST_empleo |
+                     pais %in% input$chbox_reg_EST_empleo) %>%
+            select(pais, 
+                   fecha, 
+                   # names(dat_EST_empleo()[, ncol(dat_EST_empleo())]), 
+                   valor) %>%
             arrange(desc(fecha), fct_reorder(pais, -valor))
           
         } else {
@@ -19303,7 +19658,13 @@ ui <- navbarPage(
       
       # Data completa
       dat_EST_empleo_c <- reactive({
-        if (input$indicador_EST_empleo %in% vars_corte) {
+        if (input$indicador_EST_empleo %in% vars_corte_2) {
+          dat_EST_empleo() %>%
+            select(pais, fecha, names(dat_EST_empleo()[, ncol(dat_EST_empleo())]), names(dat_EST_empleo()[, ncol(dat_EST_empleo())-1]), valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else if(input$indicador_EST_empleo %in% vars_corte) {
+          
           dat_EST_empleo() %>%
             select(pais, fecha, names(dat_EST_empleo()[, ncol(dat_EST_empleo())]), valor) %>%
             arrange(desc(fecha), fct_reorder(pais, -valor))
@@ -19329,10 +19690,24 @@ ui <- navbarPage(
       ## Data por año
       # Data para tabla y exportar
       dat_EST_empleo_a <- reactive({
-        if (input$indicador_EST_empleo %in% vars_corte) {
+        if (input$indicador_EST_empleo %in% vars_corte_2) {
           dat_EST_empleo_anual() %>%
             filter(pais_region %in% input$chbox_pais_reg_EST_empleo) %>%
-            select(pais, fecha, names(dat_EST_empleo()[, ncol(dat_EST_empleo())]), valor) %>%
+            select(pais, 
+                   fecha, 
+                   # names(dat_EST_empleo()[, ncol(dat_EST_empleo())]), 
+                   # names(dat_EST_empleo()[, ncol(dat_EST_empleo())-1]),
+                   valor) %>%
+            arrange(desc(fecha), fct_reorder(pais, -valor))
+          
+        } else if(input$indicador_EST_empleo %in% vars_corte) {
+          
+          dat_EST_empleo_anual() %>%
+            filter(pais_region %in% input$chbox_pais_reg_EST_empleo) %>%
+            select(pais, 
+                   fecha, 
+                   # names(dat_EST_empleo()[, ncol(dat_EST_empleo())]), 
+                   valor) %>%
             arrange(desc(fecha), fct_reorder(pais, -valor))
           
         } else {
@@ -19355,18 +19730,60 @@ ui <- navbarPage(
       
       # Tablas en shiny
       output$tab_dat_EST_empleo <- renderDT({
-        if (input$indicador_EST_empleo %in% vars_corte) {
+        if (input$indicador_EST_empleo %in% vars_corte_2 & input$visualizador_EST_empleo %in% c("Anual gráfico", "Anual mapa")) {
           DT::datatable(
-            dat_EST_empleo_st(),
+            dat_EST_empleo_a(),
             rownames = FALSE,
-            colnames = c("País/Región", "Fecha", "Corte", "Valor"),
+            colnames = c("País/Región", "Fecha", "Valor"),
             options = list(columnDefs = list(
               list(className = 'dt-center', targets = 1:2)
             )),
-            caption = htmltools::tags$caption(input$indicador_EST_empleo,
+            caption = htmltools::tags$caption(paste0(input$indicador_EST_empleo, " (", input$corte_EST_empleo, " y ",input$corte_EST_empleo_2 , ")"),
                                               style = "color:black; font-size:110%;")
           ) %>%
-            formatCurrency(4, '', mark = ",")
+            formatCurrency(3, '', mark = ",")
+          
+        } else if(input$indicador_EST_empleo %in% vars_corte_2) {
+          
+          DT::datatable(
+            dat_EST_empleo_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(paste0(input$indicador_EST_empleo, " (", input$corte_EST_empleo, " y ",input$corte_EST_empleo_2 , ")"),
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        } else if(input$indicador_EST_empleo %in% vars_corte & input$visualizador_EST_empleo %in% c("Anual gráfico", "Anual mapa")) {
+          
+          DT::datatable(
+            dat_EST_empleo_a(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha", "Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(paste0(input$indicador_EST_empleo, " (", input$corte_EST_empleo, ")"),
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
+          
+        } else if(input$indicador_EST_empleo %in% vars_corte) {
+          
+          DT::datatable(
+            dat_EST_empleo_st(),
+            rownames = FALSE,
+            colnames = c("País/Región", "Fecha","Valor"),
+            options = list(columnDefs = list(
+              list(className = 'dt-center', targets = 1:2)
+            )),
+            caption = htmltools::tags$caption(paste0(input$indicador_EST_empleo, " (", input$corte_EST_empleo, ")"),
+                                              style = "color:black; font-size:110%;")
+          ) %>%
+            formatCurrency(3, '', mark = ",")
           
         } else if (input$visualizador_EST_empleo == "Serie de tiempo") {
           DT::datatable(
@@ -19412,7 +19829,7 @@ ui <- navbarPage(
           }
         }
       )
-      
+  
       ##  30.  EST_salarios (dat_EST_salarios)   ====================================
       
       # Data EST_salarios
