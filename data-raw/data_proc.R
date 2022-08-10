@@ -13,7 +13,7 @@ rm(list = ls())
 
 # Metadata Economía
 metadata_eco <- read_excel(
-  "data-raw/Comparado_ec_060921.xlsx",
+  "data-raw/Comparado_ec_21072022.xlsx",
   col_types = c("numeric", "text", "text", "text",
                 "text", "text", "text", "text",
                 "text", "text", "text", "text",
@@ -59,7 +59,7 @@ glimpse(metadata)
 
 # Data Economía
 data_eco <- readxl::read_excel(
-  "data-raw/Comparado_ec_060921.xlsx",
+  "data-raw/Comparado_ec_21072022.xlsx",
   col_types = c("numeric", "text", "text", "numeric", "numeric", "text",
                 "text", "text", "text", "text", "text", "text"),
   sheet = 2) %>% 

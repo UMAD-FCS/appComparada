@@ -141,8 +141,12 @@ ui <- navbarPage(
     ".shiny-output-error { visibility: hidden; }",
     ".shiny-output-error:before { visibility: hidden; }"
   ),
-  
+  tags$style(".fa-calculator {color:#21618C}"),
+  tags$style(".fa-exclamation {color:#21618C}"),
+  tags$style(".fa-clock {color:#21618C}"),
   tabPanel(
+    
+    
     # * 2.1. Competitividad y precios  -------------------------------------
     
     title = "Competitividad y precios",
@@ -2105,7 +2109,7 @@ ui <- navbarPage(
   tabPanel(
     # * 2.5. Sostenibilidad ambiental  -------------------------------------
     
-    title = "Sostenibilidad ambiental",
+    title = "Ambiente",
     icon = icon("seedling", lib = "font-awesome"),
     
     br(),
