@@ -26,7 +26,7 @@ glimpse(metadata_eco)
 
 # Metadata Social
 metadata_soc <- readxl::read_excel(
-  "data-raw/Comparado_soc_070422.xlsx",
+  "data-raw/Comparado_soc_31082022.xlsx",
   col_types = c("numeric", "text", "text", "text",
                 "text", "text", "text", "text",
                 "text", "text", "text", "date",
@@ -71,7 +71,7 @@ glimpse(data_eco)
 
 # Data Social
 data_soc <- readxl::read_excel(
-  "data-raw/Comparado_soc_070422.xlsx",
+  "data-raw/Comparado_soc_31082022.xlsx",
   col_types = c("numeric", "text", "text", "numeric", "numeric", "text",
                 "text", "text", "text", "text", "text", "text",
                 "text", "text", "text", "text", "text", "text"),
@@ -118,7 +118,19 @@ regiones <- c("África Sub Sahariana",
               "Ingresos medios", 
               "Medio Oriente y África del Norte",
               "Unión Europea",
-              "Norteamérica")
+              "Norteamérica",
+              "Early-demographic dividend",
+              "East Asia & Pacific",
+              "European Union",
+              "High income",
+              "Late-demographic dividend",
+              "Latin America & Caribbean",
+              "Middle East & North Africa",
+              "Middle income",
+              "North America",
+              "Post-demographic dividend",
+              "Pre-demographic dividend",
+              "South Asia")
 
 data <- data %>% 
   mutate(region = case_when(
@@ -137,15 +149,57 @@ data <- data %>%
 # Agregar códigos
 codigos <- readxl::read_excel("data/codigos_iso.xlsx")
 
+codigos_eng <- read_csv("data-raw/wikipedia-iso-country-codes.csv") %>% 
+  janitor::clean_names() %>% 
+  rename(pais = english_short_name_lower_case,
+         cod_pais = alpha_3_code) %>% 
+  select(pais, cod_pais)
+
+codigos_eng2 <- read_csv("data-raw/iso_codes.csv") %>% 
+  janitor::clean_names() %>% 
+  rename(pais = country_name,
+         cod_pais = iso_alpha_3_code) %>% 
+  select(pais, cod_pais)
+
+codigos_final <- rbind(codigos, codigos_eng, codigos_eng2) %>% 
+  distinct(.keep_all = T)
+
 data <- data %>% 
-  left_join(codigos, by = "pais")
+  left_join(codigos_final, by = "pais")
 
 glimpse(data)
+
+# Agregar códigos faltantes
+data <- data %>% 
+  mutate(cod_pais = case_when(
+    pais == "Early-demographic dividend" ~ "EID",
+    pais =="East Asia & Pacific" ~ "AEP",
+    pais == "European Union" ~ "UER",
+    pais == "High income" ~ "AIG",
+    pais == "Hong Kong SAR, China" ~ "HKG",
+    pais == "Korea, Rep." ~ "KOR",
+    pais == "Late-demographic dividend" ~ "EAD",
+    pais == "Latin America & Caribbean" ~ "LCN",
+    pais == "Middle East & North Africa" ~ "MEA",
+    pais == "Middle income" ~ "MIG",
+    pais == "North America" ~ "NRA",
+    pais == "Post-demographic dividend" ~ "EPD",
+    pais == "Pre-demographic dividend" ~ "ERD",
+    pais == "Slovak Republic" ~ "SVK",
+    pais == "South Asia" ~ "ADS",
+    pais == "Sub-Saharan Africa"  ~ "ASS",
+    pais == "United States" ~ "USA",
+    pais == "Venezuela, RB" ~ "VEN",
+    TRUE ~ cod_pais
+  ))
+
+# test <- count(data, pais, cod_pais)
 
 # Countries in english
 # Recodificar países para matchear con world_spf
 data <- data %>% 
   mutate(pais_eng = case_when(
+    pais == "África Sub Sahariana" ~ "Sub-Saharan Africa",
     pais == "Brasil" ~ "Brazil",
     pais == "Corea del Sur" ~ "Korea, Republic of",
     pais == "Dinamarca" ~ "Denmark",
@@ -171,8 +225,11 @@ data <- data %>%
     pais == "Singapur" ~ "Singapore",
     pais == "Tailandia" ~ "Thailand",
     pais == "Vietnam" ~ "Viet Nam",
+    pais == "Venezuela, RB" ~ "Venezuela",
     TRUE ~ pais
   ))
+
+# test <- count(data, pais_eng)
 
 # data <- data %>% 
 #   mutate(fuente = "Fuente")

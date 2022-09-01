@@ -5,10 +5,10 @@ account: bancodedatos-fcs
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 6455361
-bundleId: 5990416
+bundleId: 6189018
 url: https://bancodedatos-fcs.shinyapps.io/appComparada/
-when: 1654718303.99792
-lastSyncTime: 1654718303.99792
+when: 1660152828.11306
+lastSyncTime: 1660152828.11306
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: data-raw

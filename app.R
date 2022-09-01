@@ -144,6 +144,7 @@ ui <- navbarPage(
   tags$style(".fa-calculator {color:#21618C}"),
   tags$style(".fa-exclamation {color:#21618C}"),
   tags$style(".fa-clock {color:#21618C}"),
+  tags$style(".fa-globe {color:#21618C}"),
   tabPanel(
     
     
@@ -244,6 +245,20 @@ ui <- navbarPage(
                        uiOutput("rel_dat_CP_comp")
                      )
                    ),
+                   
+                   div(
+                     style = "display:inline-block",
+                     dropdown(
+                       style = "minimal",
+                       status = "primary",
+                       width = "500px",
+                       right = TRUE,
+                       icon = icon("globe", lib = "font-awesome"),
+                       HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                  a("enlace",
+                                    href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
+                   )
+                 ),
                    
                    tags$h5(uiOutput("subtitle_dat_CP_comp")),
                    
@@ -359,6 +374,20 @@ ui <- navbarPage(
                        right = TRUE,
                        icon = icon("exclamation", lib = "font-awesome"),
                        uiOutput("rel_dat_CP_precios")
+                     )
+                   ),
+                   
+                   div(
+                     style = "display:inline-block",
+                     dropdown(
+                       style = "minimal",
+                       status = "primary",
+                       width = "500px",
+                       right = TRUE,
+                       icon = icon("globe", lib = "font-awesome"),
+                       HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                  a("enlace",
+                                    href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
                      )
                    ),
                    
@@ -493,6 +522,20 @@ ui <- navbarPage(
                      )
                    ),
                    
+                   div(
+                     style = "display:inline-block",
+                     dropdown(
+                       style = "minimal",
+                       status = "primary",
+                       width = "500px",
+                       right = TRUE,
+                       icon = icon("globe", lib = "font-awesome"),
+                       HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                  a("enlace",
+                                    href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
+                     )
+                   ),
+                   
                    tags$h5(uiOutput("subtitle_dat_DE_crec")),
                    
                    br(),
@@ -609,6 +652,20 @@ ui <- navbarPage(
                        right = TRUE,
                        icon = icon("exclamation", lib = "font-awesome"),
                        uiOutput("rel_dat_DE_prod")
+                     )
+                   ),
+                   
+                   div(
+                     style = "display:inline-block",
+                     dropdown(
+                       style = "minimal",
+                       status = "primary",
+                       width = "500px",
+                       right = TRUE,
+                       icon = icon("globe", lib = "font-awesome"),
+                       HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                  a("enlace",
+                                    href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
                      )
                    ),
                    
@@ -734,6 +791,20 @@ ui <- navbarPage(
               )
             ),
             
+            div(
+              style = "display:inline-block",
+              dropdown(
+                style = "minimal",
+                status = "primary",
+                width = "500px",
+                right = TRUE,
+                icon = icon("globe", lib = "font-awesome"),
+                HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                           a("enlace",
+                             href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
+              )
+            ),
+            
             tags$h5(uiOutput("subtitle_dat_DE_estr")),
             
             br(),
@@ -852,6 +923,20 @@ ui <- navbarPage(
                        right = TRUE,
                        icon = icon("exclamation", lib = "font-awesome"),
                        uiOutput("rel_dat_DE_inv")
+                     )
+                   ),
+                   
+                   div(
+                     style = "display:inline-block",
+                     dropdown(
+                       style = "minimal",
+                       status = "primary",
+                       width = "500px",
+                       right = TRUE,
+                       icon = icon("globe", lib = "font-awesome"),
+                       HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                  a("enlace",
+                                    href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
                      )
                    ),
                    
@@ -976,6 +1061,20 @@ ui <- navbarPage(
                      )
                    ),
                    
+                   div(
+                     style = "display:inline-block",
+                     dropdown(
+                       style = "minimal",
+                       status = "primary",
+                       width = "500px",
+                       right = TRUE,
+                       icon = icon("globe", lib = "font-awesome"),
+                       HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                  a("enlace",
+                                    href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
+                     )
+                   ),
+                   
                    tags$h5(uiOutput("subtitle_dat_DE_ch")),
                    
                    br(),
@@ -1091,6 +1190,20 @@ ui <- navbarPage(
                        right = TRUE,
                        icon = icon("exclamation", lib = "font-awesome"),
                        uiOutput("rel_dat_DE_cti")
+                     )
+                   ),
+                   
+                   div(
+                     style = "display:inline-block",
+                     dropdown(
+                       style = "minimal",
+                       status = "primary",
+                       width = "500px",
+                       right = TRUE,
+                       icon = icon("globe", lib = "font-awesome"),
+                       HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                  a("enlace",
+                                    href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
                      )
                    ),
                    
@@ -1210,6 +1323,20 @@ ui <- navbarPage(
                        right = TRUE,
                        icon = icon("exclamation", lib = "font-awesome"),
                        uiOutput("rel_dat_DE_infra")
+                     )
+                   ),
+                   
+                   div(
+                     style = "display:inline-block",
+                     dropdown(
+                       style = "minimal",
+                       status = "primary",
+                       width = "500px",
+                       right = TRUE,
+                       icon = icon("globe", lib = "font-awesome"),
+                       HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                  a("enlace",
+                                    href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
                      )
                    ),
                    
@@ -1344,6 +1471,20 @@ ui <- navbarPage(
                      )
                    ),
                    
+                   div(
+                     style = "display:inline-block",
+                     dropdown(
+                       style = "minimal",
+                       status = "primary",
+                       width = "500px",
+                       right = TRUE,
+                       icon = icon("globe", lib = "font-awesome"),
+                       HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                  a("enlace",
+                                    href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
+                     )
+                   ),
+                   
                    tags$h5(uiOutput("subtitle_dat_SF_ahorro")),
                    
                    br(),
@@ -1460,6 +1601,20 @@ ui <- navbarPage(
                        right = TRUE,
                        icon = icon("exclamation", lib = "font-awesome"),
                        uiOutput("rel_dat_SF_externa")
+                     )
+                   ),
+                   
+                   div(
+                     style = "display:inline-block",
+                     dropdown(
+                       style = "minimal",
+                       status = "primary",
+                       width = "500px",
+                       right = TRUE,
+                       icon = icon("globe", lib = "font-awesome"),
+                       HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                  a("enlace",
+                                    href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
                      )
                    ),
                    
@@ -1582,6 +1737,20 @@ ui <- navbarPage(
                      )
                    ),
                    
+                   div(
+                     style = "display:inline-block",
+                     dropdown(
+                       style = "minimal",
+                       status = "primary",
+                       width = "500px",
+                       right = TRUE,
+                       icon = icon("globe", lib = "font-awesome"),
+                       HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                  a("enlace",
+                                    href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
+                     )
+                   ),
+                   
                    tags$h5(uiOutput("subtitle_dat_SF_inv")),
                    
                    br(),
@@ -1699,6 +1868,20 @@ ui <- navbarPage(
                 right = TRUE,
                 icon = icon("exclamation", lib = "font-awesome"),
                 uiOutput("rel_dat_SF_mon")
+              )
+            ),
+            
+            div(
+              style = "display:inline-block",
+              dropdown(
+                style = "minimal",
+                status = "primary",
+                width = "500px",
+                right = TRUE,
+                icon = icon("globe", lib = "font-awesome"),
+                HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                           a("enlace",
+                             href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
               )
             ),
             
@@ -1835,6 +2018,20 @@ ui <- navbarPage(
                      )
                    ),
                    
+                   div(
+                     style = "display:inline-block",
+                     dropdown(
+                       style = "minimal",
+                       status = "primary",
+                       width = "500px",
+                       right = TRUE,
+                       icon = icon("globe", lib = "font-awesome"),
+                       HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                  a("enlace",
+                                    href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
+                     )
+                   ),
+                   
                    tags$h5(uiOutput("subtitle_dat_EN_consumo")),
                    
                    br(),
@@ -1951,6 +2148,20 @@ ui <- navbarPage(
                        right = TRUE,
                        icon = icon("exclamation", lib = "font-awesome"),
                        uiOutput("rel_dat_EN_emisiones")
+                     )
+                   ),
+                   
+                   div(
+                     style = "display:inline-block",
+                     dropdown(
+                       style = "minimal",
+                       status = "primary",
+                       width = "500px",
+                       right = TRUE,
+                       icon = icon("globe", lib = "font-awesome"),
+                       HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                  a("enlace",
+                                    href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
                      )
                    ),
                    
@@ -2074,6 +2285,20 @@ ui <- navbarPage(
                      )
                    ),
                    
+                   div(
+                     style = "display:inline-block",
+                     dropdown(
+                       style = "minimal",
+                       status = "primary",
+                       width = "500px",
+                       right = TRUE,
+                       icon = icon("globe", lib = "font-awesome"),
+                       HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                  a("enlace",
+                                    href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
+                     )
+                   ),
+                   
                    tags$h5(uiOutput("subtitle_dat_EN_prod")),
                    
                    br(),
@@ -2194,6 +2419,20 @@ ui <- navbarPage(
             right = TRUE,
             icon = icon("exclamation", lib = "font-awesome"),
             uiOutput("rel_dat_SA_sa")
+          )
+        ),
+        
+        div(
+          style = "display:inline-block",
+          dropdown(
+            style = "minimal",
+            status = "primary",
+            width = "500px",
+            right = TRUE,
+            icon = icon("globe", lib = "font-awesome"),
+            HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                       a("enlace",
+                         href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
           )
         ),
         
@@ -2329,6 +2568,20 @@ ui <- navbarPage(
                        uiOutput("rel_dat_DEMO_nat")
                      )
                    ),
+                   
+                   div(
+                     style = "display:inline-block",
+                     dropdown(
+                       style = "minimal",
+                       status = "primary",
+                       width = "500px",
+                       right = TRUE,
+                       icon = icon("globe", lib = "font-awesome"),
+                       HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                  a("enlace",
+                                    href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
+                     )
+                   ),
 
                    tags$h5(uiOutput("subtitle_dat_DEMO_nat")),
 
@@ -2446,6 +2699,20 @@ ui <- navbarPage(
                        right = TRUE,
                        icon = icon("exclamation", lib = "font-awesome"),
                        uiOutput("rel_dat_DEMO_morta")
+                     )
+                   ),
+                   
+                   div(
+                     style = "display:inline-block",
+                     dropdown(
+                       style = "minimal",
+                       status = "primary",
+                       width = "500px",
+                       right = TRUE,
+                       icon = icon("globe", lib = "font-awesome"),
+                       HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                  a("enlace",
+                                    href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
                      )
                    ),
 
@@ -2569,6 +2836,20 @@ ui <- navbarPage(
                      )
                    ),
 
+                   div(
+                     style = "display:inline-block",
+                     dropdown(
+                       style = "minimal",
+                       status = "primary",
+                       width = "500px",
+                       right = TRUE,
+                       icon = icon("globe", lib = "font-awesome"),
+                       HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                  a("enlace",
+                                    href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
+                     )
+                   ),
+                   
                    tags$h5(uiOutput("subtitle_dat_DEMO_fert")),
 
                    br(),
@@ -2689,6 +2970,20 @@ ui <- navbarPage(
                      )
                    ),
 
+                   div(
+                     style = "display:inline-block",
+                     dropdown(
+                       style = "minimal",
+                       status = "primary",
+                       width = "500px",
+                       right = TRUE,
+                       icon = icon("globe", lib = "font-awesome"),
+                       HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                  a("enlace",
+                                    href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
+                     )
+                   ),
+                   
                    tags$h5(uiOutput("subtitle_dat_DEMO_pob")),
 
                    br(),
@@ -2810,6 +3105,20 @@ ui <- navbarPage(
                 right = TRUE,
                 icon = icon("exclamation", lib = "font-awesome"),
                 uiOutput("rel_dat_POB")
+              )
+            ),
+            
+            div(
+              style = "display:inline-block",
+              dropdown(
+                style = "minimal",
+                status = "primary",
+                width = "500px",
+                right = TRUE,
+                icon = icon("globe", lib = "font-awesome"),
+                HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                           a("enlace",
+                             href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
               )
             ),
             
@@ -2945,6 +3254,20 @@ ui <- navbarPage(
                        )
                      ),
 
+                     div(
+                       style = "display:inline-block",
+                       dropdown(
+                         style = "minimal",
+                         status = "primary",
+                         width = "500px",
+                         right = TRUE,
+                         icon = icon("globe", lib = "font-awesome"),
+                         HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                    a("enlace",
+                                      href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
+                       )
+                     ),
+                     
                      tags$h5(uiOutput("subtitle_dat_SP_ig")),
 
                      br(),
@@ -3184,6 +3507,20 @@ ui <- navbarPage(
                        )
                      ),
 
+                     div(
+                       style = "display:inline-block",
+                       dropdown(
+                         style = "minimal",
+                         status = "primary",
+                         width = "500px",
+                         right = TRUE,
+                         icon = icon("globe", lib = "font-awesome"),
+                         HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                    a("enlace",
+                                      href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
+                       )
+                     ),
+                     
                      tags$h5(uiOutput("subtitle_dat_SP_deuda")),
 
                      br(),
@@ -3441,6 +3778,20 @@ ui <- navbarPage(
                        )
                      ),
 
+                     div(
+                       style = "display:inline-block",
+                       dropdown(
+                         style = "minimal",
+                         status = "primary",
+                         width = "500px",
+                         right = TRUE,
+                         icon = icon("globe", lib = "font-awesome"),
+                         HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                    a("enlace",
+                                      href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
+                       )
+                     ),
+                     
                      tags$h5(uiOutput("subtitle_dat_EST_empleo")),
 
                      br(),
@@ -3680,6 +4031,20 @@ ui <- navbarPage(
                        )
                      ),
 
+                     div(
+                       style = "display:inline-block",
+                       dropdown(
+                         style = "minimal",
+                         status = "primary",
+                         width = "500px",
+                         right = TRUE,
+                         icon = icon("globe", lib = "font-awesome"),
+                         HTML(paste("Puedes consultar la correspondencia entre nombres completos de los países y los códigos ISO en el siguiente ",
+                                    a("enlace",
+                                      href = "https://es.wikipedia.org/wiki/ISO_3166-1_alfa-3#:~:text=Los%20c%C3%B3digos%20ISO%203166%2D1,zonas%20especiales%20de%20inter%C3%A9s%20geogr%C3%A1fico.")))
+                       )
+                     ),
+                     
                      tags$h5(uiOutput("subtitle_dat_EST_tran")),
 
                      br(),
@@ -3717,6 +4082,8 @@ ui <- navbarPage(
     
     
     server <- function(session, input, output) {
+      
+      
       ##  3.  CP_comp (dat_CP_comp)   ============================================
       
       # Data CP_compn
@@ -3865,14 +4232,14 @@ ui <- navbarPage(
       output$sel_CP_comp_region <- renderUI({
         if (input$visualizador_CP_comp == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_CP_comp",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_CP_comp() %>%
                 filter(region == 1) %>%
@@ -4458,14 +4825,14 @@ ui <- navbarPage(
       output$sel_CP_precios_region <- renderUI({
         if (input$visualizador_CP_precios == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_CP_precios",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_CP_precios() %>%
                 filter(region == 1) %>%
@@ -5056,14 +5423,14 @@ ui <- navbarPage(
       output$sel_DE_crec_region <- renderUI({
         if (input$visualizador_DE_crec == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_DE_crec",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_DE_crec() %>%
                 filter(region == 1) %>%
@@ -5643,14 +6010,14 @@ ui <- navbarPage(
       output$sel_DE_prod_region <- renderUI({
         if (input$visualizador_DE_prod == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_DE_prod",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_DE_prod() %>%
                 filter(region == 1) %>%
@@ -6231,14 +6598,14 @@ ui <- navbarPage(
       output$sel_DE_estr_region <- renderUI({
         if (input$visualizador_DE_estr == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_DE_estr",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_DE_estr() %>%
                 filter(region == 1) %>%
@@ -6818,14 +7185,14 @@ ui <- navbarPage(
       output$sel_DE_inv_region <- renderUI({
         if (input$visualizador_DE_inv == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_DE_inv",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_DE_inv() %>%
                 filter(region == 1) %>%
@@ -7416,14 +7783,14 @@ ui <- navbarPage(
       output$sel_DE_ch_region <- renderUI({
         if (input$visualizador_DE_ch == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_DE_ch",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_DE_ch() %>%
                 filter(region == 1) %>%
@@ -8100,14 +8467,14 @@ ui <- navbarPage(
       output$sel_DE_cti_region <- renderUI({
         if (input$visualizador_DE_cti == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_DE_cti",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_DE_cti() %>%
                 filter(region == 1) %>%
@@ -8677,14 +9044,14 @@ ui <- navbarPage(
       output$sel_DE_infra_region <- renderUI({
         if (input$visualizador_DE_infra == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_DE_infra",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_DE_infra() %>%
                 filter(region == 1) %>%
@@ -9264,14 +9631,14 @@ ui <- navbarPage(
       output$sel_SF_ahorro_region <- renderUI({
         if (input$visualizador_SF_ahorro == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_SF_ahorro",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_SF_ahorro() %>%
                 filter(region == 1) %>%
@@ -9855,14 +10222,14 @@ ui <- navbarPage(
       output$sel_SF_externa_region <- renderUI({
         if (input$visualizador_SF_externa == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_SF_externa",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_SF_externa() %>%
                 filter(region == 1) %>%
@@ -10453,14 +10820,14 @@ ui <- navbarPage(
       output$sel_SF_inv_region <- renderUI({
         if (input$visualizador_SF_inv == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_SF_inv",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_SF_inv() %>%
                 filter(region == 1) %>%
@@ -11030,14 +11397,14 @@ ui <- navbarPage(
       output$sel_SF_mon_region <- renderUI({
         if (input$visualizador_SF_mon == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_SF_mon",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_SF_mon() %>%
                 filter(region == 1) %>%
@@ -11609,14 +11976,14 @@ ui <- navbarPage(
       output$sel_EN_consumo_region <- renderUI({
         if (input$visualizador_EN_consumo == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_EN_consumo",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_EN_consumo() %>%
                 filter(region == 1) %>%
@@ -12210,14 +12577,14 @@ ui <- navbarPage(
       output$sel_EN_emisiones_region <- renderUI({
         if (input$visualizador_EN_emisiones == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_EN_emisiones",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_EN_emisiones() %>%
                 filter(region == 1) %>%
@@ -12819,14 +13186,14 @@ ui <- navbarPage(
       output$sel_EN_prod_region <- renderUI({
         if (input$visualizador_EN_prod == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_EN_prod",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_EN_prod() %>%
                 filter(region == 1) %>%
@@ -13405,14 +13772,14 @@ ui <- navbarPage(
       output$sel_SA_sa_region <- renderUI({
         if (input$visualizador_SA_sa == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_SA_sa",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_SA_sa() %>%
                 filter(region == 1) %>%
@@ -13980,14 +14347,14 @@ ui <- navbarPage(
       output$sel_DEMO_nat_region <- renderUI({
         if (input$visualizador_DEMO_nat == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_DEMO_nat",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_DEMO_nat() %>%
                 filter(region == 1) %>%
@@ -14554,14 +14921,14 @@ ui <- navbarPage(
       output$sel_DEMO_morta_region <- renderUI({
         if (input$visualizador_DEMO_morta == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_DEMO_morta",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_DEMO_morta() %>%
                 filter(region == 1) %>%
@@ -15129,14 +15496,14 @@ ui <- navbarPage(
       output$sel_DEMO_fert_region <- renderUI({
         if (input$visualizador_DEMO_fert == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_DEMO_fert",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_DEMO_fert() %>%
                 filter(region == 1) %>%
@@ -15703,14 +16070,14 @@ ui <- navbarPage(
       output$sel_DEMO_pob_region <- renderUI({
         if (input$visualizador_DEMO_pob == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_DEMO_pob",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_DEMO_pob() %>%
                 filter(region == 1) %>%
@@ -16277,14 +16644,14 @@ ui <- navbarPage(
       output$sel_POB_region <- renderUI({
         if (input$visualizador_POB == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_POB",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_POB() %>%
                 filter(region == 1) %>%
@@ -16851,14 +17218,14 @@ ui <- navbarPage(
       output$sel_SP_ig_region <- renderUI({
         if (input$visualizador_SP_ig == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_SP_ig",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_SP_ig() %>%
                 filter(region == 1) %>%
@@ -17425,14 +17792,14 @@ ui <- navbarPage(
       output$sel_SP_res_region <- renderUI({
         if (input$visualizador_SP_res == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_SP_res",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_SP_res() %>%
                 filter(region == 1) %>%
@@ -17999,14 +18366,14 @@ ui <- navbarPage(
       output$sel_SP_deuda_region <- renderUI({
         if (input$visualizador_SP_deuda == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_SP_deuda",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_SP_deuda() %>%
                 filter(region == 1) %>%
@@ -18595,14 +18962,14 @@ ui <- navbarPage(
       output$sel_SP_empleo_region <- renderUI({
         if (input$visualizador_SP_empleo == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_SP_empleo",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_SP_empleo() %>%
                 filter(region == 1) %>%
@@ -19299,14 +19666,14 @@ ui <- navbarPage(
       output$sel_EST_empleo_region <- renderUI({
         if (input$visualizador_EST_empleo == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_EST_empleo",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_EST_empleo() %>%
                 filter(region == 1) %>%
@@ -19980,14 +20347,14 @@ ui <- navbarPage(
       output$sel_EST_salarios_region <- renderUI({
         if (input$visualizador_EST_salarios == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_EST_salarios",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_EST_salarios() %>%
                 filter(region == 1) %>%
@@ -20554,14 +20921,14 @@ ui <- navbarPage(
       output$sel_EST_tran_region <- renderUI({
         if (input$visualizador_EST_tran == "Serie de tiempo") {
           dropdown(
-            label = "Seleccione regiones",
+            label = "Seleccione regiones o grupos",
             status = "default",
             width = 400,
             circle = F,
             
             checkboxGroupInput(
               inputId = "chbox_reg_EST_tran",
-              label = "Seleccione regiones",
+              label = "Seleccione regiones o grupos",
               inline = TRUE,
               choices = dat_EST_tran() %>%
                 filter(region == 1) %>%
