@@ -1,0 +1,247 @@
+"Country Name","UNFAO Country Code","ISO Alpha-2 Code","ISO Alpha-3 Code",UN_region,UN_subregion,wb_income_group
+Armenia,1,AM,ARM,Asia,"Western Asia",LM
+Afghanistan,2,AF,AFG,Asia,"Southern Asia",LI
+Albania,3,AL,ALB,Europe,"Southern Europe",UM
+Algeria,4,DZ,DZA,Africa,"Northern Africa",UM
+"American Samoa",5,AS,ASM,Oceania,Polynesia,UM
+Andorra,6,AD,AND,Europe,"Southern Europe",HI
+Angola,7,AO,AGO,Africa,"Middle Africa",LM
+"Antigua and Barbuda",8,AG,ATG,"Latin America and the Caribbean",Caribbean,HI
+Argentina,9,AR,ARG,"Latin America and the Caribbean","South America",UM
+Australia,10,AU,AUS,Oceania,"Australia and New Zealand",HI
+Austria,11,AT,AUT,Europe,"Western Europe",HI
+Bahamas,12,BS,BHS,"Latin America and the Caribbean",Caribbean,HI
+Bahrain,13,BH,BHR,Asia,"Western Asia",HI
+Barbados,14,BB,BRB,"Latin America and the Caribbean",Caribbean,HI
+Bangladesh,16,BD,BGD,Asia,"Southern Asia",LI
+Bermuda,17,BM,BMU,"North America","North America",HI
+Bhutan,18,BT,BTN,Asia,"Southern Asia",LM
+Bolivia,19,BO,BOL,"Latin America and the Caribbean","South America",LM
+Botswana,20,BW,BWA,Africa,"Southern Africa",UM
+Brazil,21,BR,BRA,"Latin America and the Caribbean","South America",UM
+Aruba,22,AW,ABW,"Latin America and the Caribbean",Caribbean,HI
+Belize,23,BZ,BLZ,"Latin America and the Caribbean","Central America",UM
+"British Indian Ocean Ter",24,IO,IOT,Asia,"Southern Asia",
+"Solomon Islands",25,SB,SLB,Oceania,Melanesia,LI
+"Brunei Darussalam",26,BN,BRN,Asia,"South-Eastern Asia",HI
+Bulgaria,27,BG,BGR,Europe,"Eastern Europe",UM
+Myanmar,28,MM,MMR,Asia,"South-Eastern Asia",LI
+Burundi,29,BI,BDI,Africa,"Eastern Africa",LI
+Cameroon,32,CM,CMR,Africa,"Middle Africa",LM
+Canada,33,CA,CAN,"North America","North America",HI
+"Cabo Verde",35,CV,CPV,Africa,"Western Africa",LM
+"Cayman Islands",36,KY,CYM,"Latin America and the Caribbean",Caribbean,HI
+"Central African Republic",37,CF,CAF,Africa,"Middle Africa",LI
+"Sri Lanka",38,LK,LKA,Asia,"Southern Asia",LM
+Chad,39,TD,TCD,Africa,"Middle Africa",LI
+Chile,40,CL,CHL,"Latin America and the Caribbean","South America",UM
+"China, mainland",41,NULL,NULL,Asia,"Eastern Asia",UM
+"Christmas Island",42,CX,CXR,Oceania,"Australia and New Zealand",
+"Cocos (Keeling) Islands",43,CC,CCK,Oceania,"Australia and New Zealand",
+Colombia,44,CO,COL,"Latin America and the Caribbean","South America",UM
+Comoros,45,KM,COM,Africa,"Eastern Africa",LI
+Congo,46,CG,COG,Africa,"Middle Africa",LM
+"Cook Islands",47,CK,COK,Oceania,Polynesia,
+"Costa Rica",48,CR,CRI,"Latin America and the Caribbean","Central America",UM
+Cuba,49,CU,CUB,"Latin America and the Caribbean",Caribbean,UM
+Cyprus,50,CY,CYP,Asia,"Western Asia",HI
+Czechoslovakia,51,NULL,CSHH,Europe,"Eastern Europe",
+Azerbaijan,52,AZ,AZE,Asia,"Western Asia",UM
+Benin,53,BJ,BEN,Africa,"Western Africa",LI
+Denmark,54,DK,DNK,Europe,"Northern Europe",HI
+Dominica,55,DM,DMA,"Latin America and the Caribbean",Caribbean,UM
+"Dominican Republic",56,DO,DOM,"Latin America and the Caribbean",Caribbean,UM
+Belarus,57,BY,BLR,Europe,"Eastern Europe",UM
+Ecuador,58,EC,ECU,"Latin America and the Caribbean","South America",UM
+Egypt,59,EG,EGY,Africa,"Northern Africa",LM
+"El Salvador",60,SV,SLV,"Latin America and the Caribbean","Central America",LM
+"Equatorial Guinea",61,GQ,GNQ,Africa,"Middle Africa",HI
+"Ethiopia PDR",62,NULL,NULL,Africa,"Eastern Africa",
+Estonia,63,EE,EST,Europe,"Northern Europe",HI
+"Faroe Islands",64,FO,FRO,Europe,"Northern Europe",HI
+"Falkland Islands",65,FK,FLK,"Latin America and the Caribbean","South America",
+Fiji,66,FJ,FJI,Oceania,Melanesia,UM
+Finland,67,FI,FIN,Europe,"Northern Europe",HI
+France,68,FR,FRA,Europe,"Western Europe",HI
+"French Guiana",69,GF,GUF,"Latin America and the Caribbean","South America",
+"French Polynesia",70,PF,PYF,Oceania,Polynesia,HI
+Djibouti,72,DJ,DJI,Africa,"Eastern Africa",LM
+Georgia,73,GE,GEO,Asia,"Western Asia",LM
+Gabon,74,GA,GAB,Africa,"Middle Africa",UM
+Gambia,75,GM,GMB,Africa,"Western Africa",LI
+Germany,79,DE,DEU,Europe,"Western Europe",HI
+"Bosnia and Herzegovina",80,BA,BIH,Europe,"Southern Europe",UM
+Ghana,81,GH,GHA,Africa,"Western Africa",LM
+Gibraltar,82,GI,GIB,Europe,"Southern Europe",
+Kiribati,83,KI,KIR,Oceania,Micronesia,LM
+Greece,84,GR,GRC,Europe,"Southern Europe",HI
+Greenland,85,GL,GRL,"North America","North America",HI
+Grenada,86,GD,GRD,"Latin America and the Caribbean",Caribbean,UM
+Guadeloupe,87,GP,GLP,"Latin America and the Caribbean",Caribbean,
+Guam,88,GU,GUM,Oceania,Micronesia,HI
+Guatemala,89,GT,GTM,"Latin America and the Caribbean","Central America",LM
+Guinea,90,GN,GIN,Africa,"Western Africa",LI
+Guyana,91,GY,GUY,"Latin America and the Caribbean","South America",LM
+Haiti,93,HT,HTI,"Latin America and the Caribbean",Caribbean,LI
+Honduras,95,HN,HND,"Latin America and the Caribbean","Central America",LM
+"China Hong Kong SAR",96,HK,HKG,Asia,"Eastern Asia",HI
+Hungary,97,HU,HUN,Europe,"Eastern Europe",HI
+Croatia,98,HR,HRV,Europe,"Southern Europe",HI
+Iceland,99,IS,ISL,Europe,"Northern Europe",HI
+India,100,IN,IND,Asia,"Southern Asia",LM
+Indonesia,101,ID,IDN,Asia,"South-Eastern Asia",LM
+"Iran, Islamic Republic of",102,IR,IRN,Asia,"Southern Asia",UM
+Iraq,103,IQ,IRQ,Asia,"Western Asia",LM
+Ireland,104,IE,IRL,Europe,"Northern Europe",HI
+Israel,105,IL,ISR,Asia,"Western Asia",HI
+Italy,106,IT,ITA,Europe,"Southern Europe",HI
+"Côte d'Ivoire",107,CI,CIV,Africa,"Western Africa",LM
+Kazakhstan,108,KZ,KAZ,Asia,"Central Asia",UM
+Jamaica,109,JM,JAM,"Latin America and the Caribbean",Caribbean,UM
+Japan,110,JP,JPN,Asia,"Eastern Asia",HI
+Jordan,112,JO,JOR,Asia,"Western Asia",UM
+Kyrgyzstan,113,KG,KGZ,Asia,"Central Asia",LI
+Kenya,114,KE,KEN,Africa,"Eastern Africa",LI
+Cambodia,115,KH,KHM,Asia,"South-Eastern Asia",LI
+"Korea, Democratic People's Republic of",116,KP,PRK,Asia,"Eastern Asia",LI
+"Korea, Republic of",117,KR,KOR,Asia,"Eastern Asia",HI
+Kuwait,118,KW,KWT,Asia,"Western Asia",HI
+Latvia,119,LV,LVA,Europe,"Northern Europe",HI
+"Lao People's Democratic Republic",120,LA,LAO,Asia,"South-Eastern Asia",LM
+Lebanon,121,LB,LBN,Asia,"Western Asia",UM
+Lesotho,122,LS,LSO,Africa,"Southern Africa",LM
+Liberia,123,LR,LBR,Africa,"Western Africa",LI
+"Libyan Arab Jamahiriya",124,LY,LBY,Africa,"Northern Africa",UM
+Liechtenstein,125,LI,LIE,Europe,"Western Europe",HI
+Lithuania,126,LT,LTU,Europe,"Northern Europe",UM
+"Marshall Islands",127,MH,MHL,Oceania,Micronesia,LM
+"China, Macao SAR",128,MO,NULL,Asia,"Eastern Asia",HI
+Madagascar,129,MG,MDG,Africa,"Eastern Africa",LI
+Malawi,130,MW,MWI,Africa,"Eastern Africa",LI
+Malaysia,131,MY,MYS,Asia,"South-Eastern Asia",UM
+Maldives,132,MV,MDV,Asia,"Southern Asia",LM
+Mali,133,ML,MLI,Africa,"Western Africa",LI
+Malta,134,MT,MLT,Europe,"Southern Europe",HI
+Martinique,135,MQ,MTQ,"Latin America and the Caribbean",Caribbean,
+Mauritania,136,MR,MRT,Africa,"Western Africa",LM
+Mauritius,137,MU,MUS,Africa,"Eastern Africa",UM
+Mexico,138,MX,MEX,"Latin America and the Caribbean","Central America",UM
+Mongolia,141,MN,MNG,Asia,"Eastern Asia",LM
+Montserrat,142,MS,MSR,"Latin America and the Caribbean",Caribbean,
+Morocco,143,MA,MAR,Africa,"Northern Africa",LM
+Mozambique,144,MZ,MOZ,Africa,"Eastern Africa",LI
+"Micronesia, Federated States of",145,FM,FSM,Oceania,Micronesia,LM
+Moldova,146,MD,MDA,Europe,"Eastern Europe",LM
+Namibia,147,NA,NAM,Africa,"Southern Africa",UM
+Nauru,148,NR,NRU,Oceania,Micronesia,
+Nepal,149,NP,NPL,Asia,"Southern Asia",LI
+Netherlands,150,NL,NLD,Europe,"Western Europe",HI
+"Netherlands Antilles",151,AN,ANT,"Latin America and the Caribbean",Caribbean,HI
+"New Caledonia",153,NC,NCL,Oceania,Melanesia,HI
+"Macedonia TFYR",154,MK,MKD,Europe,"Southern Europe",UM
+Vanuatu,155,VU,VUT,Oceania,Melanesia,LM
+"New Zealand",156,NZ,NZL,Oceania,"Australia and New Zealand",HI
+Nicaragua,157,NI,NIC,"Latin America and the Caribbean","Central America",LM
+Niger,158,NE,NER,Africa,"Western Africa",LI
+Nigeria,159,NG,NGA,Africa,"Western Africa",LM
+Niue,160,NU,NIU,Oceania,Polynesia,
+"Norfolk Island",161,NF,NFK,Oceania,"Australia and New Zealand",
+Norway,162,NO,NOR,Europe,"Northern Europe",HI
+"Northern Mariana Islands",163,MP,MNP,Oceania,Micronesia,HI
+"Pacific Islands Trust",164,PCI,PCHH,Oceania,Micronesia,
+Pakistan,165,PK,PAK,Asia,"Southern Asia",LM
+Panama,166,PA,PAN,"Latin America and the Caribbean","Central America",UM
+"Czech Republic",167,CZ,CZE,Europe,"Eastern Europe",HI
+"Papua New Guinea",168,PG,PNG,Oceania,Melanesia,LM
+Paraguay,169,PY,PRY,"Latin America and the Caribbean","South America",LM
+Peru,170,PE,PER,"Latin America and the Caribbean","South America",UM
+Philippines,171,PH,PHL,Asia,"South-Eastern Asia",LM
+Pitcairn,172,PN,PCN,Oceania,Polynesia,
+Poland,173,PL,POL,Europe,"Eastern Europe",HI
+Portugal,174,PT,PRT,Europe,"Southern Europe",HI
+Guinea-Bissau,175,GW,GNB,Africa,"Western Africa",LI
+Timor-Leste,176,TL,TLS,Asia,"South-Eastern Asia",LM
+"Puerto Rico",177,PR,PRI,"Latin America and the Caribbean",Caribbean,HI
+Eritrea,178,ER,ERI,Africa,"Eastern Africa",LI
+Qatar,179,QA,QAT,Asia,"Western Asia",HI
+Palau,180,PW,PLW,Oceania,Micronesia,UM
+Zimbabwe,181,ZW,ZWE,Africa,"Eastern Africa",LI
+Réunion,182,RE,REU,Africa,"Eastern Africa",
+Romania,183,RO,ROU,Europe,"Eastern Europe",UM
+Rwanda,184,RW,RWA,Africa,"Eastern Africa",LI
+"Russian Federation",185,RU,RUS,Europe,"Eastern Europe",UM
+"Serbia and Montenegro",186,CS,SCG,Europe,"Southern Europe",UM
+"Saint Helena",187,SH,SHN,"Latin America and the Caribbean",Caribbean,
+"Saint Kitts and Nevis",188,KN,KNA,"Latin America and the Caribbean",Caribbean,UM
+"Saint Lucia",189,LC,LCA,"Latin America and the Caribbean",Caribbean,UM
+"Saint Pierre and Miquelon",190,PM,SPM,"North America","North America",
+"Saint Vincent and Grenadines",191,VC,VCT,"Latin America and the Caribbean",Caribbean,UM
+"Sao Tome and Principe",193,ST,STP,Africa,"Middle Africa",LM
+"Saudi Arabia",194,SA,SAU,Asia,"Western Asia",HI
+Senegal,195,SN,SEN,Africa,"Western Africa",LM
+Seychelles,196,SC,SYC,Africa,"Eastern Africa",UM
+"Sierra Leone",197,SL,SLE,Africa,"Western Africa",LI
+Slovenia,198,SI,SVN,Europe,"Southern Europe",HI
+Slovakia,199,SK,SVK,Europe,"Eastern Europe",HI
+Singapore,200,SG,SGP,Asia,"South-Eastern Asia",HI
+Somalia,201,SO,SOM,Africa,"Eastern Africa",LI
+"South Africa",202,ZA,ZAF,Africa,"Southern Africa",UM
+Spain,203,ES,ESP,Europe,"Southern Europe",HI
+"Western Sahara",205,EH,ESH,Africa,"Northern Africa",
+"Sudan (former)",206,,,Africa,"Northern Africa",LM
+Suriname,207,SR,SUR,"Latin America and the Caribbean","South America",UM
+Tajikistan,208,TJ,TJK,Asia,"Central Asia",LI
+Swaziland,209,SZ,SWZ,Africa,"Southern Africa",LM
+Sweden,210,SE,SWE,Europe,"Northern Europe",HI
+Switzerland,211,CH,CHE,Europe,"Western Europe",HI
+"Syrian Arab Republic",212,SY,SYR,Asia,"Western Asia",LM
+Turkmenistan,213,TM,TKM,Asia,"Central Asia",LM
+Taiwan,214,TW,NULL,Asia,"Eastern Asia",HI
+"Tanzania, United Republic of",215,TZ,TZA,Africa,"Eastern Africa",LI
+Thailand,216,TH,THA,Asia,"South-Eastern Asia",UM
+Togo,217,TG,TGO,Africa,"Western Africa",LI
+Tokelau,218,TK,TKL,Oceania,Polynesia,
+Tonga,219,TO,TON,Oceania,Polynesia,LM
+"Trinidad and Tobago",220,TT,TTO,"Latin America and the Caribbean",Caribbean,HI
+Oman,221,OM,OMN,Asia,"Western Asia",HI
+Tunisia,222,TN,TUN,Africa,"Northern Africa",UM
+Turkey,223,TR,TUR,Asia,"Western Asia",UM
+"Turks and Caicos Islands",224,TC,TCA,"Latin America and the Caribbean",Caribbean,HI
+"United Arab Emirates",225,AE,ARE,Asia,"Western Asia",HI
+Uganda,226,UG,UGA,Africa,"Eastern Africa",LI
+Tuvalu,227,TV,TUV,Oceania,Polynesia,LM
+USSR,228,SUN,SUUH,,,
+"United Kingdom",229,GB,GBR,Europe,"Northern Europe",HI
+Ukraine,230,UA,UKR,Europe,"Eastern Europe",LM
+"United States of America",231,US,USA,"North America","North America",HI
+"Burkina Faso",233,BF,BFA,Africa,"Western Africa",LI
+Uruguay,234,UY,URY,"Latin America and the Caribbean","South America",UM
+Uzbekistan,235,UZ,UZB,Asia,"Central Asia",LM
+"Venezuela, Bolivarian Republic of",236,VE,VEN,"Latin America and the Caribbean","South America",UM
+"Viet Nam",237,VN,VNM,Asia,"South-Eastern Asia",LM
+Ethiopia,238,ET,ETH,Africa,"Eastern Africa",LI
+"British Virgin Islands",239,VG,VGB,"Latin America and the Caribbean",Caribbean,
+"US Virgin Islands",240,VI,VIR,"Latin America and the Caribbean",Caribbean,HI
+"Wake Island",242,WAK,WKUM,Oceania,Micronesia,
+"Wallis and Futuna Islands",243,WF,WLF,Oceania,Polynesia,
+Samoa,244,WS,WSM,Oceania,Polynesia,LM
+"Yugoslav SFR",248,YUCS,YUG,Europe,"Southern Europe",
+Yemen,249,YE,YEM,Asia,"Western Asia",LM
+"Congo, Democratic Republic of",250,CD,COD,Africa,"Middle Africa",LI
+Zambia,251,ZM,ZMB,Africa,"Eastern Africa",LM
+Belgium,255,BE,BEL,Europe,"Western Europe",HI
+Luxembourg,256,LU,LUX,Europe,"Western Europe",HI
+Anguilla,258,AI,AIA,"Latin America and the Caribbean",Caribbean,
+"Channel Islands",259,NULL,NULL,Europe,"Northern Europe",HI
+"Isle of Man",264,IM,IMN,Europe,"Northern Europe",HI
+Mayotte,270,YT,MYT,Africa,"Eastern Africa",UM
+Serbia,272,RS,SRB,Europe,"Southern Europe",UM
+Montenegro,273,ME,MNE,Europe,"Southern Europe",UM
+Sudan,276,SD,SDN,Africa,"Northern Africa",LM
+"South Sudan",277,SS,SSD,Africa,"Northern Africa",LM
+Curaçao,279,CW,CUW,"Latin America and the Caribbean",Caribbean,HI
+"Sint Maarten (Dutch Part)",280,SX,SXM,"Latin America and the Caribbean",Caribbean,HI
+"Saint-Martin (French Part)",281,MF,MAF,"Latin America and the Caribbean",Caribbean,HI
+"State of Palestine",299,PS,PSE,Asia,"Western Asia",LM
+China,351,CN,CHN,Asia,"Eastern Asia",UM
+World,5001,NULL,NULL,World,World,
