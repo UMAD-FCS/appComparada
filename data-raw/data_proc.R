@@ -87,6 +87,7 @@ data <- plyr::rbind.fill(data_eco, data_soc)
 
 glimpse(data)
 
+test <- count(data, pais)
 
 ## Procesar  ---------------------------------------------------------------
 
@@ -103,34 +104,36 @@ data <- data %>%
                               ifelse(valor >= 1 & valor < 100, round(valor, digits = 0),
                                      ifelse(valor >= 100  & valor < 1000, round(valor, digits = 0),
                                             ifelse(valor >= 1000, round(valor, digits = 0), NA))))) %>% 
-  relocate(key, nomindicador, fecha, valor) 
+  relocate(key, nomindicador, fecha, valor) %>% 
+  mutate(pais = case_when(
+    pais == "Early-demographic dividend" ~ "Etapa inicial del dividendo demográfico",
+    pais == "East Asia & Pacific" ~ "Asia del Este y Pacífico",
+    pais == "European Union" ~ "Unión Europea",
+    pais == "High income" ~ "Altos ingresos",
+    pais == "Late-demographic dividend" ~ "Etapa avanzada del dividendo demográfico",
+    pais == "Latin America & Caribbean" ~ "América Latina y el Caribe",
+    pais == "Middle East & North Africa" ~ "Medio Oriente y África del Norte",
+    pais == "Middle income" ~ "Ingresos medios",
+    pais == "North America" ~ "Norteamérica",
+    pais == "Post-demographic dividend" ~ "Etapa posterior al dividendo demográfico",
+    pais == "Pre-demographic dividend" ~ "Etapa previa al dividendo demográfico",
+    pais == "South Asia" ~ "Asia del Sur",
+    TRUE ~ pais
+  ))
 
-regiones <- c("África Sub Sahariana",
-              "Altos ingresos", 
-              "América Latina y el Caribe",
+regiones <- c("Etapa inicial del dividendo demográfico",
               "Asia del Este y Pacífico",
-              "Asia del Sur",
-              "Bajos ingresos",
-              "Etapa avanzada del dividendo demográfico",
-              "Etapa inicial del dividendo demográfico",
-              "Etapa previa al dividendo demográfico",
-              "Etapa posterior al dividendo demográfico",
-              "Ingresos medios", 
-              "Medio Oriente y África del Norte",
               "Unión Europea",
+              "Altos ingresos",
+              "Etapa avanzada del dividendo demográfico",
+              "América Latina y el Caribe",
+              "Medio Oriente y África del Norte",
+              "Ingresos medios",
               "Norteamérica",
-              "Early-demographic dividend",
-              "East Asia & Pacific",
-              "European Union",
-              "High income",
-              "Late-demographic dividend",
-              "Latin America & Caribbean",
-              "Middle East & North Africa",
-              "Middle income",
-              "North America",
-              "Post-demographic dividend",
-              "Pre-demographic dividend",
-              "South Asia")
+              "Africa subsahariana",
+              "Etapa posterior al dividendo demográfico",
+              "Etapa previa al dividendo demográfico",
+              "Asia del Sur")
 
 data <- data %>% 
   mutate(region = case_when(
@@ -228,6 +231,25 @@ data <- data %>%
     pais == "Venezuela, RB" ~ "Venezuela",
     TRUE ~ pais
   ))
+
+table(data$pais)
+
+data <- data %>% 
+  mutate(pais = fct_relevel(pais, levels = c("Etapa previa al dividendo demográfico",
+                              "Etapa inicial del dividendo demográfico",
+                              "Etapa avanzada del dividendo demográfico",
+                              "Etapa posterior al dividendo demográfico",
+                              "Bajos ingresos",
+                              "Ingresos medios",
+                              "Altos ingresos",
+                              "América Latina y el Caribe",
+                              "Asia del Este y Pacífico",
+                              "Asia del Sur",
+                              "Medio Oriente y África del Norte",
+                              "Norteamérica",
+                              "Unión Europea")))   
+  
+  table(data$pais)
 
 # test <- count(data, pais_eng)
 

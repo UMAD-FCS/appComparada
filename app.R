@@ -53,6 +53,20 @@ tema_umad <- bs_theme(
   code_font = font_google("Space Mono")
 )
 
+regiones <- c("Etapa previa al dividendo demográfico",
+              "Etapa inicial del dividendo demográfico",
+              "Etapa avanzada del dividendo demográfico",
+              "Etapa posterior al dividendo demográfico",
+              "Bajos ingresos",
+              "Ingresos medios",
+              "Altos ingresos",
+              "América Latina y el Caribe",
+              "Asia del Este y Pacífico",
+              "Asia del Sur",
+              "Medio Oriente y África del Norte",
+              "Norteamérica",
+              "Unión Europea")
+
 # bs_theme_preview(tema_umad)
 
 ##  1. PREPARAR DATA  =======================================================
@@ -4230,6 +4244,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_CP_comp_region <- renderUI({
+        
+        reg <- dat_CP_comp() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_CP_comp) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_CP_comp == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -4241,11 +4262,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_CP_comp",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_CP_comp() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_CP_comp) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -4823,6 +4840,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_CP_precios_region <- renderUI({
+        
+        reg <- dat_CP_precios() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_CP_precios) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_CP_precios == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -4834,11 +4858,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_CP_precios",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_CP_precios() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_CP_precios) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -5421,6 +5441,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_DE_crec_region <- renderUI({
+        
+        reg <- dat_DE_crec() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_DE_comp) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_DE_crec == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -5432,11 +5459,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_DE_crec",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_DE_crec() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_DE_crec) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -6008,6 +6031,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_DE_prod_region <- renderUI({
+        
+        reg <- dat_DE_prod() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_DE_prod) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_DE_prod == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -6019,11 +6049,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_DE_prod",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_DE_prod() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_DE_prod) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -6596,6 +6622,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_DE_estr_region <- renderUI({
+        
+        reg <- dat_DE_estr() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_DE_estr) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_DE_estr == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -6607,11 +6640,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_DE_estr",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_DE_estr() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_DE_estr) %>%
-                distinct(pais) %>%
-                pull(),
+              reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -7183,6 +7212,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_DE_inv_region <- renderUI({
+        
+        reg <- dat_DE_inv() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_DE_inv) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_DE_inv == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -7194,11 +7230,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_DE_inv",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_DE_inv() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_DE_inv) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -7781,6 +7813,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_DE_ch_region <- renderUI({
+        
+        reg <- dat_DE_ch() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_DE_ch) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_DE_ch == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -7792,11 +7831,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_DE_ch",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_DE_ch() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_DE_ch) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -8465,6 +8500,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_DE_cti_region <- renderUI({
+        
+        reg <- dat_DE_cti() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_DE_cti) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_DE_cti == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -8476,11 +8518,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_DE_cti",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_DE_cti() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_DE_cti) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -9042,7 +9080,15 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_DE_infra_region <- renderUI({
+        
+        reg <- dat_DE_infra() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_DE_infra) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_DE_infra == "Serie de tiempo") {
+          
           dropdown(
             label = "Seleccione regiones o grupos",
             status = "default",
@@ -9053,11 +9099,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_DE_infra",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_DE_infra() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_DE_infra) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -9629,6 +9671,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_SF_ahorro_region <- renderUI({
+        
+        reg <- dat_SF_ahorro() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_SF_ahorro) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_SF_ahorro == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -9640,11 +9689,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_SF_ahorro",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_SF_ahorro() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_SF_ahorro) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -10220,6 +10265,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_SF_externa_region <- renderUI({
+        
+        reg <- dat_SF_externa() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_SF_externa) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_SF_externa == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -10231,11 +10283,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_SF_externa",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_SF_externa() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_SF_externa) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -10818,6 +10866,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_SF_inv_region <- renderUI({
+        
+        reg <- dat_SF_inv() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_SF_inv) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_SF_inv == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -10829,11 +10884,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_SF_inv",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_SF_inv() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_SF_inv) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -11395,6 +11446,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_SF_mon_region <- renderUI({
+        
+        reg <- dat_SF_mon() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_SF_mon) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_SF_mon == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -11406,11 +11464,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_SF_mon",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_SF_mon() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_SF_mon) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -11974,6 +12028,14 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_EN_consumo_region <- renderUI({
+        
+        reg <- dat_EN_consumo() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_EN_consumo) %>%
+          distinct(pais) %>%
+          pull()
+        
+        
         if (input$visualizador_EN_consumo == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -11985,11 +12047,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_EN_consumo",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_EN_consumo() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_EN_consumo) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -12575,6 +12633,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_EN_emisiones_region <- renderUI({
+        
+        reg <- dat_EN_emisiones() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_EN_emisiones) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_EN_emisiones == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -12586,11 +12651,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_EN_emisiones",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_EN_emisiones() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_EN_emisiones) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -13184,6 +13245,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_EN_prod_region <- renderUI({
+        
+        reg <- dat_EN_prod() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_EN_prod) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_EN_prod == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -13195,11 +13263,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_EN_prod",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_EN_prod() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_EN_prod) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -13770,6 +13834,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_SA_sa_region <- renderUI({
+        
+        reg <- dat_SA_sa() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_SA_sa) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_SA_sa == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -13781,11 +13852,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_SA_sa",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_SA_sa() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_SA_sa) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -14345,6 +14412,14 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_DEMO_nat_region <- renderUI({
+        
+        reg <- dat_DEMO_nat() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_DEMO_nat) %>%
+          distinct(pais) %>%
+          pull()
+        
+        
         if (input$visualizador_DEMO_nat == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -14356,11 +14431,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_DEMO_nat",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_DEMO_nat() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_DEMO_nat) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -14919,6 +14990,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_DEMO_morta_region <- renderUI({
+        
+        reg <- dat_DEMO_morta() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_DEMO_morta) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_DEMO_morta == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -14930,11 +15008,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_DEMO_morta",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_DEMO_morta() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_DEMO_morta) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -15494,6 +15568,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_DEMO_fert_region <- renderUI({
+        
+        reg <- dat_DEMO_fert() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_DEMO_fert) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_DEMO_fert == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -15505,11 +15586,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_DEMO_fert",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_DEMO_fert() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_DEMO_fert) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -16068,6 +16145,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_DEMO_pob_region <- renderUI({
+        
+        reg <- dat_DEMO_pob() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_DEMO_pob) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_DEMO_pob == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -16079,11 +16163,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_DEMO_pob",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_DEMO_pob() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_DEMO_pob) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -16642,6 +16722,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_POB_region <- renderUI({
+        
+        reg <- dat_POB() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_POB) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_POB == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -16653,11 +16740,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_POB",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_POB() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_POB) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -17216,6 +17299,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_SP_ig_region <- renderUI({
+        
+        reg <- dat_SP_ig() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_SP_ig) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_SP_ig == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -17227,11 +17317,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_SP_ig",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_SP_ig() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_SP_ig) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -17790,6 +17876,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_SP_res_region <- renderUI({
+        
+        reg <- dat_SP_res() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_SP_res) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_SP_res == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -17801,11 +17894,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_SP_res",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_SP_res() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_SP_res) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -18364,6 +18453,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_SP_deuda_region <- renderUI({
+        
+        reg <- dat_SP_deuda() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_SP_deuda) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_SP_deuda == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -18375,11 +18471,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_SP_deuda",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_SP_deuda() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_SP_deuda) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -18960,6 +19052,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_SP_empleo_region <- renderUI({
+        
+        reg <- dat_SP_empleo() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_SP_empleo) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_SP_empleo == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -18971,11 +19070,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_SP_empleo",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_SP_empleo() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_SP_empleo) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -19664,6 +19759,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_EST_empleo_region <- renderUI({
+        
+        reg <- dat_EST_empleo() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_EST_empleo) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_EST_empleo == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -19675,11 +19777,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_EST_empleo",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_EST_empleo() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_EST_empleo) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -20345,6 +20443,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_EST_salarios_region <- renderUI({
+        
+        reg <- dat_EST_salarios() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_EST_salarios) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_EST_salarios == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -20356,11 +20461,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_EST_salarios",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_EST_salarios() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_EST_salarios) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
@@ -20919,6 +21020,13 @@ ui <- navbarPage(
       
       # Checkbox por región
       output$sel_EST_tran_region <- renderUI({
+        
+        reg <- dat_EST_tran() %>%
+          filter(region == 1) %>%
+          filter(nomindicador == input$indicador_EST_tran) %>%
+          distinct(pais) %>%
+          pull()
+        
         if (input$visualizador_EST_tran == "Serie de tiempo") {
           dropdown(
             label = "Seleccione regiones o grupos",
@@ -20930,11 +21038,7 @@ ui <- navbarPage(
               inputId = "chbox_reg_EST_tran",
               label = "Seleccione regiones o grupos",
               inline = TRUE,
-              choices = dat_EST_tran() %>%
-                filter(region == 1) %>%
-                filter(nomindicador == input$indicador_EST_tran) %>%
-                distinct(pais) %>%
-                pull(),
+              choices = reg[order(factor(reg,levels=regiones))],
               selected = NULL
             )
           )
